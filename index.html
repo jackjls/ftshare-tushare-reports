@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FTShare / Tushare 数据报告导航</title>
+  <style>
+    :root{--bg:#f6f7f9;--paper:#fff;--ink:#17202a;--muted:#657181;--line:#dce2e8;--accent:#176b87;--dark:#101820}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.55}
+    .report-topnav{position:sticky;top:0;z-index:50;background:var(--dark);border-bottom:1px solid rgba(255,255,255,.12)}
+    .report-topnav .inner{max-width:1280px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .report-topnav .brand{font-weight:700;color:#fff;margin-right:6px;font-size:14px}
+    .report-topnav a{color:#d8e5ec;text-decoration:none;border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:6px 10px;font-size:13px}
+    .report-topnav a:hover,.report-topnav a.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    header{background:#fff;border-bottom:1px solid var(--line)}
+    .hero{max-width:1280px;margin:0 auto;padding:42px 24px 28px}
+    h1{margin:0 0 10px;font-size:34px}
+    .subtitle{margin:0;max-width:900px;color:var(--muted)}
+    main{max-width:1280px;margin:0 auto;padding:24px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:20px;text-decoration:none;color:inherit}
+    .card:hover{border-color:var(--accent)}
+    .card h2{margin:0 0 8px;font-size:20px}
+    .card p{margin:0;color:var(--muted)}
+    .metric{display:inline-block;margin-top:14px;border:1px solid var(--line);border-radius:6px;padding:6px 9px;color:#34404c;background:#fbfcfd;font-size:13px}
+    @media(max-width:800px){.grid{grid-template-columns:1fr}.hero,main{padding-left:16px;padding-right:16px}}
+  </style>
+</head>
+<body>
+  <nav class="report-topnav"><div class="inner"><span class="brand">数据报告</span><a class="active" href="index.html">总览</a><a href="ftshare-data-assets-inventory.html">FTShare SDK 176</a><a href="ftshare-skill-119-inventory.html">FTShare Skill 119</a><a href="tushare-official-docs-interface-inventory.html">Tushare 官网接口</a><a href="tushare-mcp-tools-inventory.html">Tushare MCP</a><a href="ftshare-vs-tushare-single-permission-coverage.html">权限接口对比</a><a href="ftshare-vs-tushare-mcp-comparison.html">对比报告</a></div></nav>
+  <header>
+    <div class="hero">
+      <h1>FTShare / Tushare 数据报告导航</h1>
+      <p class="subtitle">一个入口查看 FTShare SDK 176、FTShare Skill 119、Tushare 官网接口、Tushare MCP tools、权限接口对比和总对比报告。</p>
+    </div>
+  </header>
+  <main>
+    <section class="grid">
+      <a class="card" href="ftshare-data-assets-inventory.html">
+        <h2>FTShare SDK 176</h2>
+        <p>基于 ftshare-python-sdk 当前注册表整理，展示 SDK 原始接口定义。</p>
+        <span class="metric">176 个 SDK 接口</span>
+      </a>
+      <a class="card" href="ftshare-skill-119-inventory.html">
+        <h2>FTShare Skill 119</h2>
+        <p>基于 ftshare-skills 的 119 个 sub-skill 整理，展示 Agent 任务型接口封装。</p>
+        <span class="metric">119 个 sub-skills</span>
+      </a>
+      <a class="card" href="tushare-official-docs-interface-inventory.html">
+        <h2>Tushare 官网接口</h2>
+        <p>按 Tushare 官网左侧目录树顺序整理，从股票数据 / 基础数据 / 股票列表开始。</p>
+        <span class="metric">237 个接口/数据服务页</span>
+      </a>
+      <a class="card" href="tushare-mcp-tools-inventory.html">
+        <h2>Tushare MCP</h2>
+        <p>从 Tushare 远端 MCP 的 tools/list 实时采集并整理，展示 258 个 tools 的分类、接口名、用途和参数结构。</p>
+        <span class="metric">258 个 tools</span>
+      </a>
+      <a class="card" href="ftshare-vs-tushare-mcp-comparison.html">
+        <h2>对比报告</h2>
+        <p>对比 FTShare SDK 与 Tushare MCP 的覆盖差异、缺口、问题和第一阶段建议。</p>
+        <span class="metric">FTShare 176 vs Tushare MCP 258</span>
+      </a>
+      <a class="card" href="ftshare-vs-tushare-single-permission-coverage.html">
+        <h2>权限接口对比</h2>
+        <p>专门对比 Tushare 单独开权限接口，查看 FTShare SDK 当前基本覆盖、部分覆盖和未覆盖情况。</p>
+        <span class="metric">官网 50 个单独权限接口</span>
+      </a>    </section>
+  </main>
+</body>
+</html>

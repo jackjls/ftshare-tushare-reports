@@ -1,0 +1,51 @@
+﻿来源口径,接口名,接口标题,一级分类,二级分类,doc_id,覆盖状态,FTShare对应,判断说明
+Tushare官网单独权限,stk_premarket,每日股本（盘前）,股票数据,基础数据,329,基本覆盖,stk_premarket,盘前数据
+Tushare官网单独权限,rt_k,实时日线,股票数据,行情数据,372,部分覆盖/同类替代,stock_market / price_change / stock_candlesticks,有实时快照和K线，但不是 Tushare RT 日线接口
+Tushare官网单独权限,stk_mins,历史分钟,股票数据,行情数据,370,部分覆盖/同类替代,stock_intraday / stock-prices,有日内分时/近端分钟，不等于任意历史分钟权限
+Tushare官网单独权限,rt_min,实时分钟,股票数据,行情数据,374,部分覆盖/同类替代,stock_intraday,可查分时，但不等于实时分钟接口
+Tushare官网单独权限,rt_min_daily,A股实时分钟-日累计,股票数据,行情数据,457,未覆盖,,没有 A股实时分钟日累计
+Tushare官网单独权限,stk_auction_o,股票开盘集合竞价数据,股票数据,特色数据,353,部分覆盖/同类替代,auction_results / stock_intraday_auction_volume,有集合竞价结果/竞价量，口径不完全一致
+Tushare官网单独权限,stk_auction_c,股票收盘集合竞价数据,股票数据,特色数据,354,部分覆盖/同类替代,auction_results / stock_intraday_auction_volume,有集合竞价相关数据，收盘集合竞价未确认完全覆盖
+Tushare官网单独权限,margin,融资融券交易汇总,股票数据,两融及转融通,58,部分覆盖/同类替代,margin_trading_details,有两融明细，缺交易汇总口径
+Tushare官网单独权限,margin_detail,融资融券交易明细,股票数据,两融及转融通,59,基本覆盖,margin_trading_details,融资融券明细
+Tushare官网单独权限,margin_secs,融资融券标的（盘前）,股票数据,两融及转融通,326,部分覆盖/同类替代,margin_trading_details / stk_premarket,有两融明细和盘前数据，缺融资融券标的盘前专表
+Tushare官网单独权限,stk_auction,开盘竞价成交（当日）,股票数据,打板专题数据,369,部分覆盖/同类替代,auction_results / stock_intraday_auction_volume,有竞价结果，口径不完全一致
+Tushare官网单独权限,rt_etf_min,ETF实时分钟,ETF专题,,416,未覆盖,,没有 ETF 实时分钟
+Tushare官网单独权限,rt_etf_min_daily,ETF实时分钟-日累计,ETF专题,,470,未覆盖,,没有 ETF 实时分钟日累计
+Tushare官网单独权限,etf_mins,ETF历史分钟,ETF专题,,387,未覆盖,,SDK 176 未见 ETF 历史分钟/K线接口
+Tushare官网单独权限,rt_etf_k,ETF实时日线,ETF专题,,400,未覆盖,,没有 ETF 实时日线
+Tushare官网单独权限,rt_etf_sz_iopv,ETF实时参考,ETF专题,,454,未覆盖,,没有深交所 ETF 实时 IOPV/参考
+Tushare官网单独权限,rt_idx_k,指数实时日线,指数专题,,403,部分覆盖/同类替代,global_index_daily_kline / index*,有指数日K/指数基础/权重，缺实时日线
+Tushare官网单独权限,rt_idx_min,指数实时分钟,指数专题,,420,未覆盖,,没有指数实时分钟
+Tushare官网单独权限,idx_mins,指数历史分钟,指数专题,,419,未覆盖,,没有指数历史分钟
+Tushare官网单独权限,rt_sw_k,申万实时行情,指数专题,,417,部分覆盖/同类替代,sw_industry_daily_metrics / sw_industry_overview,有申万行业日度指标，缺实时行情
+Tushare官网单独权限,ft_mins,历史分钟行情,期货数据,,313,未覆盖,,有期货K线但未见期货分钟权限接口
+Tushare官网单独权限,rt_fut_min,实时分钟行情,期货数据,,340,未覆盖,,没有期货实时分钟
+Tushare官网单独权限,opt_mins,期权分钟行情,期权数据,,341,未覆盖,,没有期权数据
+Tushare官网单独权限,cb_price_chg,可转债转股价变动,债券专题,,246,部分覆盖/同类替代,cb_base_data / cb_lists,有可转债基础数据，缺转股价变动历史专表
+Tushare官网单独权限,yc_cb,国债收益率曲线,债券专题,,201,未覆盖,,没有国债收益率曲线
+Tushare官网单独权限,hk_daily,港股日线行情,港股数据,,192,基本覆盖,hk_candlesticks,港股K线/日线
+Tushare官网单独权限,hk_daily_adj,港股复权行情,港股数据,,339,部分覆盖/同类替代,hk_candlesticks,港股K线可能支持复权参数，但未独立为复权行情接口
+Tushare官网单独权限,hk_adjfactor,港股复权因子,港股数据,,401,未覆盖,,没有港股复权因子
+Tushare官网单独权限,hk_mins,港股分钟行情,港股数据,,304,未覆盖,,没有港股分钟行情
+Tushare官网单独权限,rt_hk_k,港股实时日线,港股数据,,383,未覆盖,,没有港股实时日线
+Tushare官网单独权限,hk_income,港股利润表,港股数据,,389,基本覆盖,hk_income_bank / hk_income_gene / hk_income_insur,港股利润表
+Tushare官网单独权限,hk_balancesheet,港股资产负债表,港股数据,,390,基本覆盖,hk_balance_bank / hk_balance_gene / hk_balance_insur,港股资产负债表
+Tushare官网单独权限,hk_cashflow,港股现金流量表,港股数据,,391,基本覆盖,hk_cashflow,港股现金流量表
+Tushare官网单独权限,hk_fina_indicator,港股财务指标数据,港股数据,,388,未覆盖,,没有港股财务指标专表
+Tushare官网单独权限,us_daily,美股日线行情,美股数据,,254,基本覆盖,eastmoney_us_stock_daily_kline / eastmoney_us_stock_daily_ohlc,美股日线
+Tushare官网单独权限,us_daily_adj,美股复权行情,美股数据,,338,未覆盖,,没有美股复权行情
+Tushare官网单独权限,us_adjfactor,美股复权因子,美股数据,,402,未覆盖,,没有美股复权因子
+Tushare官网单独权限,us_income,美股利润表,美股数据,,394,基本覆盖,us_income,美股利润表
+Tushare官网单独权限,us_balancesheet,美股资产负债表,美股数据,,395,基本覆盖,us_balance,美股资产负债表
+Tushare官网单独权限,us_cashflow,美股现金流量表,美股数据,,396,基本覆盖,us_cashflow,美股现金流量表
+Tushare官网单独权限,us_fina_indicator,美股财务指标数据,美股数据,,393,未覆盖,,没有美股财务指标专表
+Tushare官网单独权限,npr,国家政策库,大模型语料,,406,未覆盖,,没有国家政策法规库
+Tushare官网单独权限,research_report,券商研究报告,大模型语料,,415,基本覆盖,stock_reports,研报列表
+Tushare官网单独权限,monetary_policy,央行货币政策执行报告,大模型语料,,465,未覆盖,,没有央行货币政策执行报告
+Tushare官网单独权限,news,新闻快讯（短讯）,大模型语料,,143,部分覆盖/同类替代,semantic_search_news,有新闻语义搜索，但仅近期/搜索型，不是新闻快讯流
+Tushare官网单独权限,major_news,新闻通讯（长篇）,大模型语料,,195,未覆盖,,没有新闻通讯长篇
+Tushare官网单独权限,cctv_news,新闻联播文字稿,大模型语料,,154,未覆盖,,没有新闻联播文字稿
+Tushare官网单独权限,anns_d,上市公司公告,大模型语料,,176,基本覆盖,stock_announcements,上市公司公告
+Tushare官网单独权限,irm_qa_sh,上证e互动问答,大模型语料,,366,未覆盖,,没有上证e互动问答
+Tushare官网单独权限,irm_qa_sz,深证易互动问答,大模型语料,,367,未覆盖,,没有深证互动易问答

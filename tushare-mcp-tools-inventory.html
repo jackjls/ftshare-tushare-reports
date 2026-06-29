@@ -1,0 +1,3205 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tushare MCP Tools 清单 - 258 个工具</title>
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --paper: #ffffff;
+      --ink: #1e252e;
+      --muted: #657181;
+      --line: #dbe1e8;
+      --accent: #176b87;
+      --accent-2: #8b5e34;
+      --soft: #eaf3f6;
+      --code: #f1f4f7;
+      --warn: #7a4b00;
+      --warn-bg: #fff7e6;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.55;
+    }
+    header { background: var(--paper); border-bottom: 1px solid var(--line); }
+    .hero { max-width: min(1800px, calc(100vw - 40px)); margin: 0 auto; padding: 42px 20px 26px; }
+    h1 { margin: 0 0 12px; font-size: 34px; line-height: 1.18; letter-spacing: 0; }
+    .subtitle { max-width: 940px; margin: 0; color: var(--muted); font-size: 16px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+    .pill { border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; background: #fbfcfd; color: #394653; font-size: 13px; }
+    .layout { max-width: min(1800px, calc(100vw - 40px)); margin: 0 auto; padding: 24px 20px 56px; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 24px; }
+    nav { position: sticky; top: 16px; align-self: start; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 12px; max-height: calc(100vh - 32px); overflow: auto; }
+    nav h2 { font-size: 14px; margin: 4px 6px 10px; color: #34404c; }
+    nav a { display: flex; justify-content: space-between; gap: 10px; text-decoration: none; color: #25313d; padding: 8px 8px; border-radius: 6px; font-size: 13px; }
+    nav a:hover { background: var(--soft); color: var(--accent); }
+    nav strong { color: var(--muted); font-weight: 700; }
+    main { min-width: 0; }
+    .summary, .category { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
+    .summary { padding: 22px; }
+    .summary h2 { margin: 0 0 12px; font-size: 20px; }
+    .summary-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }
+    .metric { border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: #fbfcfd; }
+    .metric strong { display: block; font-size: 24px; }
+    .metric span { color: var(--muted); font-size: 13px; }
+    .notice { margin: 16px 0 0; padding: 12px 14px; border: 1px solid #f0d39a; background: var(--warn-bg); color: var(--warn); border-radius: 8px; font-size: 14px; }
+    .tools { margin-top: 18px; display: grid; grid-template-columns: 1fr 220px; gap: 12px; }
+    .search { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 11px 12px; font-size: 14px; background: #fff; color: var(--ink); }
+    .select { border: 1px solid var(--line); border-radius: 8px; padding: 11px 12px; font-size: 14px; background: #fff; color: var(--ink); }
+    .result-line { margin-top: 10px; color: var(--muted); font-size: 13px; }
+    .section-head { display: flex; justify-content: space-between; gap: 18px; align-items: center; padding: 20px 22px 12px; border-bottom: 1px solid var(--line); }
+    .eyebrow { margin: 0 0 4px; color: var(--accent-2); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; font-weight: 700; }
+    h2 { margin: 0; font-size: 22px; letter-spacing: 0; }
+    .count { flex: 0 0 auto; color: var(--accent); background: var(--soft); border-radius: 6px; padding: 8px 10px; font-weight: 700; font-size: 13px; }
+    .basis { margin: 0; padding: 14px 22px; border-bottom: 1px solid var(--line); color: #34404c; background: #fbfcfd; font-size: 13px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { border-bottom: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; }
+    th { background: #f3f6f8; color: #3d4854; font-weight: 700; white-space: nowrap; }
+    tr:last-child td { border-bottom: 0; }
+    tr.hidden { display: none; }
+    .category.hidden-section { display: none; }
+    .num { color: var(--muted); width: 44px; }
+    code { display: inline-block; background: var(--code); border: 1px solid #d7dde4; border-radius: 5px; padding: 2px 5px; color: #14212e; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; white-space: nowrap; }
+    .desc { min-width: 260px; color: #27323d; }
+    .small { min-width: 110px; color: #3b4652; }
+    .params { min-width: 320px; color: #45515f; word-break: break-word; }
+    footer { max-width: min(1800px, calc(100vw - 40px)); margin: 0 auto; padding: 0 20px 36px; color: var(--muted); font-size: 13px; }
+    a.file-link { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(23,107,135,.35); }
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; padding: 18px 16px 44px; }
+      nav { position: static; max-height: none; }
+      .hero { padding: 34px 16px 22px; }
+      .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .tools { grid-template-columns: 1fr; }
+      h1 { font-size: 28px; }
+    }
+  .report-topnav{position:sticky!important;top:0!important;z-index:50!important;background:#101820!important;border:0!important;border-bottom:1px solid rgba(255,255,255,.12)!important;border-radius:0!important;box-shadow:0 2px 8px rgba(15,23,42,.12)!important;padding:0!important;max-height:none!important;overflow:visible!important;align-self:stretch!important}.report-topnav .inner{max-width:1500px;margin:0 auto;padding:10px 28px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.report-topnav .brand{font-weight:700;color:#fff;margin-right:6px;font-size:14px}.report-topnav a{display:inline-flex!important;align-items:center!important;justify-content:center!important;color:#d8e5ec!important;text-decoration:none!important;border:1px solid rgba(255,255,255,.2)!important;border-radius:6px!important;padding:6px 10px!important;font-size:13px!important;background:transparent}.report-topnav a:hover,.report-topnav a.active{background:#176b87!important;border-color:#176b87!important;color:#fff!important}</style>
+</head>
+<body><nav class="report-topnav"><div class="inner"><span class="brand">数据报告</span><a href="index.html">总览</a><a href="ftshare-data-assets-inventory.html">FTShare SDK 176</a><a href="ftshare-skill-119-inventory.html">FTShare Skill 119</a><a href="tushare-official-docs-interface-inventory.html">Tushare 官网接口</a><a class="active" href="tushare-mcp-tools-inventory.html">Tushare MCP</a><a href="ftshare-vs-tushare-single-permission-coverage.html">权限接口对比</a><a href="ftshare-vs-tushare-mcp-comparison.html">对比报告</a></div></nav>
+  <header>
+    <div class="hero">
+      <h1>Tushare MCP Tools 清单</h1>
+      <p class="subtitle">从 Tushare 远端 MCP 的 <code>tools/list</code> 实时采集并整理。页面只展示工具元数据，不包含访问 token。分类依据为 tool 描述中的 Tushare 文档路径，例如 <code>/数据接口/沪深股票/行情数据/历史日线</code>。</p>
+      <div class="meta">
+        <span class="pill">采集时间：2026-06-29 13:36</span>
+        <span class="pill">MCP：Streamable HTTP / SSE</span>
+        <span class="pill">工具数量：258</span>
+        <span class="pill">来源：Tushare MCP tools/list</span>
+        <span class="pill"><a class="file-link" href="ftshare-data-assets-inventory.html">打开 FTShare 176 接口清单</a></span>
+      </div>
+    </div>
+  </header>
+  <div class="layout">
+    <nav>
+      <h2>一级分类</h2>
+      <a href="#cat-1"><span>沪深股票</span><strong>120</strong></a>
+<a href="#cat-2"><span>宏观经济</span><strong>19</strong></a>
+<a href="#cat-3"><span>指数专题</span><strong>13</strong></a>
+<a href="#cat-4"><span>债券</span><strong>12</strong></a>
+<a href="#cat-5"><span>ETF专题</span><strong>9</strong></a>
+<a href="#cat-6"><span>行业经济</span><strong>8</strong></a>
+<a href="#cat-7"><span>公募基金</span><strong>8</strong></a>
+<a href="#cat-8"><span>港股数据</span><strong>8</strong></a>
+<a href="#cat-9"><span>指数</span><strong>7</strong></a>
+<a href="#cat-10"><span>期货数据</span><strong>6</strong></a>
+<a href="#cat-11"><span>大模型语料专题数据</span><strong>6</strong></a>
+<a href="#cat-12"><span>美股数据</span><strong>6</strong></a>
+<a href="#cat-13"><span>期货</span><strong>5</strong></a>
+<a href="#cat-14"><span>债券专题</span><strong>5</strong></a>
+<a href="#cat-15"><span>另类数据</span><strong>4</strong></a>
+<a href="#cat-16"><span>港股</span><strong>4</strong></a>
+<a href="#cat-17"><span>股票数据</span><strong>4</strong></a>
+<a href="#cat-18"><span>期权</span><strong>3</strong></a>
+<a href="#cat-19"><span>美股</span><strong>3</strong></a>
+<a href="#cat-20"><span>小佩数据</span><strong>2</strong></a>
+<a href="#cat-21"><span>期权数据</span><strong>1</strong></a>
+<a href="#cat-22"><span>外汇</span><strong>1</strong></a>
+<a href="#cat-23"><span>外汇数据</span><strong>1</strong></a>
+<a href="#cat-24"><span>财富管理</span><strong>1</strong></a>
+<a href="#cat-25"><span>现货</span><strong>1</strong></a>
+<a href="#cat-26"><span>现货数据</span><strong>1</strong></a>
+    </nav>
+    <main>
+      <section class="summary">
+        <h2>总览</h2>
+        <p>这个 MCP 的主要形态是“一个 Tushare API 接口对应一个 MCP tool”。它适合作为远端 MCP、schema 生成和官方权限接入的参考，但并不是面向投研任务重新聚合后的 Agent 工具层。</p>
+        <div class="summary-grid">
+          <div class="metric"><strong>258</strong><span>tools 总数</span></div>
+          <div class="metric"><strong>26</strong><span>一级分类</span></div>
+          <div class="metric"><strong>64</strong><span>存在必填参数的 tools</span></div>
+          <div class="metric"><strong>194</strong><span>无必填参数的 tools</span></div>
+        </div>
+        <p class="notice">安全提示：原始 MCP 配置里的 token 已从本页面剔除。不要把带 token 的 URL 放进公开仓库、截图或可转发文档。</p>
+        <p class="result-line">高频入参字段：fields(258), ts_code(191), end_date(179), start_date(176), trade_date(121), ann_date(26), exchange(24), date(21), period(20), name(14), freq(13), report_type(9)</p>
+        <div class="tools">
+          <input id="search" class="search" type="search" placeholder="搜索 tool、分类、接口名、参数或描述" />
+          <select id="category" class="select">
+            <option value="">全部分类</option>
+            <option value="沪深股票">沪深股票（120）</option><option value="宏观经济">宏观经济（19）</option><option value="指数专题">指数专题（13）</option><option value="债券">债券（12）</option><option value="ETF专题">ETF专题（9）</option><option value="行业经济">行业经济（8）</option><option value="公募基金">公募基金（8）</option><option value="港股数据">港股数据（8）</option><option value="指数">指数（7）</option><option value="期货数据">期货数据（6）</option><option value="大模型语料专题数据">大模型语料专题数据（6）</option><option value="美股数据">美股数据（6）</option><option value="期货">期货（5）</option><option value="债券专题">债券专题（5）</option><option value="另类数据">另类数据（4）</option><option value="港股">港股（4）</option><option value="股票数据">股票数据（4）</option><option value="期权">期权（3）</option><option value="美股">美股（3）</option><option value="小佩数据">小佩数据（2）</option><option value="期权数据">期权数据（1）</option><option value="外汇">外汇（1）</option><option value="外汇数据">外汇数据（1）</option><option value="财富管理">财富管理（1）</option><option value="现货">现货（1）</option><option value="现货数据">现货数据（1）</option>
+          </select>
+        </div>
+        <div id="resultLine" class="result-line">当前显示 258 / 258 个 tools</div>
+      </section>
+      
+      <section class="category" id="cat-1">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 01</p>
+            <h2>沪深股票</h2>
+          </div>
+          <span class="count">120 tools</span>
+        </div>
+        <p class="basis">二级分布：基础数据 14, 行情数据 20, 财务数据 10, 资金流向数据 8, 两融及转融通 7, 市场参考数据 8, 参考数据 9, 打板专题数据 30, 特色数据 14</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="stock_basic 沪深股票 基础数据 股票列表 沪深股票 / 基础数据 / 股票列表 获取基础信息数据，包括股票代码、名称、上市日期、退市日期等 无 name:string, is_hs:string, market:string, ts_code:string, exchange:string, list_status:string, fields:array" data-category="沪深股票">
+            <td class="num">001</td>
+            <td><code>stock_basic</code></td>
+            <td>基础数据</td>
+            <td>股票列表</td>
+            <td class="desc">获取基础信息数据，包括股票代码、名称、上市日期、退市日期等</td>
+            <td class="small">无</td>
+            <td class="params">name:string, is_hs:string, market:string, ts_code:string, exchange:string, list_status:string, fields:array</td>
+          </tr>
+          <tr data-search="trade_cal 沪深股票 基础数据 交易日历 沪深股票 / 基础数据 / 交易日历 获取各大交易所交易日历数据,默认提取的是上交所 无 is_open:string, end_date:string, exchange:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">002</td>
+            <td><code>trade_cal</code></td>
+            <td>基础数据</td>
+            <td>交易日历</td>
+            <td class="desc">获取各大交易所交易日历数据,默认提取的是上交所</td>
+            <td class="small">无</td>
+            <td class="params">is_open:string, end_date:string, exchange:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="adj_factor 沪深股票 行情数据 复权因子 沪深股票 / 行情数据 / 复权因子 本接口由tushare自行生产，获取股票复权因子，可提取单只股票全部历史复权因子，也可以提取单日全部股票的复权因子。 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">003</td>
+            <td><code>adj_factor</code></td>
+            <td>行情数据</td>
+            <td>复权因子</td>
+            <td class="desc">本接口由Tushare自行生产，获取股票复权因子，可提取单只股票全部历史复权因子，也可以提取单日全部股票的复权因子。</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="daily 沪深股票 行情数据 历史日线 沪深股票 / 行情数据 / 历史日线 获取股票行情数据，或通过[**通用行情接口**]( https://tushare.pro/document/2?doc_id=109)获取数据，包含了前后复权数据 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">004</td>
+            <td><code>daily</code></td>
+            <td>行情数据</td>
+            <td>历史日线</td>
+            <td class="desc">获取股票行情数据，或通过[**通用行情接口**]( https://tushare.pro/document/2?doc_id=109)获取数据，包含了前后复权数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="suspend 沪深股票 行情数据 停复牌信息(停) 沪深股票 / 行情数据 / 停复牌信息(停) 获取股票每日停复牌信息 无 ts_code:string, resume_date:string, suspend_date:string, fields:array" data-category="沪深股票">
+            <td class="num">005</td>
+            <td><code>suspend</code></td>
+            <td>行情数据</td>
+            <td>停复牌信息(停)</td>
+            <td class="desc">获取股票每日停复牌信息</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, resume_date:string, suspend_date:string, fields:array</td>
+          </tr>
+          <tr data-search="daily_basic 沪深股票 行情数据 每日指标 沪深股票 / 行情数据 / 每日指标 获取全部股票每日重要的基本面指标，可用于选股分析、报表展示等。单次请求最大返回6000条数据，可按日线循环提取全部历史。 ts_code ts_code*:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">006</td>
+            <td><code>daily_basic</code></td>
+            <td>行情数据</td>
+            <td>每日指标</td>
+            <td class="desc">获取全部股票每日重要的基本面指标，可用于选股分析、报表展示等。单次请求最大返回6000条数据，可按日线循环提取全部历史。</td>
+            <td class="small">ts_code</td>
+            <td class="params">ts_code*:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="income 沪深股票 财务数据 利润表 沪深股票 / 财务数据 / 利润表 获取上市公司财务利润表数据 ts_code period:string, ts_code*:string, ann_date:string, end_date:string, comp_type:string, f_ann_date:string, start_date:string, report_type:string, fields:array" data-category="沪深股票">
+            <td class="num">007</td>
+            <td><code>income</code></td>
+            <td>财务数据</td>
+            <td>利润表</td>
+            <td class="desc">获取上市公司财务利润表数据</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, ann_date:string, end_date:string, comp_type:string, f_ann_date:string, start_date:string, report_type:string, fields:array</td>
+          </tr>
+          <tr data-search="balancesheet 沪深股票 财务数据 资产负债表 沪深股票 / 财务数据 / 资产负债表 获取上市公司资产负债表 ts_code period:string, ts_code*:string, ann_date:string, end_date:string, comp_type:string, start_date:string, report_type:string, fields:array" data-category="沪深股票">
+            <td class="num">008</td>
+            <td><code>balancesheet</code></td>
+            <td>财务数据</td>
+            <td>资产负债表</td>
+            <td class="desc">获取上市公司资产负债表</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, ann_date:string, end_date:string, comp_type:string, start_date:string, report_type:string, fields:array</td>
+          </tr>
+          <tr data-search="cashflow 沪深股票 财务数据 现金流量表 沪深股票 / 财务数据 / 现金流量表 获取上市公司现金流量表 ts_code period:string, is_calc:integer, ts_code*:string, ann_date:string, end_date:string, comp_type:string, f_ann_date:string, start_date:string, report_type:string, fields:array" data-category="沪深股票">
+            <td class="num">009</td>
+            <td><code>cashflow</code></td>
+            <td>财务数据</td>
+            <td>现金流量表</td>
+            <td class="desc">获取上市公司现金流量表</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, is_calc:integer, ts_code*:string, ann_date:string, end_date:string, comp_type:string, f_ann_date:string, start_date:string, report_type:string, fields:array</td>
+          </tr>
+          <tr data-search="forecast 沪深股票 财务数据 业绩预告 沪深股票 / 财务数据 / 业绩预告 获取业绩预告数据 无 type:string, period:string, ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">010</td>
+            <td><code>forecast</code></td>
+            <td>财务数据</td>
+            <td>业绩预告</td>
+            <td class="desc">获取业绩预告数据</td>
+            <td class="small">无</td>
+            <td class="params">type:string, period:string, ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="express 沪深股票 财务数据 业绩快报 沪深股票 / 财务数据 / 业绩快报 获取上市公司业绩快报 ts_code period:string, ts_code*:string, ann_date:string, end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">011</td>
+            <td><code>express</code></td>
+            <td>财务数据</td>
+            <td>业绩快报</td>
+            <td class="desc">获取上市公司业绩快报</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="moneyflow_hsgt 沪深股票 资金流向数据 沪深港通资金流向 沪深股票 / 资金流向数据 / 沪深港通资金流向 获取沪股通、深股通、港股通每日资金流向数据，每次最多返回300条记录，总量不限制。 无 end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">012</td>
+            <td><code>moneyflow_hsgt</code></td>
+            <td>资金流向数据</td>
+            <td>沪深港通资金流向</td>
+            <td class="desc">获取沪股通、深股通、港股通每日资金流向数据，每次最多返回300条记录，总量不限制。</td>
+            <td class="small">无</td>
+            <td class="params">end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="hsgt_top10 沪深股票 行情数据 沪深股通十大成交股 沪深股票 / 行情数据 / 沪深股通十大成交股 获取沪股通、深股通每日前十大成交详细数据，每天18~20点之间完成当日更新 无 ts_code:string, end_date:string, start_date:string, trade_date:string, market_type:string, fields:array" data-category="沪深股票">
+            <td class="num">013</td>
+            <td><code>hsgt_top10</code></td>
+            <td>行情数据</td>
+            <td>沪深股通十大成交股</td>
+            <td class="desc">获取沪股通、深股通每日前十大成交详细数据，每天18~20点之间完成当日更新</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, market_type:string, fields:array</td>
+          </tr>
+          <tr data-search="ggt_top10 沪深股票 行情数据 港股通十大成交股 沪深股票 / 行情数据 / 港股通十大成交股 获取港股通每日成交数据，其中包括沪市、深市详细数据，每天18~20点之间完成当日更新 无 ts_code:string, end_date:string, start_date:string, trade_date:string, market_type:string, fields:array" data-category="沪深股票">
+            <td class="num">014</td>
+            <td><code>ggt_top10</code></td>
+            <td>行情数据</td>
+            <td>港股通十大成交股</td>
+            <td class="desc">获取港股通每日成交数据，其中包括沪市、深市详细数据，每天18~20点之间完成当日更新</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, market_type:string, fields:array</td>
+          </tr>
+          <tr data-search="margin 沪深股票 两融及转融通 融资融券交易汇总 沪深股票 / 两融及转融通 / 融资融券交易汇总 获取融资融券每日交易汇总数据 无 end_date:string, start_date:string, trade_date:string, exchange_id:string, fields:array" data-category="沪深股票">
+            <td class="num">015</td>
+            <td><code>margin</code></td>
+            <td>两融及转融通</td>
+            <td>融资融券交易汇总</td>
+            <td class="desc">获取融资融券每日交易汇总数据</td>
+            <td class="small">无</td>
+            <td class="params">end_date:string, start_date:string, trade_date:string, exchange_id:string, fields:array</td>
+          </tr>
+          <tr data-search="margin_detail 沪深股票 两融及转融通 融资融券交易明细 沪深股票 / 两融及转融通 / 融资融券交易明细 获取沪深两市每日融资融券明细 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">016</td>
+            <td><code>margin_detail</code></td>
+            <td>两融及转融通</td>
+            <td>融资融券交易明细</td>
+            <td class="desc">获取沪深两市每日融资融券明细</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="top10_holders 沪深股票 市场参考数据 前十大股东 沪深股票 / 市场参考数据 / 前十大股东 获取上市公司前十大股东数据，包括持有数量和比例等信息 ts_code period:string, ts_code*:string, ann_date:string, end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">017</td>
+            <td><code>top10_holders</code></td>
+            <td>市场参考数据</td>
+            <td>前十大股东</td>
+            <td class="desc">获取上市公司前十大股东数据，包括持有数量和比例等信息</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="top10_floatholders 沪深股票 参考数据 前十大流通股东 沪深股票 / 参考数据 / 前十大流通股东 获取上市公司前十大流通股东数据 ts_code period:string, ts_code*:string, ann_date:string, end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">018</td>
+            <td><code>top10_floatholders</code></td>
+            <td>参考数据</td>
+            <td>前十大流通股东</td>
+            <td class="desc">获取上市公司前十大流通股东数据</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fina_indicator 沪深股票 财务数据 财务指标数据 沪深股票 / 财务数据 / 财务指标数据 获取上市公司财务指标数据，为避免服务器压力，现阶段每次请求最多返回100条记录，可通过设置日期多次请求获取更多数据。 ts_code period:string, ts_code*:string, ann_date:string, end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">019</td>
+            <td><code>fina_indicator</code></td>
+            <td>财务数据</td>
+            <td>财务指标数据</td>
+            <td class="desc">获取上市公司财务指标数据，为避免服务器压力，现阶段每次请求最多返回100条记录，可通过设置日期多次请求获取更多数据。</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fina_audit 沪深股票 财务数据 财务审计意见 沪深股票 / 财务数据 / 财务审计意见 获取上市公司定期财务审计意见数据 ts_code period:string, ts_code*:string, ann_date:string, end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">020</td>
+            <td><code>fina_audit</code></td>
+            <td>财务数据</td>
+            <td>财务审计意见</td>
+            <td class="desc">获取上市公司定期财务审计意见数据</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fina_mainbz 沪深股票 财务数据 主营业务构成 沪深股票 / 财务数据 / 主营业务构成 获得上市公司主营业务构成，分地区和产品两种方式 ts_code type:string, period:string, ts_code*:string, end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">021</td>
+            <td><code>fina_mainbz</code></td>
+            <td>财务数据</td>
+            <td>主营业务构成</td>
+            <td class="desc">获得上市公司主营业务构成，分地区和产品两种方式</td>
+            <td class="small">ts_code</td>
+            <td class="params">type:string, period:string, ts_code*:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="namechange 沪深股票 基础数据 股票曾用名 沪深股票 / 基础数据 / 股票曾用名 历史名称变更记录 无 ts_code:string, end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">027</td>
+            <td><code>namechange</code></td>
+            <td>基础数据</td>
+            <td>股票曾用名</td>
+            <td class="desc">历史名称变更记录</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="dividend 沪深股票 财务数据 分红送股数据 沪深股票 / 财务数据 / 分红送股数据 分红送股数据 无 ex_date:string, ts_code:string, ann_date:string, record_date:string, imp_ann_date:string, fields:array" data-category="沪深股票">
+            <td class="num">028</td>
+            <td><code>dividend</code></td>
+            <td>财务数据</td>
+            <td>分红送股数据</td>
+            <td class="desc">分红送股数据</td>
+            <td class="small">无</td>
+            <td class="params">ex_date:string, ts_code:string, ann_date:string, record_date:string, imp_ann_date:string, fields:array</td>
+          </tr>
+          <tr data-search="hs_const 沪深股票 基础数据 沪深股通成分股 沪深股票 / 基础数据 / 沪深股通成分股 获取沪股通、深股通成分数据 hs_type is_new:string, hs_type*:string, fields:array" data-category="沪深股票">
+            <td class="num">029</td>
+            <td><code>hs_const</code></td>
+            <td>基础数据</td>
+            <td>沪深股通成分股</td>
+            <td class="desc">获取沪股通、深股通成分数据</td>
+            <td class="small">hs_type</td>
+            <td class="params">is_new:string, hs_type*:string, fields:array</td>
+          </tr>
+          <tr data-search="top_list 沪深股票 打板专题数据 龙虎榜每日统计单 沪深股票 / 打板专题数据 / 龙虎榜每日统计单 龙虎榜每日交易明细 trade_date ts_code:string, trade_date*:string, fields:array" data-category="沪深股票">
+            <td class="num">030</td>
+            <td><code>top_list</code></td>
+            <td>打板专题数据</td>
+            <td>龙虎榜每日统计单</td>
+            <td class="desc">龙虎榜每日交易明细</td>
+            <td class="small">trade_date</td>
+            <td class="params">ts_code:string, trade_date*:string, fields:array</td>
+          </tr>
+          <tr data-search="top_inst 沪深股票 打板专题数据 龙虎榜机构交易单 沪深股票 / 打板专题数据 / 龙虎榜机构交易单 龙虎榜机构成交明细 trade_date ts_code:string, trade_date*:string, fields:array" data-category="沪深股票">
+            <td class="num">031</td>
+            <td><code>top_inst</code></td>
+            <td>打板专题数据</td>
+            <td>龙虎榜机构交易单</td>
+            <td class="desc">龙虎榜机构成交明细</td>
+            <td class="small">trade_date</td>
+            <td class="params">ts_code:string, trade_date*:string, fields:array</td>
+          </tr>
+          <tr data-search="pledge_stat 沪深股票 市场参考数据 股权质押统计数据 沪深股票 / 市场参考数据 / 股权质押统计数据 获取股票质押统计数据 无 ts_code:string, end_date:string, fields:array" data-category="沪深股票">
+            <td class="num">032</td>
+            <td><code>pledge_stat</code></td>
+            <td>市场参考数据</td>
+            <td>股权质押统计数据</td>
+            <td class="desc">获取股票质押统计数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, fields:array</td>
+          </tr>
+          <tr data-search="pledge_detail 沪深股票 市场参考数据 股权质押明细数据 沪深股票 / 市场参考数据 / 股权质押明细数据 获取股票质押明细数据 ts_code ts_code*:string, fields:array" data-category="沪深股票">
+            <td class="num">033</td>
+            <td><code>pledge_detail</code></td>
+            <td>市场参考数据</td>
+            <td>股权质押明细数据</td>
+            <td class="desc">获取股票质押明细数据</td>
+            <td class="small">ts_code</td>
+            <td class="params">ts_code*:string, fields:array</td>
+          </tr>
+          <tr data-search="stock_company 沪深股票 基础数据 上市公司基本信息 沪深股票 / 基础数据 / 上市公司基本信息 获取上市公司基础信息，单次提取4500条，可以根据交易所分批提取 无 ts_code:string, exchange:string, fields:array" data-category="沪深股票">
+            <td class="num">034</td>
+            <td><code>stock_company</code></td>
+            <td>基础数据</td>
+            <td>上市公司基本信息</td>
+            <td class="desc">获取上市公司基础信息，单次提取4500条，可以根据交易所分批提取</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, exchange:string, fields:array</td>
+          </tr>
+          <tr data-search="new_share 沪深股票 基础数据 ipo新股上市 沪深股票 / 基础数据 / ipo新股上市 获取新股上市列表数据 无 end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">044</td>
+            <td><code>new_share</code></td>
+            <td>基础数据</td>
+            <td>IPO新股上市</td>
+            <td class="desc">获取新股上市列表数据</td>
+            <td class="small">无</td>
+            <td class="params">end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="repurchase 沪深股票 市场参考数据 股票回购 沪深股票 / 市场参考数据 / 股票回购 获取上市公司回购股票数据 无 ann_date:string, end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">045</td>
+            <td><code>repurchase</code></td>
+            <td>市场参考数据</td>
+            <td>股票回购</td>
+            <td class="desc">获取上市公司回购股票数据</td>
+            <td class="small">无</td>
+            <td class="params">ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="concept 沪深股票 参考数据 概念股分类表 沪深股票 / 参考数据 / 概念股分类表 获取概念股分类，目前只有ts一个来源，未来将逐步增加来源 无 src:string, fields:array" data-category="沪深股票">
+            <td class="num">046</td>
+            <td><code>concept</code></td>
+            <td>参考数据</td>
+            <td>概念股分类表</td>
+            <td class="desc">获取概念股分类，目前只有ts一个来源，未来将逐步增加来源</td>
+            <td class="small">无</td>
+            <td class="params">src:string, fields:array</td>
+          </tr>
+          <tr data-search="concept_detail 沪深股票 参考数据 概念股明细列表 沪深股票 / 参考数据 / 概念股明细列表 获取概念股分类明细数据 无 id:string, ts_code:string, fields:array" data-category="沪深股票">
+            <td class="num">047</td>
+            <td><code>concept_detail</code></td>
+            <td>参考数据</td>
+            <td>概念股明细列表</td>
+            <td class="desc">获取概念股分类明细数据</td>
+            <td class="small">无</td>
+            <td class="params">id:string, ts_code:string, fields:array</td>
+          </tr>
+          <tr data-search="weekly 沪深股票 行情数据 周线行情 沪深股票 / 行情数据 / 周线行情 获取a股周线行情，本接口每周最后一个交易日更新，如需要使用每天更新的周线数据，请使用[日度更新的周线行情接口](https://tushare.pro/document/2?doc_id=336)。 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">056</td>
+            <td><code>weekly</code></td>
+            <td>行情数据</td>
+            <td>周线行情</td>
+            <td class="desc">获取A股周线行情，本接口每周最后一个交易日更新，如需要使用每天更新的周线数据，请使用[日度更新的周线行情接口](https://tushare.pro/document/2?doc_id=336)。</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="monthly 沪深股票 行情数据 月线行情 沪深股票 / 行情数据 / 月线行情 获取a股月线数据 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">057</td>
+            <td><code>monthly</code></td>
+            <td>行情数据</td>
+            <td>月线行情</td>
+            <td class="desc">获取A股月线数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="share_float 沪深股票 参考数据 限售股解禁 沪深股票 / 参考数据 / 限售股解禁 获取限售股解禁 无 ts_code:string, ann_date:string, end_date:string, float_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">067</td>
+            <td><code>share_float</code></td>
+            <td>参考数据</td>
+            <td>限售股解禁</td>
+            <td class="desc">获取限售股解禁</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, ann_date:string, end_date:string, float_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="block_trade 沪深股票 市场参考数据 大宗交易 沪深股票 / 市场参考数据 / 大宗交易 大宗交易 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">068</td>
+            <td><code>block_trade</code></td>
+            <td>市场参考数据</td>
+            <td>大宗交易</td>
+            <td class="desc">大宗交易</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="disclosure_date 沪深股票 财务数据 财报披露日期表 沪深股票 / 财务数据 / 财报披露日期表 获取财报披露计划日期 无 ts_code:string, ann_date:string, end_date:string, pre_date:string, actual_date:string, fields:array" data-category="沪深股票">
+            <td class="num">069</td>
+            <td><code>disclosure_date</code></td>
+            <td>财务数据</td>
+            <td>财报披露日期表</td>
+            <td class="desc">获取财报披露计划日期</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, ann_date:string, end_date:string, pre_date:string, actual_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_account 沪深股票 市场参考数据 股票开户数据（停） 沪深股票 / 市场参考数据 / 股票开户数据（停） 获取股票账户开户数据，统计周期为一周 无 date:string, end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">070</td>
+            <td><code>stk_account</code></td>
+            <td>市场参考数据</td>
+            <td>股票开户数据（停）</td>
+            <td class="desc">获取股票账户开户数据，统计周期为一周</td>
+            <td class="small">无</td>
+            <td class="params">date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_account_old 沪深股票 市场参考数据 股票开户数据（旧） 沪深股票 / 市场参考数据 / 股票开户数据（旧） 获取股票账户开户数据旧版格式数据，数据从2008年1月开始，到2015年5月29，新数据请通过[股票开户数据](https://tushare.pro/document/2?doc_id=164)获取。 无 end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">071</td>
+            <td><code>stk_account_old</code></td>
+            <td>市场参考数据</td>
+            <td>股票开户数据（旧）</td>
+            <td class="desc">获取股票账户开户数据旧版格式数据，数据从2008年1月开始，到2015年5月29，新数据请通过[股票开户数据](https://tushare.pro/document/2?doc_id=164)获取。</td>
+            <td class="small">无</td>
+            <td class="params">end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_holdernumber 沪深股票 参考数据 股东人数 沪深股票 / 参考数据 / 股东人数 获取上市公司股东户数数据，数据不定期公布 无 enddate:string, ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">072</td>
+            <td><code>stk_holdernumber</code></td>
+            <td>参考数据</td>
+            <td>股东人数</td>
+            <td class="desc">获取上市公司股东户数数据，数据不定期公布</td>
+            <td class="small">无</td>
+            <td class="params">enddate:string, ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="moneyflow 沪深股票 资金流向数据 个股资金流向 沪深股票 / 资金流向数据 / 个股资金流向 获取沪深a股票资金流向数据，分析大单小单成交情况，用于判别资金动向，数据开始于2010年。 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">073</td>
+            <td><code>moneyflow</code></td>
+            <td>资金流向数据</td>
+            <td>个股资金流向</td>
+            <td class="desc">获取沪深A股票资金流向数据，分析大单小单成交情况，用于判别资金动向，数据开始于2010年。</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_holdertrade 沪深股票 市场参考数据 股东增减持 沪深股票 / 市场参考数据 / 股东增减持 获取上市公司增减持数据，了解重要股东近期及历史上的股份增减变化 无 ts_code:string, ann_date:string, end_date:string, start_date:string, trade_type:string, holder_type:string, fields:array" data-category="沪深股票">
+            <td class="num">079</td>
+            <td><code>stk_holdertrade</code></td>
+            <td>市场参考数据</td>
+            <td>股东增减持</td>
+            <td class="desc">获取上市公司增减持数据，了解重要股东近期及历史上的股份增减变化</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, ann_date:string, end_date:string, start_date:string, trade_type:string, holder_type:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_limit 沪深股票 行情数据 每日涨跌停价格 沪深股票 / 行情数据 / 每日涨跌停价格 获取全市场（包含a/b股和基金）每日涨跌停价格，包括涨停价格，跌停价格等，每个交易日8点40左右更新当日股票涨跌停价格。 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">085</td>
+            <td><code>stk_limit</code></td>
+            <td>行情数据</td>
+            <td>每日涨跌停价格</td>
+            <td class="desc">获取全市场（包含A/B股和基金）每日涨跌停价格，包括涨停价格，跌停价格等，每个交易日8点40左右更新当日股票涨跌停价格。</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="hk_hold 沪深股票 特色数据 沪深股通持股明细 沪深股票 / 特色数据 / 沪深股通持股明细 获取沪深港股通持股明细，数据来源港交所。 无 code:string, ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">089</td>
+            <td><code>hk_hold</code></td>
+            <td>特色数据</td>
+            <td>沪深股通持股明细</td>
+            <td class="desc">获取沪深港股通持股明细，数据来源港交所。</td>
+            <td class="small">无</td>
+            <td class="params">code:string, ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_mins 沪深股票 行情数据 历史分钟 沪深股票 / 行情数据 / 历史分钟 获取a股分钟数据，支持1min/5min/15min/30min/60min行情，提供python sdk和 http restful api两种方式 freq, ts_code freq*:string, ts_code*:string, end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">091</td>
+            <td><code>stk_mins</code></td>
+            <td>行情数据</td>
+            <td>历史分钟</td>
+            <td class="desc">获取A股分钟数据，支持1min/5min/15min/30min/60min行情，提供Python SDK和 http Restful API两种方式</td>
+            <td class="small">freq, ts_code</td>
+            <td class="params">freq*:string, ts_code*:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_managers 沪深股票 基础数据 上市公司管理层 沪深股票 / 基础数据 / 上市公司管理层 获取上市公司管理层 无 ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array" data-category="沪深股票">
+            <td class="num">094</td>
+            <td><code>stk_managers</code></td>
+            <td>基础数据</td>
+            <td>上市公司管理层</td>
+            <td class="desc">获取上市公司管理层</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_rewards 沪深股票 基础数据 管理层薪酬和持股 沪深股票 / 基础数据 / 管理层薪酬和持股 获取上市公司管理层薪酬和持股 ts_code ts_code*:string, end_date:string, fields:array" data-category="沪深股票">
+            <td class="num">095</td>
+            <td><code>stk_rewards</code></td>
+            <td>基础数据</td>
+            <td>管理层薪酬和持股</td>
+            <td class="desc">获取上市公司管理层薪酬和持股</td>
+            <td class="small">ts_code</td>
+            <td class="params">ts_code*:string, end_date:string, fields:array</td>
+          </tr>
+          <tr data-search="ggt_daily 沪深股票 行情数据 港股通每日成交统计 沪深股票 / 行情数据 / 港股通每日成交统计 获取港股通每日成交信息，数据从2014年开始 无 end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">097</td>
+            <td><code>ggt_daily</code></td>
+            <td>行情数据</td>
+            <td>港股通每日成交统计</td>
+            <td class="desc">获取港股通每日成交信息，数据从2014年开始</td>
+            <td class="small">无</td>
+            <td class="params">end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="ggt_monthly 沪深股票 行情数据 港股通每月成交统计 沪深股票 / 行情数据 / 港股通每月成交统计 港股通每月成交信息，数据从2014年开始 无 month:string, end_month:string, start_month:string, fields:array" data-category="沪深股票">
+            <td class="num">098</td>
+            <td><code>ggt_monthly</code></td>
+            <td>行情数据</td>
+            <td>港股通每月成交统计</td>
+            <td class="desc">港股通每月成交信息，数据从2014年开始</td>
+            <td class="small">无</td>
+            <td class="params">month:string, end_month:string, start_month:string, fields:array</td>
+          </tr>
+          <tr data-search="limit_list 沪深股票 行情数据 每日涨跌停统计 沪深股票 / 行情数据 / 每日涨跌停统计 获取每日涨跌停股票统计，包括封闭时间和打开次数等数据，帮助用户快速定位近期强（弱）势股，以及研究超短线策略。 无 ts_code:string, end_date:string, limit_type:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">099</td>
+            <td><code>limit_list</code></td>
+            <td>行情数据</td>
+            <td>每日涨跌停统计</td>
+            <td class="desc">获取每日涨跌停股票统计，包括封闭时间和打开次数等数据，帮助用户快速定位近期强（弱）势股，以及研究超短线策略。</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, limit_type:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="suspend_d 沪深股票 行情数据 每日停复牌信息 沪深股票 / 行情数据 / 每日停复牌信息 按日期方式获取股票每日停复牌信息 无 ts_code:string, end_date:string, start_date:string, trade_date:string, suspend_type:string, fields:array" data-category="沪深股票">
+            <td class="num">108</td>
+            <td><code>suspend_d</code></td>
+            <td>行情数据</td>
+            <td>每日停复牌信息</td>
+            <td class="desc">按日期方式获取股票每日停复牌信息</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, suspend_type:string, fields:array</td>
+          </tr>
+          <tr data-search="bak_daily 沪深股票 行情数据 备用行情 沪深股票 / 行情数据 / 备用行情 获取备用行情，包括特定的行情指标(数据从2017年中左右开始，早期有几天数据缺失，近期正常) 无 limit:string, offset:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">128</td>
+            <td><code>bak_daily</code></td>
+            <td>行情数据</td>
+            <td>备用行情</td>
+            <td class="desc">获取备用行情，包括特定的行情指标(数据从2017年中左右开始，早期有几天数据缺失，近期正常)</td>
+            <td class="small">无</td>
+            <td class="params">limit:string, offset:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="bak_basic 沪深股票 基础数据 股票历史列表 沪深股票 / 基础数据 / 股票历史列表 获取备用基础列表，数据从2016年开始 无 ts_code:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">130</td>
+            <td><code>bak_basic</code></td>
+            <td>基础数据</td>
+            <td>股票历史列表</td>
+            <td class="desc">获取备用基础列表，数据从2016年开始</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="ths_index 沪深股票 打板专题数据 同花顺行业概念板块 沪深股票 / 打板专题数据 / 同花顺行业概念板块 获取同花顺板块指数，包括概念、行业、特色指数。 无 type:string, ts_code:string, exchange:string, fields:array" data-category="沪深股票">
+            <td class="num">131</td>
+            <td><code>ths_index</code></td>
+            <td>打板专题数据</td>
+            <td>同花顺行业概念板块</td>
+            <td class="desc">获取同花顺板块指数，包括概念、行业、特色指数。</td>
+            <td class="small">无</td>
+            <td class="params">type:string, ts_code:string, exchange:string, fields:array</td>
+          </tr>
+          <tr data-search="ths_daily 沪深股票 打板专题数据 同花顺概念和行业指数行情 沪深股票 / 打板专题数据 / 同花顺概念和行业指数行情 获取同花顺板块指数行情 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">132</td>
+            <td><code>ths_daily</code></td>
+            <td>打板专题数据</td>
+            <td>同花顺概念和行业指数行情</td>
+            <td class="desc">获取同花顺板块指数行情</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="ths_member 沪深股票 打板专题数据 同花顺行业概念成分 沪深股票 / 打板专题数据 / 同花顺行业概念成分 获取同花顺概念板块成分列表 无 ts_code:string, con_code:string, fields:array" data-category="沪深股票">
+            <td class="num">133</td>
+            <td><code>ths_member</code></td>
+            <td>打板专题数据</td>
+            <td>同花顺行业概念成分</td>
+            <td class="desc">获取同花顺概念板块成分列表</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, con_code:string, fields:array</td>
+          </tr>
+          <tr data-search="broker_recommend 沪深股票 特色数据 券商月度金股 沪深股票 / 特色数据 / 券商月度金股 获取券商月度金股，一般1日~3日内更新当月数据 month month*:string, fields:array" data-category="沪深股票">
+            <td class="num">135</td>
+            <td><code>broker_recommend</code></td>
+            <td>特色数据</td>
+            <td>券商月度金股</td>
+            <td class="desc">获取券商月度金股，一般1日~3日内更新当月数据</td>
+            <td class="small">month</td>
+            <td class="params">month*:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_surv 沪深股票 特色数据 机构调研数据 沪深股票 / 特色数据 / 机构调研数据 获取上市公司机构调研记录数据 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">141</td>
+            <td><code>stk_surv</code></td>
+            <td>特色数据</td>
+            <td>机构调研数据</td>
+            <td class="desc">获取上市公司机构调研记录数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="ccass_hold 沪深股票 特色数据 中央结算系统持股统计 沪深股票 / 特色数据 / 中央结算系统持股统计 获取中央结算系统持股汇总数据，覆盖全部历史数据，根据交易所披露时间，当日数据在下一交易日早上9点前完成入库 无 hk_code:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">142</td>
+            <td><code>ccass_hold</code></td>
+            <td>特色数据</td>
+            <td>中央结算系统持股统计</td>
+            <td class="desc">获取中央结算系统持股汇总数据，覆盖全部历史数据，根据交易所披露时间，当日数据在下一交易日早上9点前完成入库</td>
+            <td class="small">无</td>
+            <td class="params">hk_code:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="ccass_hold_detail 沪深股票 特色数据 中央结算系统持股明细 沪深股票 / 特色数据 / 中央结算系统持股明细 获取中央结算系统机构席位持股明细，数据覆盖**全历史**，根据交易所披露时间，当日数据在下一交易日早上9点前完成 无 hk_code:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">143</td>
+            <td><code>ccass_hold_detail</code></td>
+            <td>特色数据</td>
+            <td>中央结算系统持股明细</td>
+            <td class="desc">获取中央结算系统机构席位持股明细，数据覆盖**全历史**，根据交易所披露时间，当日数据在下一交易日早上9点前完成</td>
+            <td class="small">无</td>
+            <td class="params">hk_code:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="margin_target 沪深股票 参考数据 融资融券标的(下线) 沪深股票 / 参考数据 / 融资融券标的(下线) 获取全市场融资融券标的 无 is_new:string, mg_type:string, ts_code:string, fields:array" data-category="沪深股票">
+            <td class="num">146</td>
+            <td><code>margin_target</code></td>
+            <td>参考数据</td>
+            <td>融资融券标的(下线)</td>
+            <td class="desc">获取全市场融资融券标的</td>
+            <td class="small">无</td>
+            <td class="params">is_new:string, mg_type:string, ts_code:string, fields:array</td>
+          </tr>
+          <tr data-search="rt_min 沪深股票 行情数据 实时分钟 沪深股票 / 行情数据 / 实时分钟 获取全a股票实时分钟数据，包括1~60min freq, ts_code freq*:string, ts_code*:string, fields:array" data-category="沪深股票">
+            <td class="num">147</td>
+            <td><code>rt_min</code></td>
+            <td>行情数据</td>
+            <td>实时分钟</td>
+            <td class="desc">获取全A股票实时分钟数据，包括1~60min</td>
+            <td class="small">freq, ts_code</td>
+            <td class="params">freq*:string, ts_code*:string, fields:array</td>
+          </tr>
+          <tr data-search="report_rc 沪深股票 特色数据 券商盈利预测数据 沪深股票 / 特色数据 / 券商盈利预测数据 获取券商（卖方）每天研报的盈利预测数据，数据从2010年开始，每晚19~22点更新当日数据 无 ts_code:string, end_date:string, start_date:string, report_date:string, fields:array" data-category="沪深股票">
+            <td class="num">148</td>
+            <td><code>report_rc</code></td>
+            <td>特色数据</td>
+            <td>券商盈利预测数据</td>
+            <td class="desc">获取券商（卖方）每天研报的盈利预测数据，数据从2010年开始，每晚19~22点更新当日数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, report_date:string, fields:array</td>
+          </tr>
+          <tr data-search="cyq_perf 沪深股票 特色数据 每日筹码及胜率 沪深股票 / 特色数据 / 每日筹码及胜率 获取a股每日筹码平均成本和胜率情况，每天18~19点左右更新，数据从2018年开始 ts_code ts_code*:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">149</td>
+            <td><code>cyq_perf</code></td>
+            <td>特色数据</td>
+            <td>每日筹码及胜率</td>
+            <td class="desc">获取A股每日筹码平均成本和胜率情况，每天18~19点左右更新，数据从2018年开始</td>
+            <td class="small">ts_code</td>
+            <td class="params">ts_code*:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="cyq_chips 沪深股票 特色数据 每日筹码分布 沪深股票 / 特色数据 / 每日筹码分布 获取a股每日的筹码分布情况，提供各价位占比，数据从2018年开始，每天18~19点之间更新当日数据 ts_code ts_code*:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">150</td>
+            <td><code>cyq_chips</code></td>
+            <td>特色数据</td>
+            <td>每日筹码分布</td>
+            <td class="desc">获取A股每日的筹码分布情况，提供各价位占比，数据从2018年开始，每天18~19点之间更新当日数据</td>
+            <td class="small">ts_code</td>
+            <td class="params">ts_code*:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_factor 沪深股票 特色数据 股票技术面因子 沪深股票 / 特色数据 / 股票技术面因子 获取股票每日技术面因子数据，用于跟踪股票当前走势情况，数据由tushare社区自产，覆盖全历史 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">151</td>
+            <td><code>stk_factor</code></td>
+            <td>特色数据</td>
+            <td>股票技术面因子</td>
+            <td class="desc">获取股票每日技术面因子数据，用于跟踪股票当前走势情况，数据由Tushare社区自产，覆盖全历史</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="limit_list_d 沪深股票 打板专题数据 涨跌停和炸板数据 沪深股票 / 打板专题数据 / 涨跌停和炸板数据 获取a股每日涨跌停、炸板数据情况，数据从2020年开始（不提供st股票的统计） 无 ts_code:string, end_date:string, exchange:string, limit_type:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">152</td>
+            <td><code>limit_list_d</code></td>
+            <td>打板专题数据</td>
+            <td>涨跌停和炸板数据</td>
+            <td class="desc">获取A股每日涨跌停、炸板数据情况，数据从2020年开始（不提供ST股票的统计）</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, exchange:string, limit_type:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="rt_min_daily 沪深股票 行情数据 a股实时分钟 沪深股票 / 行情数据 / a股实时分钟 日累计-获取a股当日盘中历史分钟数据，可以提取单只股票当日开盘以来的所有分钟数据 freq, ts_code freq*:string, ts_code*:string, fields:array" data-category="沪深股票">
+            <td class="num">159</td>
+            <td><code>rt_min_daily</code></td>
+            <td>行情数据</td>
+            <td>A股实时分钟</td>
+            <td class="desc">日累计-获取A股当日盘中历史分钟数据，可以提取单只股票当日开盘以来的所有分钟数据</td>
+            <td class="small">freq, ts_code</td>
+            <td class="params">freq*:string, ts_code*:string, fields:array</td>
+          </tr>
+          <tr data-search="hm_list 沪深股票 打板专题数据 市场游资最全名录 沪深股票 / 打板专题数据 / 市场游资最全名录 获取游资分类名录信息 无 name:string, fields:array" data-category="沪深股票">
+            <td class="num">162</td>
+            <td><code>hm_list</code></td>
+            <td>打板专题数据</td>
+            <td>市场游资最全名录</td>
+            <td class="desc">获取游资分类名录信息</td>
+            <td class="small">无</td>
+            <td class="params">name:string, fields:array</td>
+          </tr>
+          <tr data-search="hm_detail 沪深股票 打板专题数据 游资交易每日明细 沪深股票 / 打板专题数据 / 游资交易每日明细 获取每日游资交易明细，数据开始于2022年8。游资分类名录，请点击游资名录 无 hm_name:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">163</td>
+            <td><code>hm_detail</code></td>
+            <td>打板专题数据</td>
+            <td>游资交易每日明细</td>
+            <td class="desc">获取每日游资交易明细，数据开始于2022年8。游资分类名录，请点击游资名录</td>
+            <td class="small">无</td>
+            <td class="params">hm_name:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="ths_hot 沪深股票 打板专题数据 同花顺app热榜数 沪深股票 / 打板专题数据 / 同花顺app热榜数 获取同花顺app热榜数据，包括热股、概念板块、etf、可转债、港美股等等，每日盘中提取4次，收盘后4次，最晚22点提取一次。 无 is_new:string, market:string, ts_code:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">165</td>
+            <td><code>ths_hot</code></td>
+            <td>打板专题数据</td>
+            <td>同花顺App热榜数</td>
+            <td class="desc">获取同花顺App热榜数据，包括热股、概念板块、ETF、可转债、港美股等等，每日盘中提取4次，收盘后4次，最晚22点提取一次。</td>
+            <td class="small">无</td>
+            <td class="params">is_new:string, market:string, ts_code:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="dc_hot 沪深股票 打板专题数据 东方财富app热榜 沪深股票 / 打板专题数据 / 东方财富app热榜 获取东方财富app热榜数据，包括a股市场、etf基金、港股市场、美股市场等等，每日盘中提取4次，收盘后4次，最晚22点提取一次。 无 is_new:string, market:string, ts_code:string, hot_type:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">166</td>
+            <td><code>dc_hot</code></td>
+            <td>打板专题数据</td>
+            <td>东方财富App热榜</td>
+            <td class="desc">获取东方财富App热榜数据，包括A股市场、ETF基金、港股市场、美股市场等等，每日盘中提取4次，收盘后4次，最晚22点提取一次。</td>
+            <td class="small">无</td>
+            <td class="params">is_new:string, market:string, ts_code:string, hot_type:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_premarket 沪深股票 基础数据 每日股本（盘前） 沪深股票 / 基础数据 / 每日股本（盘前） 每日开盘前获取当日股票的股本情况，包括总股本和流通股本，涨跌停价格等。 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">167</td>
+            <td><code>stk_premarket</code></td>
+            <td>基础数据</td>
+            <td>每日股本（盘前）</td>
+            <td class="desc">每日开盘前获取当日股票的股本情况，包括总股本和流通股本，涨跌停价格等。</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="margin_secs 沪深股票 两融及转融通 融资融券标的（盘前） 沪深股票 / 两融及转融通 / 融资融券标的（盘前） 获取沪深京三大交易所融资融券标的（包括etf），每天盘前更新 无 ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">171</td>
+            <td><code>margin_secs</code></td>
+            <td>两融及转融通</td>
+            <td>融资融券标的（盘前）</td>
+            <td class="desc">获取沪深京三大交易所融资融券标的（包括ETF），每天盘前更新</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_factor_pro 沪深股票 特色数据 股票技术面因子(专业版） 沪深股票 / 特色数据 / 股票技术面因子(专业版） 获取股票每日技术面因子数据，用于跟踪股票当前走势情况，数据由tushare社区自产，覆盖全历史；输出参数_bfq表示不复权，_qfq表示前复权 _hfq表示后复权，描述中说明了因子的默认传参，如需要特殊参数或者更多因子可以联系管理员评估 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">172</td>
+            <td><code>stk_factor_pro</code></td>
+            <td>特色数据</td>
+            <td>股票技术面因子(专业版）</td>
+            <td class="desc">获取股票每日技术面因子数据，用于跟踪股票当前走势情况，数据由Tushare社区自产，覆盖全历史；输出参数_bfq表示不复权，_qfq表示前复权 _hfq表示后复权，描述中说明了因子的默认传参，如需要特殊参数或者更多因子可以联系管理员评估</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="slb_len 沪深股票 两融及转融通 转融资交易汇总 沪深股票 / 两融及转融通 / 转融资交易汇总 转融通融资汇总 无 end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">173</td>
+            <td><code>slb_len</code></td>
+            <td>两融及转融通</td>
+            <td>转融资交易汇总</td>
+            <td class="desc">转融通融资汇总</td>
+            <td class="small">无</td>
+            <td class="params">end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="slb_sec 沪深股票 两融及转融通 转融券交易汇总(停） 沪深股票 / 两融及转融通 / 转融券交易汇总(停） 转融通转融券交易汇总 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">174</td>
+            <td><code>slb_sec</code></td>
+            <td>两融及转融通</td>
+            <td>转融券交易汇总(停）</td>
+            <td class="desc">转融通转融券交易汇总</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="slb_sec_detail 沪深股票 两融及转融通 转融券交易明细(停） 沪深股票 / 两融及转融通 / 转融券交易明细(停） 转融券交易明细 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">175</td>
+            <td><code>slb_sec_detail</code></td>
+            <td>两融及转融通</td>
+            <td>转融券交易明细(停）</td>
+            <td class="desc">转融券交易明细</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="slb_len_mm 沪深股票 两融及转融通 做市借券交易汇总(停） 沪深股票 / 两融及转融通 / 做市借券交易汇总(停） 做市借券交易汇总 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">176</td>
+            <td><code>slb_len_mm</code></td>
+            <td>两融及转融通</td>
+            <td>做市借券交易汇总(停）</td>
+            <td class="desc">做市借券交易汇总</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_weekly_monthly 沪深股票 行情数据 月线行情(每日更新) 沪深股票 / 行情数据 / 周 / 月线行情(每日更新) 股票周/月线行情(每日更新) freq freq*:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">178</td>
+            <td><code>stk_weekly_monthly</code></td>
+            <td>行情数据</td>
+            <td>月线行情(每日更新)</td>
+            <td class="desc">股票周/月线行情(每日更新)</td>
+            <td class="small">freq</td>
+            <td class="params">freq*:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="kpl_list 沪深股票 打板专题数据 榜单数据（开盘啦） 沪深股票 / 打板专题数据 / 榜单数据（开盘啦） 获取开盘啦涨停、跌停、炸板等榜单数据 无 tag:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">182</td>
+            <td><code>kpl_list</code></td>
+            <td>打板专题数据</td>
+            <td>榜单数据（开盘啦）</td>
+            <td class="desc">获取开盘啦涨停、跌停、炸板等榜单数据</td>
+            <td class="small">无</td>
+            <td class="params">tag:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="moneyflow_ind_ths 沪深股票 资金流向数据 行业资金流向（ths） 沪深股票 / 资金流向数据 / 行业资金流向（ths） 获取同花顺行业资金流向，每日盘后更新 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">183</td>
+            <td><code>moneyflow_ind_ths</code></td>
+            <td>资金流向数据</td>
+            <td>行业资金流向（THS）</td>
+            <td class="desc">获取同花顺行业资金流向，每日盘后更新</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="moneyflow_ind_dc 沪深股票 资金流向数据 板块资金流向（dc） 沪深股票 / 资金流向数据 / 板块资金流向（dc） 获取东方财富板块资金流向，每天盘后更新 无 ts_code:string, end_date:string, start_date:string, trade_date:string, content_type:string, fields:array" data-category="沪深股票">
+            <td class="num">184</td>
+            <td><code>moneyflow_ind_dc</code></td>
+            <td>资金流向数据</td>
+            <td>板块资金流向（DC）</td>
+            <td class="desc">获取东方财富板块资金流向，每天盘后更新</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, content_type:string, fields:array</td>
+          </tr>
+          <tr data-search="moneyflow_mkt_dc 沪深股票 资金流向数据 大盘资金流向（dc） 沪深股票 / 资金流向数据 / 大盘资金流向（dc） 获取东方财富大盘资金流向数据，每日盘后更新 无 end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">185</td>
+            <td><code>moneyflow_mkt_dc</code></td>
+            <td>资金流向数据</td>
+            <td>大盘资金流向（DC）</td>
+            <td class="desc">获取东方财富大盘资金流向数据，每日盘后更新</td>
+            <td class="small">无</td>
+            <td class="params">end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="moneyflow_ths 沪深股票 资金流向数据 个股资金流向（ths） 沪深股票 / 资金流向数据 / 个股资金流向（ths） 获取同花顺个股资金流向数据，每日盘后更新 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">186</td>
+            <td><code>moneyflow_ths</code></td>
+            <td>资金流向数据</td>
+            <td>个股资金流向（THS）</td>
+            <td class="desc">获取同花顺个股资金流向数据，每日盘后更新</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="moneyflow_dc 沪深股票 资金流向数据 个股资金流向（dc） 沪深股票 / 资金流向数据 / 个股资金流向（dc） 获取东方财富个股资金流向数据，每日盘后更新，数据开始于20230911 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">187</td>
+            <td><code>moneyflow_dc</code></td>
+            <td>资金流向数据</td>
+            <td>个股资金流向（DC）</td>
+            <td class="desc">获取东方财富个股资金流向数据，每日盘后更新，数据开始于20230911</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="kpl_concept 沪深股票 打板专题数据 题材数据（开盘啦） 沪深股票 / 打板专题数据 / 题材数据（开盘啦） 获取开盘啦概念题材列表，每天盘后更新 无 name:string, ts_code:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">188</td>
+            <td><code>kpl_concept</code></td>
+            <td>打板专题数据</td>
+            <td>题材数据（开盘啦）</td>
+            <td class="desc">获取开盘啦概念题材列表，每天盘后更新</td>
+            <td class="small">无</td>
+            <td class="params">name:string, ts_code:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="kpl_concept_cons 沪深股票 打板专题数据 题材成分（开盘啦） 沪深股票 / 打板专题数据 / 题材成分（开盘啦） 获取开盘啦概念题材的成分股 无 ts_code:string, con_code:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">189</td>
+            <td><code>kpl_concept_cons</code></td>
+            <td>打板专题数据</td>
+            <td>题材成分（开盘啦）</td>
+            <td class="desc">获取开盘啦概念题材的成分股</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, con_code:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_auction_o 沪深股票 特色数据 股票开盘集合竞价数据 沪深股票 / 特色数据 / 股票开盘集合竞价数据 股票开盘9:30集合竞价数据，每天盘后更新 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">191</td>
+            <td><code>stk_auction_o</code></td>
+            <td>特色数据</td>
+            <td>股票开盘集合竞价数据</td>
+            <td class="desc">股票开盘9:30集合竞价数据，每天盘后更新</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_auction_c 沪深股票 特色数据 股票收盘集合竞价数据 沪深股票 / 特色数据 / 股票收盘集合竞价数据 股票收盘15:00集合竞价数据，每天盘后更新 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">192</td>
+            <td><code>stk_auction_c</code></td>
+            <td>特色数据</td>
+            <td>股票收盘集合竞价数据</td>
+            <td class="desc">股票收盘15:00集合竞价数据，每天盘后更新</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="limit_list_ths 沪深股票 打板专题数据 同花顺涨跌停榜单 沪深股票 / 打板专题数据 / 同花顺涨跌停榜单 获取同花顺每日涨跌停榜单数据，历史数据从20231101开始提供，增量每天16点左右更新 无 market:string, ts_code:string, end_date:string, limit_type:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">193</td>
+            <td><code>limit_list_ths</code></td>
+            <td>打板专题数据</td>
+            <td>同花顺涨跌停榜单</td>
+            <td class="desc">获取同花顺每日涨跌停榜单数据，历史数据从20231101开始提供，增量每天16点左右更新</td>
+            <td class="small">无</td>
+            <td class="params">market:string, ts_code:string, end_date:string, limit_type:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="limit_step 沪深股票 打板专题数据 涨停股票连板天梯 沪深股票 / 打板专题数据 / 涨停股票连板天梯 获取每天连板个数晋级的股票，可以分析出每天连续涨停进阶个数，判断强势热度 无 nums:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">194</td>
+            <td><code>limit_step</code></td>
+            <td>打板专题数据</td>
+            <td>涨停股票连板天梯</td>
+            <td class="desc">获取每天连板个数晋级的股票，可以分析出每天连续涨停进阶个数，判断强势热度</td>
+            <td class="small">无</td>
+            <td class="params">nums:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="limit_cpt_list 沪深股票 打板专题数据 涨停最强板块统计 沪深股票 / 打板专题数据 / 涨停最强板块统计 获取每天涨停股票最多最强的概念板块，可以分析强势板块的轮动，判断资金动向 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">195</td>
+            <td><code>limit_cpt_list</code></td>
+            <td>打板专题数据</td>
+            <td>涨停最强板块统计</td>
+            <td class="desc">获取每天涨停股票最多最强的概念板块，可以分析强势板块的轮动，判断资金动向</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="dc_index 沪深股票 打板专题数据 东方财富概念板块 沪深股票 / 打板专题数据 / 东方财富概念板块 获取东方财富每个交易日的概念板块数据，支持按日期查询 idx_type name:string, ts_code:string, end_date:string, idx_type*:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">198</td>
+            <td><code>dc_index</code></td>
+            <td>打板专题数据</td>
+            <td>东方财富概念板块</td>
+            <td class="desc">获取东方财富每个交易日的概念板块数据，支持按日期查询</td>
+            <td class="small">idx_type</td>
+            <td class="params">name:string, ts_code:string, end_date:string, idx_type*:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="dc_member 沪深股票 打板专题数据 东方财富概念成分 沪深股票 / 打板专题数据 / 东方财富概念成分 获取东方财富板块每日成分数据，可以根据概念板块代码和交易日期，获取历史成分 无 ts_code:string, con_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">199</td>
+            <td><code>dc_member</code></td>
+            <td>打板专题数据</td>
+            <td>东方财富概念成分</td>
+            <td class="desc">获取东方财富板块每日成分数据，可以根据概念板块代码和交易日期，获取历史成分</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, con_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_nineturn 沪深股票 特色数据 神奇九转指标 沪深股票 / 特色数据 / 神奇九转指标 神奇九转（又称“九转序列”）是一种基于技术分析的股票趋势反转指标，其思想来源于技术分析大师汤姆·迪马克（tom demark）的td序列。该指标的核心功能是通过识别股价在上涨或下跌过程中连续9天的特定走势，来判断股价的潜在反转点，从而帮助投资者提高抄底和逃顶的成功率，日线级别配合60min的九转效果更好，数据从20230101开始。 无 freq:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">200</td>
+            <td><code>stk_nineturn</code></td>
+            <td>特色数据</td>
+            <td>神奇九转指标</td>
+            <td class="desc">神奇九转（又称“九转序列”）是一种基于技术分析的股票趋势反转指标，其思想来源于技术分析大师汤姆·迪马克（Tom DeMark）的TD序列。该指标的核心功能是通过识别股价在上涨或下跌过程中连续9天的特定走势，来判断股价的潜在反转点，从而帮助投资者提高抄底和逃顶的成功率，日线级别配合60min的九转效果更好，数据从20230101开始。</td>
+            <td class="small">无</td>
+            <td class="params">freq:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_week_month_adj 沪深股票 行情数据 月线复权行情(每日更新) 沪深股票 / 行情数据 / 周 / 月线复权行情(每日更新) 股票周/月线行情(复权--每日更新) freq freq*:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">201</td>
+            <td><code>stk_week_month_adj</code></td>
+            <td>行情数据</td>
+            <td>月线复权行情(每日更新)</td>
+            <td class="desc">股票周/月线行情(复权--每日更新)</td>
+            <td class="small">freq</td>
+            <td class="params">freq*:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_auction 沪深股票 打板专题数据 开盘竞价成交（当日） 沪深股票 / 打板专题数据 / 开盘竞价成交（当日） 获取当日个股和etf的集合竞价成交情况，每天9点25~29分之间可以获取当日的集合竞价成交数据 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">202</td>
+            <td><code>stk_auction</code></td>
+            <td>打板专题数据</td>
+            <td>开盘竞价成交（当日）</td>
+            <td class="desc">获取当日个股和ETF的集合竞价成交情况，每天9点25~29分之间可以获取当日的集合竞价成交数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="moneyflow_cnt_ths 沪深股票 资金流向数据 板块资金流向（ths) 沪深股票 / 资金流向数据 / 板块资金流向（ths) 获取同花顺概念板块每日资金流向 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">206</td>
+            <td><code>moneyflow_cnt_ths</code></td>
+            <td>资金流向数据</td>
+            <td>板块资金流向（THS)</td>
+            <td class="desc">获取同花顺概念板块每日资金流向</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="rt_k 沪深股票 行情数据 实时日线 沪深股票 / 行情数据 / 实时日线 获取实时日k线行情，支持按股票代码及股票代码通配符一次性提取全部股票实时日k线行情 ts_code ts_code*:string, fields:array" data-category="沪深股票">
+            <td class="num">207</td>
+            <td><code>rt_k</code></td>
+            <td>行情数据</td>
+            <td>实时日线</td>
+            <td class="desc">获取实时日k线行情，支持按股票代码及股票代码通配符一次性提取全部股票实时日k线行情</td>
+            <td class="small">ts_code</td>
+            <td class="params">ts_code*:string, fields:array</td>
+          </tr>
+          <tr data-search="bse_mapping 沪深股票 基础数据 北交所新旧代码对照 沪深股票 / 基础数据 / 北交所新旧代码对照 获取北交所股票代码变更后新旧代码映射表数据 无 n_code:string, o_code:string, fields:array" data-category="沪深股票">
+            <td class="num">210</td>
+            <td><code>bse_mapping</code></td>
+            <td>基础数据</td>
+            <td>北交所新旧代码对照</td>
+            <td class="desc">获取北交所股票代码变更后新旧代码映射表数据</td>
+            <td class="small">无</td>
+            <td class="params">n_code:string, o_code:string, fields:array</td>
+          </tr>
+          <tr data-search="tdx_index 沪深股票 打板专题数据 通达信板块信息 沪深股票 / 打板专题数据 / 通达信板块信息 获取通达信板块基础信息，包括概念板块、行业、风格、地域等 无 ts_code:string, idx_type:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">213</td>
+            <td><code>tdx_index</code></td>
+            <td>打板专题数据</td>
+            <td>通达信板块信息</td>
+            <td class="desc">获取通达信板块基础信息，包括概念板块、行业、风格、地域等</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, idx_type:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="tdx_member 沪深股票 打板专题数据 通达信板块成分 沪深股票 / 打板专题数据 / 通达信板块成分 获取通达信各板块成分股信息 无 ts_code:string, con_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">214</td>
+            <td><code>tdx_member</code></td>
+            <td>打板专题数据</td>
+            <td>通达信板块成分</td>
+            <td class="desc">获取通达信各板块成分股信息</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, con_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="tdx_daily 沪深股票 打板专题数据 通达信板块行情 沪深股票 / 打板专题数据 / 通达信板块行情 获取通达信各板块行情，包括成交和估值等数据 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">215</td>
+            <td><code>tdx_daily</code></td>
+            <td>打板专题数据</td>
+            <td>通达信板块行情</td>
+            <td class="desc">获取通达信各板块行情，包括成交和估值等数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="dc_daily 沪深股票 打板专题数据 东财概念和行业指数行情 沪深股票 / 打板专题数据 / 东财概念和行业指数行情 获取东财概念板块、行业指数板块、地域板块行情数据，历史数据开始于2020年 无 ts_code:string, end_date:string, idx_type:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">216</td>
+            <td><code>dc_daily</code></td>
+            <td>打板专题数据</td>
+            <td>东财概念和行业指数行情</td>
+            <td class="desc">获取东财概念板块、行业指数板块、地域板块行情数据，历史数据开始于2020年</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, idx_type:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stock_st 沪深股票 基础数据 st股票列表 沪深股票 / 基础数据 / st股票列表 获取st股票列表，可根据交易日期获取历史上每天的st列表 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">226</td>
+            <td><code>stock_st</code></td>
+            <td>基础数据</td>
+            <td>ST股票列表</td>
+            <td class="desc">获取ST股票列表，可根据交易日期获取历史上每天的ST列表</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stock_hsgt 沪深股票 基础数据 沪深港通股票列表 沪深股票 / 基础数据 / 沪深港通股票列表 获取沪深港通股票列表 type type*:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">227</td>
+            <td><code>stock_hsgt</code></td>
+            <td>基础数据</td>
+            <td>沪深港通股票列表</td>
+            <td class="desc">获取沪深港通股票列表</td>
+            <td class="small">type</td>
+            <td class="params">type*:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_ah_comparison 沪深股票 特色数据 ah股比价 沪深股票 / 特色数据 / ah股比价 ah股比价数据，可根据交易日期获取历史 无 hk_code:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">228</td>
+            <td><code>stk_ah_comparison</code></td>
+            <td>特色数据</td>
+            <td>AH股比价</td>
+            <td class="desc">AH股比价数据，可根据交易日期获取历史</td>
+            <td class="small">无</td>
+            <td class="params">hk_code:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="dc_concept 沪深股票 打板专题数据 东财题材库 沪深股票 / 打板专题数据 / 东财题材库 获取东财概念题材列表，每天盘后更新 无 name:string, theme_code:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">238</td>
+            <td><code>dc_concept</code></td>
+            <td>打板专题数据</td>
+            <td>东财题材库</td>
+            <td class="desc">获取东财概念题材列表，每天盘后更新</td>
+            <td class="small">无</td>
+            <td class="params">name:string, theme_code:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="dc_concept_cons 沪深股票 打板专题数据 东财题材成分 沪深股票 / 打板专题数据 / 东财题材成分 获取东方财富概念题材的成分股，每天盘后更新 无 ts_code:string, theme_code:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">239</td>
+            <td><code>dc_concept_cons</code></td>
+            <td>打板专题数据</td>
+            <td>东财题材成分</td>
+            <td class="desc">获取东方财富概念题材的成分股，每天盘后更新</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, theme_code:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="st 沪深股票 基础数据 st风险警示板股票列表 沪深股票 / 基础数据 / st风险警示板股票列表 st风险警示板股票列表 无 ts_code:string, imp_date:string, pub_date:string, fields:array" data-category="沪深股票">
+            <td class="num">240</td>
+            <td><code>st</code></td>
+            <td>基础数据</td>
+            <td>ST风险警示板股票列表</td>
+            <td class="desc">ST风险警示板股票列表</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, imp_date:string, pub_date:string, fields:array</td>
+          </tr>
+          <tr data-search="cls_market_shock 沪深股票 打板专题数据 财联社 沪深股票 / 打板专题数据 / 财联社 板块异动-财联社-板块异动 无 ts_code:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">241</td>
+            <td><code>cls_market_shock</code></td>
+            <td>打板专题数据</td>
+            <td>财联社</td>
+            <td class="desc">板块异动-财联社-板块异动</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="cls_stock_shock 沪深股票 打板专题数据 财联社 沪深股票 / 打板专题数据 / 财联社 个股异动-获取财联社市场风向标-涨停-连板-炸板-跌停池数据 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">242</td>
+            <td><code>cls_stock_shock</code></td>
+            <td>打板专题数据</td>
+            <td>财联社</td>
+            <td class="desc">个股异动-获取财联社市场风向标-涨停-连板-炸板-跌停池数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="cls_index 沪深股票 打板专题数据 财联社 沪深股票 / 打板专题数据 / 财联社 板块-获取财联社每个交易日的概念板块数据，支持按日期查询 无 name:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">243</td>
+            <td><code>cls_index</code></td>
+            <td>打板专题数据</td>
+            <td>财联社</td>
+            <td class="desc">板块-获取财联社每个交易日的概念板块数据，支持按日期查询</td>
+            <td class="small">无</td>
+            <td class="params">name:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="cls_member 沪深股票 打板专题数据 财联社 沪深股票 / 打板专题数据 / 财联社 板块成分-获取财联社板块每日成分数据，可以根据概念板块代码和交易日期，获取历史成分 无 ts_code:string, plate_code:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">244</td>
+            <td><code>cls_member</code></td>
+            <td>打板专题数据</td>
+            <td>财联社</td>
+            <td class="desc">板块成分-获取财联社板块每日成分数据，可以根据概念板块代码和交易日期，获取历史成分</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, plate_code:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="jygs_stock_shock 沪深股票 打板专题数据 韭研公社板块个股异动 沪深股票 / 打板专题数据 / 韭研公社板块个股异动 获取韭研公社个股异动数据 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">245</td>
+            <td><code>jygs_stock_shock</code></td>
+            <td>打板专题数据</td>
+            <td>韭研公社板块个股异动</td>
+            <td class="desc">获取韭研公社个股异动数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_shock 沪深股票 参考数据 个股异常波动 沪深股票 / 参考数据 / 个股异常波动 根据证券交易所交易规则的有关规定，交易所每日发布股票交易异常波动情况 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">250</td>
+            <td><code>stk_shock</code></td>
+            <td>参考数据</td>
+            <td>个股异常波动</td>
+            <td class="desc">根据证券交易所交易规则的有关规定，交易所每日发布股票交易异常波动情况</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_high_shock 沪深股票 参考数据 个股严重异常波动 沪深股票 / 参考数据 / 个股严重异常波动 根据证券交易所交易规则的有关规定，交易所每日发布股票交易严重异常波动情况 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">251</td>
+            <td><code>stk_high_shock</code></td>
+            <td>参考数据</td>
+            <td>个股严重异常波动</td>
+            <td class="desc">根据证券交易所交易规则的有关规定，交易所每日发布股票交易严重异常波动情况</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stk_alert 沪深股票 参考数据 交易所重点提示证券 沪深股票 / 参考数据 / 交易所重点提示证券 根据证券交易所交易规则的有关规定，交易所每日发布重点提示证券 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="沪深股票">
+            <td class="num">253</td>
+            <td><code>stk_alert</code></td>
+            <td>参考数据</td>
+            <td>交易所重点提示证券</td>
+            <td class="desc">根据证券交易所交易规则的有关规定，交易所每日发布重点提示证券</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-2">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 02</p>
+            <h2>宏观经济</h2>
+          </div>
+          <span class="count">19 tools</span>
+        </div>
+        <p class="basis">二级分布：国内宏观 14, 国际宏观 5</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="shibor 宏观经济 国内宏观 shibor利率 宏观经济 / 国内宏观 / 利率数据 / shibor利率 shibor利率 无 date:string, end_date:string, start_date:string, fields:array" data-category="宏观经济">
+            <td class="num">058</td>
+            <td><code>shibor</code></td>
+            <td>国内宏观</td>
+            <td>Shibor利率</td>
+            <td class="desc">shibor利率</td>
+            <td class="small">无</td>
+            <td class="params">date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="shibor_quote 宏观经济 国内宏观 shibor报价数据 宏观经济 / 国内宏观 / 利率数据 / shibor报价数据 shibor报价数据 无 bank:string, date:string, end_date:string, start_date:string, fields:array" data-category="宏观经济">
+            <td class="num">059</td>
+            <td><code>shibor_quote</code></td>
+            <td>国内宏观</td>
+            <td>Shibor报价数据</td>
+            <td class="desc">Shibor报价数据</td>
+            <td class="small">无</td>
+            <td class="params">bank:string, date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="shibor_lpr 宏观经济 国内宏观 lpr贷款基础利率 宏观经济 / 国内宏观 / 利率数据 / lpr贷款基础利率 lpr贷款基础利率 无 date:string, end_date:string, start_date:string, fields:array" data-category="宏观经济">
+            <td class="num">060</td>
+            <td><code>shibor_lpr</code></td>
+            <td>国内宏观</td>
+            <td>LPR贷款基础利率</td>
+            <td class="desc">LPR贷款基础利率</td>
+            <td class="small">无</td>
+            <td class="params">date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="libor 宏观经济 国内宏观 libor利率 宏观经济 / 国内宏观 / 利率数据 / libor利率 libor拆借利率 无 date:string, end_date:string, curr_type:string, start_date:string, fields:array" data-category="宏观经济">
+            <td class="num">061</td>
+            <td><code>libor</code></td>
+            <td>国内宏观</td>
+            <td>Libor利率</td>
+            <td class="desc">Libor拆借利率</td>
+            <td class="small">无</td>
+            <td class="params">date:string, end_date:string, curr_type:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="hibor 宏观经济 国内宏观 hibor利率 宏观经济 / 国内宏观 / 利率数据 / hibor利率 hibor利率 无 date:string, end_date:string, start_date:string, fields:array" data-category="宏观经济">
+            <td class="num">062</td>
+            <td><code>hibor</code></td>
+            <td>国内宏观</td>
+            <td>Hibor利率</td>
+            <td class="desc">Hibor利率</td>
+            <td class="small">无</td>
+            <td class="params">date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="wz_index 宏观经济 国内宏观 温州民间借贷利率 宏观经济 / 国内宏观 / 利率数据 / 温州民间借贷利率 温州民间借贷利率，即温州指数 无 date:string, end_date:string, start_date:string, fields:array" data-category="宏观经济">
+            <td class="num">076</td>
+            <td><code>wz_index</code></td>
+            <td>国内宏观</td>
+            <td>温州民间借贷利率</td>
+            <td class="desc">温州民间借贷利率，即温州指数</td>
+            <td class="small">无</td>
+            <td class="params">date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="gz_index 宏观经济 国内宏观 广州民间借贷利率 宏观经济 / 国内宏观 / 利率数据 / 广州民间借贷利率 广州民间借贷利率 无 date:string, end_date:string, start_date:string, fields:array" data-category="宏观经济">
+            <td class="num">077</td>
+            <td><code>gz_index</code></td>
+            <td>国内宏观</td>
+            <td>广州民间借贷利率</td>
+            <td class="desc">广州民间借贷利率</td>
+            <td class="small">无</td>
+            <td class="params">date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="us_tycr 宏观经济 国际宏观 国债收益率曲线利率 宏观经济 / 国际宏观 / 美国利率 / 国债收益率曲线利率 获取美国每日国债收益率曲线利率 无 date:string, fields:array, end_date:string, start_date:string" data-category="宏观经济">
+            <td class="num">111</td>
+            <td><code>us_tycr</code></td>
+            <td>国际宏观</td>
+            <td>国债收益率曲线利率</td>
+            <td class="desc">获取美国每日国债收益率曲线利率</td>
+            <td class="small">无</td>
+            <td class="params">date:string, fields:array, end_date:string, start_date:string</td>
+          </tr>
+          <tr data-search="us_trycr 宏观经济 国际宏观 国债实际收益率曲线利率 宏观经济 / 国际宏观 / 美国利率 / 国债实际收益率曲线利率 国债实际收益率曲线利率 无 date:string, fields:array, end_date:string, start_date:string" data-category="宏观经济">
+            <td class="num">112</td>
+            <td><code>us_trycr</code></td>
+            <td>国际宏观</td>
+            <td>国债实际收益率曲线利率</td>
+            <td class="desc">国债实际收益率曲线利率</td>
+            <td class="small">无</td>
+            <td class="params">date:string, fields:array, end_date:string, start_date:string</td>
+          </tr>
+          <tr data-search="us_tbr 宏观经济 国际宏观 短期国债利率 宏观经济 / 国际宏观 / 美国利率 / 短期国债利率 获取美国短期国债利率数据 无 date:string, fields:array, end_date:string, start_date:string" data-category="宏观经济">
+            <td class="num">113</td>
+            <td><code>us_tbr</code></td>
+            <td>国际宏观</td>
+            <td>短期国债利率</td>
+            <td class="desc">获取美国短期国债利率数据</td>
+            <td class="small">无</td>
+            <td class="params">date:string, fields:array, end_date:string, start_date:string</td>
+          </tr>
+          <tr data-search="us_tltr 宏观经济 国际宏观 国债长期利率 宏观经济 / 国际宏观 / 美国利率 / 国债长期利率 国债长期利率 无 date:string, fields:array, end_date:string, start_date:string" data-category="宏观经济">
+            <td class="num">114</td>
+            <td><code>us_tltr</code></td>
+            <td>国际宏观</td>
+            <td>国债长期利率</td>
+            <td class="desc">国债长期利率</td>
+            <td class="small">无</td>
+            <td class="params">date:string, fields:array, end_date:string, start_date:string</td>
+          </tr>
+          <tr data-search="us_trltr 宏观经济 国际宏观 国债长期利率平均值 宏观经济 / 国际宏观 / 美国利率 / 国债长期利率平均值 国债实际长期利率平均值 无 date:string, fields:array, end_date:string, start_date:string" data-category="宏观经济">
+            <td class="num">115</td>
+            <td><code>us_trltr</code></td>
+            <td>国际宏观</td>
+            <td>国债长期利率平均值</td>
+            <td class="desc">国债实际长期利率平均值</td>
+            <td class="small">无</td>
+            <td class="params">date:string, fields:array, end_date:string, start_date:string</td>
+          </tr>
+          <tr data-search="cn_gdp 宏观经济 国内宏观 国内生产总值（gdp） 宏观经济 / 国内宏观 / 国民经济 / 国内生产总值（gdp） 获取国民经济之gdp数据 无 q:string, end_q:string, fields:array, start_q:string" data-category="宏观经济">
+            <td class="num">116</td>
+            <td><code>cn_gdp</code></td>
+            <td>国内宏观</td>
+            <td>国内生产总值（GDP）</td>
+            <td class="desc">获取国民经济之GDP数据</td>
+            <td class="small">无</td>
+            <td class="params">q:string, end_q:string, fields:array, start_q:string</td>
+          </tr>
+          <tr data-search="cn_cpi 宏观经济 国内宏观 居民消费价格指数（cpi） 宏观经济 / 国内宏观 / 价格指数 / 居民消费价格指数（cpi） 获取cpi居民消费价格数据，包括全国、城市和农村的数据 无 m:string, end_m:string, start_m:string, fields:array" data-category="宏观经济">
+            <td class="num">117</td>
+            <td><code>cn_cpi</code></td>
+            <td>国内宏观</td>
+            <td>居民消费价格指数（CPI）</td>
+            <td class="desc">获取CPI居民消费价格数据，包括全国、城市和农村的数据</td>
+            <td class="small">无</td>
+            <td class="params">m:string, end_m:string, start_m:string, fields:array</td>
+          </tr>
+          <tr data-search="cn_m 宏观经济 国内宏观 货币供应量（月） 宏观经济 / 国内宏观 / 金融 / 货币供应量 / 货币供应量（月） 获取货币供应量之月度数据 无 m:string, end_m:string, fields:array, start_m:string" data-category="宏观经济">
+            <td class="num">120</td>
+            <td><code>cn_m</code></td>
+            <td>国内宏观</td>
+            <td>货币供应量（月）</td>
+            <td class="desc">获取货币供应量之月度数据</td>
+            <td class="small">无</td>
+            <td class="params">m:string, end_m:string, fields:array, start_m:string</td>
+          </tr>
+          <tr data-search="cn_ppi 宏观经济 国内宏观 工业生产者出厂价格指数（ppi） 宏观经济 / 国内宏观 / 价格指数 / 工业生产者出厂价格指数（ppi） 获取ppi工业生产者出厂价格指数数据 无 m:string, end_m:string, start_m:string, fields:array" data-category="宏观经济">
+            <td class="num">121</td>
+            <td><code>cn_ppi</code></td>
+            <td>国内宏观</td>
+            <td>工业生产者出厂价格指数（PPI）</td>
+            <td class="desc">获取PPI工业生产者出厂价格指数数据</td>
+            <td class="small">无</td>
+            <td class="params">m:string, end_m:string, start_m:string, fields:array</td>
+          </tr>
+          <tr data-search="sf_month 宏观经济 国内宏观 社融增量（月度） 宏观经济 / 国内宏观 / 金融 / 社会融资 / 社融增量（月度） 获取月度社会融资数据 无 m:string, end_m:string, start_m:string, fields:array" data-category="宏观经济">
+            <td class="num">161</td>
+            <td><code>sf_month</code></td>
+            <td>国内宏观</td>
+            <td>社融增量（月度）</td>
+            <td class="desc">获取月度社会融资数据</td>
+            <td class="small">无</td>
+            <td class="params">m:string, end_m:string, start_m:string, fields:array</td>
+          </tr>
+          <tr data-search="cn_pmi 宏观经济 国内宏观 采购经理指数（pmi） 宏观经济 / 国内宏观 / 景气度 / 采购经理指数（pmi） 采购经理人指数 无 m:string, end_m:string, start_m:string, fields:array" data-category="宏观经济">
+            <td class="num">170</td>
+            <td><code>cn_pmi</code></td>
+            <td>国内宏观</td>
+            <td>采购经理指数（PMI）</td>
+            <td class="desc">采购经理人指数</td>
+            <td class="small">无</td>
+            <td class="params">m:string, end_m:string, start_m:string, fields:array</td>
+          </tr>
+          <tr data-search="cn_schedule 宏观经济 国内宏观 中国经济数据发布日程 宏观经济 / 国内宏观 / 中国经济数据发布日程 获取国家统计局、中国人民银行等经济数据发布日程及对应tushare接口，持续更新中 无 m:string, title:string, fields:array" data-category="宏观经济">
+            <td class="num">257</td>
+            <td><code>cn_schedule</code></td>
+            <td>国内宏观</td>
+            <td>中国经济数据发布日程</td>
+            <td class="desc">获取国家统计局、中国人民银行等经济数据发布日程及对应tushare接口，持续更新中</td>
+            <td class="small">无</td>
+            <td class="params">m:string, title:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-3">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 03</p>
+            <h2>指数专题</h2>
+          </div>
+          <span class="count">13 tools</span>
+        </div>
+        <p class="basis">二级分布：指数日线行情 1, 指数成分和权重 1, 指数周线行情 1, 申万行业指数日行情 1, 申万行业成分（分级） 1, 国际主要指数 1, 沪深市场每日交易统计 1, 深圳市场每日交易情况 1, 指数实时分钟 1, 中信行业成分 1, 实时日线 1, 申万实时行情 1, 指数历史分钟 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="index_daily 指数专题 指数日线行情 指数日线行情 指数专题 / 指数日线行情 获取指数每日行情，还可以通过bar接口获取。由于服务器压力，目前规则是单次调取最多取8000行记录，可以设置start和end日期补全。指数行情也可以通过[**通用行情接口**]( https://tushare.pro/document/2?doc_id=109)获取数据． ts_code ts_code*:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="指数专题">
+            <td class="num">025</td>
+            <td><code>index_daily</code></td>
+            <td>指数日线行情</td>
+            <td>指数日线行情</td>
+            <td class="desc">获取指数每日行情，还可以通过bar接口获取。由于服务器压力，目前规则是单次调取最多取8000行记录，可以设置start和end日期补全。指数行情也可以通过[**通用行情接口**]( https://tushare.pro/document/2?doc_id=109)获取数据．</td>
+            <td class="small">ts_code</td>
+            <td class="params">ts_code*:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="index_weight 指数专题 指数成分和权重 指数成分和权重 指数专题 / 指数成分和权重 获取各类指数成分和权重，**月度数据** ，建议输入参数里开始日期和结束日分别输入当月第一天和最后一天的日期。 index_code end_date:string, index_code*:string, start_date:string, trade_date:string, fields:array" data-category="指数专题">
+            <td class="num">026</td>
+            <td><code>index_weight</code></td>
+            <td>指数成分和权重</td>
+            <td>指数成分和权重</td>
+            <td class="desc">获取各类指数成分和权重，**月度数据** ，建议输入参数里开始日期和结束日分别输入当月第一天和最后一天的日期。</td>
+            <td class="small">index_code</td>
+            <td class="params">end_date:string, index_code*:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="index_weekly 指数专题 指数周线行情 指数周线行情 指数专题 / 指数周线行情 获取指数周线行情 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="指数专题">
+            <td class="num">074</td>
+            <td><code>index_weekly</code></td>
+            <td>指数周线行情</td>
+            <td>指数周线行情</td>
+            <td class="desc">获取指数周线行情</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="sw_daily 指数专题 申万行业指数日行情 申万行业指数日行情 指数专题 / 申万行业指数日行情 获取申万行业日线行情（默认是申万2021版行情） 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="指数专题">
+            <td class="num">078</td>
+            <td><code>sw_daily</code></td>
+            <td>申万行业指数日行情</td>
+            <td>申万行业指数日行情</td>
+            <td class="desc">获取申万行业日线行情（默认是申万2021版行情）</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="index_member_all 指数专题 申万行业成分（分级） 申万行业成分（分级） 指数专题 / 申万行业成分（分级） 按三级分类提取申万行业成分，可提供某个分类的所有成分，也可按股票代码提取所属分类，参数灵活 无 is_new:string, l1_code:string, l2_code:string, l3_code:string, ts_code:string, fields:array" data-category="指数专题">
+            <td class="num">084</td>
+            <td><code>index_member_all</code></td>
+            <td>申万行业成分（分级）</td>
+            <td>申万行业成分（分级）</td>
+            <td class="desc">按三级分类提取申万行业成分，可提供某个分类的所有成分，也可按股票代码提取所属分类，参数灵活</td>
+            <td class="small">无</td>
+            <td class="params">is_new:string, l1_code:string, l2_code:string, l3_code:string, ts_code:string, fields:array</td>
+          </tr>
+          <tr data-search="index_global 指数专题 国际主要指数 国际主要指数 指数专题 / 国际主要指数 获取国际主要指数日线行情 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="指数专题">
+            <td class="num">106</td>
+            <td><code>index_global</code></td>
+            <td>国际主要指数</td>
+            <td>国际主要指数</td>
+            <td class="desc">获取国际主要指数日线行情</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="daily_info 指数专题 沪深市场每日交易统计 沪深市场每日交易统计 指数专题 / 沪深市场每日交易统计 获取交易所股票交易统计，包括各板块明细 无 fields:array, ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string" data-category="指数专题">
+            <td class="num">109</td>
+            <td><code>daily_info</code></td>
+            <td>沪深市场每日交易统计</td>
+            <td>沪深市场每日交易统计</td>
+            <td class="desc">获取交易所股票交易统计，包括各板块明细</td>
+            <td class="small">无</td>
+            <td class="params">fields:array, ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string</td>
+          </tr>
+          <tr data-search="sz_daily_info 指数专题 深圳市场每日交易情况 深圳市场每日交易情况 指数专题 / 深圳市场每日交易情况 获取深圳市场每日交易概况 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="指数专题">
+            <td class="num">137</td>
+            <td><code>sz_daily_info</code></td>
+            <td>深圳市场每日交易情况</td>
+            <td>深圳市场每日交易情况</td>
+            <td class="desc">获取深圳市场每日交易概况</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="rt_idx_min 指数专题 指数实时分钟 指数实时分钟 指数专题 / 指数实时分钟 获取交易所指数实时分钟数据，包括1~60min freq, ts_code freq*:string, ts_code*:string, fields:array" data-category="指数专题">
+            <td class="num">154</td>
+            <td><code>rt_idx_min</code></td>
+            <td>指数实时分钟</td>
+            <td>指数实时分钟</td>
+            <td class="desc">获取交易所指数实时分钟数据，包括1~60min</td>
+            <td class="small">freq, ts_code</td>
+            <td class="params">freq*:string, ts_code*:string, fields:array</td>
+          </tr>
+          <tr data-search="ci_index_member 指数专题 中信行业成分 中信行业成分 指数专题 / 中信行业成分 按三级分类提取中信行业成分，可提供某个分类的所有成分，也可按股票代码提取所属分类，参数灵活 无 is_new:string, l1_code:string, l2_code:string, l3_code:string, ts_code:string, fields:array" data-category="指数专题">
+            <td class="num">209</td>
+            <td><code>ci_index_member</code></td>
+            <td>中信行业成分</td>
+            <td>中信行业成分</td>
+            <td class="desc">按三级分类提取中信行业成分，可提供某个分类的所有成分，也可按股票代码提取所属分类，参数灵活</td>
+            <td class="small">无</td>
+            <td class="params">is_new:string, l1_code:string, l2_code:string, l3_code:string, ts_code:string, fields:array</td>
+          </tr>
+          <tr data-search="rt_idx_k 指数专题 实时日线 实时日线 指数专题 / 实时日线 获取交易所指数实时日线行情，支持按代码或代码通配符一次性提取全部交易所指数实时日k线行情 ts_code ts_code*:string, fields:array" data-category="指数专题">
+            <td class="num">232</td>
+            <td><code>rt_idx_k</code></td>
+            <td>实时日线</td>
+            <td>实时日线</td>
+            <td class="desc">获取交易所指数实时日线行情，支持按代码或代码通配符一次性提取全部交易所指数实时日k线行情</td>
+            <td class="small">ts_code</td>
+            <td class="params">ts_code*:string, fields:array</td>
+          </tr>
+          <tr data-search="rt_sw_k 指数专题 申万实时行情 申万实时行情 指数专题 / 申万实时行情 获取申万行业指数的最新截面数据 无 ts_code:string, fields:array" data-category="指数专题">
+            <td class="num">236</td>
+            <td><code>rt_sw_k</code></td>
+            <td>申万实时行情</td>
+            <td>申万实时行情</td>
+            <td class="desc">获取申万行业指数的最新截面数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, fields:array</td>
+          </tr>
+          <tr data-search="idx_mins 指数专题 指数历史分钟 指数历史分钟 指数专题 / 指数历史分钟 获取交易所指数分钟数据，支持1min/5min/15min/30min/60min行情，提供python sdk和 http restful api两种方式 freq, ts_code freq*:string, ts_code*:string, end_date:string, start_date:string, fields:array" data-category="指数专题">
+            <td class="num">237</td>
+            <td><code>idx_mins</code></td>
+            <td>指数历史分钟</td>
+            <td>指数历史分钟</td>
+            <td class="desc">获取交易所指数分钟数据，支持1min/5min/15min/30min/60min行情，提供Python SDK和 http Restful API两种方式</td>
+            <td class="small">freq, ts_code</td>
+            <td class="params">freq*:string, ts_code*:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-4">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 04</p>
+            <h2>债券</h2>
+          </div>
+          <span class="count">12 tools</span>
+        </div>
+        <p class="basis">二级分布：可转债基础信息 1, 可转债发行 1, 可转债行情 1, 国债收益率曲线 1, 全球财经事件 1, 可转债转股价变动 1, 债券回购日行情 1, 大宗交易 1, 大宗交易明细 1, 可转债票面利率 1, 柜台流通式债券报价 1, 柜台流通式债券最优报价 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="cb_basic 债券 可转债基础信息 可转债基础信息 债券 / 可转债基础信息 获取可转债基本信息 无 ts_code:string, exchange:string, list_date:string, fields:array" data-category="债券">
+            <td class="num">086</td>
+            <td><code>cb_basic</code></td>
+            <td>可转债基础信息</td>
+            <td>可转债基础信息</td>
+            <td class="desc">获取可转债基本信息</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, exchange:string, list_date:string, fields:array</td>
+          </tr>
+          <tr data-search="cb_issue 债券 可转债发行 可转债发行 债券 / 可转债发行 获取可转债发行数据 无 ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array" data-category="债券">
+            <td class="num">087</td>
+            <td><code>cb_issue</code></td>
+            <td>可转债发行</td>
+            <td>可转债发行</td>
+            <td class="desc">获取可转债发行数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="cb_daily 债券 可转债行情 可转债行情 债券 / 可转债行情 获取可转债行情 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="债券">
+            <td class="num">088</td>
+            <td><code>cb_daily</code></td>
+            <td>可转债行情</td>
+            <td>可转债行情</td>
+            <td class="desc">获取可转债行情</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="yc_cb 债券 国债收益率曲线 国债收益率曲线 债券 / 国债收益率曲线 获取中债收益率曲线，目前可获取中债国债收益率曲线即期和到期收益率曲线数据 无 ts_code:string, end_date:string, curve_term:number, curve_type:string, start_date:string, trade_date:string, fields:array" data-category="债券">
+            <td class="num">102</td>
+            <td><code>yc_cb</code></td>
+            <td>国债收益率曲线</td>
+            <td>国债收益率曲线</td>
+            <td class="desc">获取中债收益率曲线，目前可获取中债国债收益率曲线即期和到期收益率曲线数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, curve_term:number, curve_type:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="eco_cal 债券 全球财经事件 全球财经事件 债券 / 全球财经事件 获取全球财经日历、包括经济事件数据更新 无 date:string, event:string, country:string, currency:string, end_date:string, start_date:string, fields:array" data-category="债券">
+            <td class="num">118</td>
+            <td><code>eco_cal</code></td>
+            <td>全球财经事件</td>
+            <td>全球财经事件</td>
+            <td class="desc">获取全球财经日历、包括经济事件数据更新</td>
+            <td class="small">无</td>
+            <td class="params">date:string, event:string, country:string, currency:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="cb_price_chg 债券 可转债转股价变动 可转债转股价变动 债券 / 可转债转股价变动 获取可转债转股价变动 ts_code ts_code*:string, fields:array" data-category="债券">
+            <td class="num">122</td>
+            <td><code>cb_price_chg</code></td>
+            <td>可转债转股价变动</td>
+            <td>可转债转股价变动</td>
+            <td class="desc">获取可转债转股价变动</td>
+            <td class="small">ts_code</td>
+            <td class="params">ts_code*:string, fields:array</td>
+          </tr>
+          <tr data-search="repo_daily 债券 债券回购日行情 债券回购日行情 债券 / 债券回购日行情 债券回购日行情 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="债券">
+            <td class="num">129</td>
+            <td><code>repo_daily</code></td>
+            <td>债券回购日行情</td>
+            <td>债券回购日行情</td>
+            <td class="desc">债券回购日行情</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="bond_blk 债券 大宗交易 大宗交易 债券 / 大宗交易 获取沪深交易所债券大宗交易数据 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="债券">
+            <td class="num">139</td>
+            <td><code>bond_blk</code></td>
+            <td>大宗交易</td>
+            <td>大宗交易</td>
+            <td class="desc">获取沪深交易所债券大宗交易数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="bond_blk_detail 债券 大宗交易明细 大宗交易明细 债券 / 大宗交易明细 获取沪深交易所债券大宗交易数据 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="债券">
+            <td class="num">140</td>
+            <td><code>bond_blk_detail</code></td>
+            <td>大宗交易明细</td>
+            <td>大宗交易明细</td>
+            <td class="desc">获取沪深交易所债券大宗交易数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="cb_rate 债券 可转债票面利率 可转债票面利率 债券 / 可转债票面利率 获取可转债票面利率 ts_code ts_code*:string, fields:array" data-category="债券">
+            <td class="num">158</td>
+            <td><code>cb_rate</code></td>
+            <td>可转债票面利率</td>
+            <td>可转债票面利率</td>
+            <td class="desc">获取可转债票面利率</td>
+            <td class="small">ts_code</td>
+            <td class="params">ts_code*:string, fields:array</td>
+          </tr>
+          <tr data-search="bc_otcqt 债券 柜台流通式债券报价 柜台流通式债券报价 债券 / 柜台流通式债券报价 柜台流通式债券报价 无 bank:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="债券">
+            <td class="num">168</td>
+            <td><code>bc_otcqt</code></td>
+            <td>柜台流通式债券报价</td>
+            <td>柜台流通式债券报价</td>
+            <td class="desc">柜台流通式债券报价</td>
+            <td class="small">无</td>
+            <td class="params">bank:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="bc_bestotcqt 债券 柜台流通式债券最优报价 柜台流通式债券最优报价 债券 / 柜台流通式债券最优报价 柜台流通式债券最优报价 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="债券">
+            <td class="num">169</td>
+            <td><code>bc_bestotcqt</code></td>
+            <td>柜台流通式债券最优报价</td>
+            <td>柜台流通式债券最优报价</td>
+            <td class="desc">柜台流通式债券最优报价</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-5">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 05</p>
+            <h2>ETF专题</h2>
+          </div>
+          <span class="count">9 tools</span>
+        </div>
+        <p class="basis">二级分布：ETF日线行情 1, ETF复权因子 1, ETF基本信息 1, ETF基准指数 1, ETF实时日线 1, ETF份额规模 1, 深交所ETF实时快照 1, 指数公告 1, ETF业绩比较基准 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="fund_daily etf专题 etf日线行情 etf日线行情 etf专题 / etf日线行情 获取etf行情每日收盘后成交数据，历史超过10年 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="ETF专题">
+            <td class="num">048</td>
+            <td><code>fund_daily</code></td>
+            <td>ETF日线行情</td>
+            <td>ETF日线行情</td>
+            <td class="desc">获取ETF行情每日收盘后成交数据，历史超过10年</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fund_adj etf专题 etf复权因子 etf复权因子 etf专题 / etf复权因子 获取基金复权因子，用于计算基金复权行情 无 limit:string, offset:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="ETF专题">
+            <td class="num">100</td>
+            <td><code>fund_adj</code></td>
+            <td>ETF复权因子</td>
+            <td>ETF复权因子</td>
+            <td class="desc">获取基金复权因子，用于计算基金复权行情</td>
+            <td class="small">无</td>
+            <td class="params">limit:string, offset:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="etf_basic etf专题 etf基本信息 etf基本信息 etf专题 / etf基本信息 获取国内etf基础信息，包括了qdii。数据来源与沪深交易所公开披露信息。 无 mgr:string, ts_code:string, exchange:string, list_date:string, index_code:string, list_status:string, fields:array" data-category="ETF专题">
+            <td class="num">211</td>
+            <td><code>etf_basic</code></td>
+            <td>ETF基本信息</td>
+            <td>ETF基本信息</td>
+            <td class="desc">获取国内ETF基础信息，包括了QDII。数据来源与沪深交易所公开披露信息。</td>
+            <td class="small">无</td>
+            <td class="params">mgr:string, ts_code:string, exchange:string, list_date:string, index_code:string, list_status:string, fields:array</td>
+          </tr>
+          <tr data-search="etf_index etf专题 etf基准指数 etf基准指数 etf专题 / etf基准指数 获取etf基准指数列表信息 无 ts_code:string, pub_date:string, base_date:string, fields:array" data-category="ETF专题">
+            <td class="num">212</td>
+            <td><code>etf_index</code></td>
+            <td>ETF基准指数</td>
+            <td>ETF基准指数</td>
+            <td class="desc">获取ETF基准指数列表信息</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, pub_date:string, base_date:string, fields:array</td>
+          </tr>
+          <tr data-search="rt_etf_k etf专题 etf实时日线 etf实时日线 etf专题 / etf实时日线 获取etf实时日k线行情，支持按etf代码或代码通配符一次性提取全部etf实时日k线行情 topic, ts_code topic*:string, ts_code*:string, fields:array" data-category="ETF专题">
+            <td class="num">229</td>
+            <td><code>rt_etf_k</code></td>
+            <td>ETF实时日线</td>
+            <td>ETF实时日线</td>
+            <td class="desc">获取ETF实时日k线行情，支持按ETF代码或代码通配符一次性提取全部ETF实时日k线行情</td>
+            <td class="small">topic, ts_code</td>
+            <td class="params">topic*:string, ts_code*:string, fields:array</td>
+          </tr>
+          <tr data-search="etf_share_size etf专题 etf份额规模 etf份额规模 etf专题 / etf份额规模 获取沪深etf每日份额和规模数据，能体现规模份额的变化，掌握etf资金动向，同时提供每日净值和收盘价；数据指标是分批入库，建议在每日19点后提取；另外，涉及海外的etf数据更新会晚一些属于正常情况。 无 ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array" data-category="ETF专题">
+            <td class="num">234</td>
+            <td><code>etf_share_size</code></td>
+            <td>ETF份额规模</td>
+            <td>ETF份额规模</td>
+            <td class="desc">获取沪深ETF每日份额和规模数据，能体现规模份额的变化，掌握ETF资金动向，同时提供每日净值和收盘价；数据指标是分批入库，建议在每日19点后提取；另外，涉及海外的ETF数据更新会晚一些属于正常情况。</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="rt_etf_sz_iopv etf专题 深交所etf实时快照 深交所etf实时快照 etf专题 / 深交所etf实时快照 etf实时净值和申购赎回数据参考，目前只提供深市 无 ts_code:string, fields:array" data-category="ETF专题">
+            <td class="num">254</td>
+            <td><code>rt_etf_sz_iopv</code></td>
+            <td>深交所ETF实时快照</td>
+            <td>深交所ETF实时快照</td>
+            <td class="desc">ETF实时净值和申购赎回数据参考，目前只提供深市</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, fields:array</td>
+          </tr>
+          <tr data-search="idx_anns etf专题 指数公告 指数公告 etf专题 / 指数公告 获取指数公司披露的相关公告信息，包括中证指数、国证指数、恒生指数和华证指数的及时与历史公告信息，跟踪指数最新信息和发展方向。 无 src:string, ann_date:string, end_date:string, start_date:string, fields:array" data-category="ETF专题">
+            <td class="num">256</td>
+            <td><code>idx_anns</code></td>
+            <td>指数公告</td>
+            <td>指数公告</td>
+            <td class="desc">获取指数公司披露的相关公告信息，包括中证指数、国证指数、恒生指数和华证指数的及时与历史公告信息，跟踪指数最新信息和发展方向。</td>
+            <td class="small">无</td>
+            <td class="params">src:string, ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="mkt_idx_bmk etf专题 etf业绩比较基准 etf业绩比较基准 etf专题 / etf业绩比较基准 获取etf业绩比较基准列表信息 无 ts_code:string, bmk_type:string, fields:array" data-category="ETF专题">
+            <td class="num">258</td>
+            <td><code>mkt_idx_bmk</code></td>
+            <td>ETF业绩比较基准</td>
+            <td>ETF业绩比较基准</td>
+            <td class="desc">获取ETF业绩比较基准列表信息</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, BMK_TYPE:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-6">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 06</p>
+            <h2>行业经济</h2>
+          </div>
+          <span class="count">8 tools</span>
+        </div>
+        <p class="basis">二级分布：TMT行业 8</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="tmt_twincome 行业经济 tmt行业 台湾电子产业月营收 行业经济 / tmt行业 / 台湾电子产业月营收 获取台湾tmt电子产业领域各类产品月度营收数据。 item date:string, item*:string, end_date:string, start_date:string, fields:array" data-category="行业经济">
+            <td class="num">022</td>
+            <td><code>tmt_twincome</code></td>
+            <td>TMT行业</td>
+            <td>台湾电子产业月营收</td>
+            <td class="desc">获取台湾TMT电子产业领域各类产品月度营收数据。</td>
+            <td class="small">item</td>
+            <td class="params">date:string, item*:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="tmt_twincomedetail 行业经济 tmt行业 台湾电子产业月营收明细 行业经济 / tmt行业 / 台湾电子产业月营收明细 获取台湾tmt行业上市公司各类产品月度营收情况。 无 date:string, item:string, source:string, symbol:string, end_date:string, start_date:string, fields:array" data-category="行业经济">
+            <td class="num">023</td>
+            <td><code>tmt_twincomedetail</code></td>
+            <td>TMT行业</td>
+            <td>台湾电子产业月营收明细</td>
+            <td class="desc">获取台湾TMT行业上市公司各类产品月度营收情况。</td>
+            <td class="small">无</td>
+            <td class="params">date:string, item:string, source:string, symbol:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="bo_daily 行业经济 tmt行业 电影日度票房 行业经济 / tmt行业 / 电影日度票房 获取电影日度票房 date date*:string, fields:array" data-category="行业经济">
+            <td class="num">035</td>
+            <td><code>bo_daily</code></td>
+            <td>TMT行业</td>
+            <td>电影日度票房</td>
+            <td class="desc">获取电影日度票房</td>
+            <td class="small">date</td>
+            <td class="params">date*:string, fields:array</td>
+          </tr>
+          <tr data-search="bo_weekly 行业经济 tmt行业 电影周度票房 行业经济 / tmt行业 / 电影周度票房 获取周度票房数据 date date*:string, fields:array" data-category="行业经济">
+            <td class="num">036</td>
+            <td><code>bo_weekly</code></td>
+            <td>TMT行业</td>
+            <td>电影周度票房</td>
+            <td class="desc">获取周度票房数据</td>
+            <td class="small">date</td>
+            <td class="params">date*:string, fields:array</td>
+          </tr>
+          <tr data-search="bo_monthly 行业经济 tmt行业 电影月度票房 行业经济 / tmt行业 / 电影月度票房 获取电影月度票房数据 date date*:string, fields:array" data-category="行业经济">
+            <td class="num">037</td>
+            <td><code>bo_monthly</code></td>
+            <td>TMT行业</td>
+            <td>电影月度票房</td>
+            <td class="desc">获取电影月度票房数据</td>
+            <td class="small">date</td>
+            <td class="params">date*:string, fields:array</td>
+          </tr>
+          <tr data-search="bo_cinema 行业经济 tmt行业 影院日度票房 行业经济 / tmt行业 / 影院日度票房 获取每日各影院的票房数据 date date*:string, fields:array" data-category="行业经济">
+            <td class="num">038</td>
+            <td><code>bo_cinema</code></td>
+            <td>TMT行业</td>
+            <td>影院日度票房</td>
+            <td class="desc">获取每日各影院的票房数据</td>
+            <td class="small">date</td>
+            <td class="params">date*:string, fields:array</td>
+          </tr>
+          <tr data-search="film_record 行业经济 tmt行业 全国电影剧本备案数据 行业经济 / tmt行业 / 全国电影剧本备案数据 获取全国电影剧本备案的公示数据 无 ann_date:string, end_date:string, start_date:string, fields:array" data-category="行业经济">
+            <td class="num">064</td>
+            <td><code>film_record</code></td>
+            <td>TMT行业</td>
+            <td>全国电影剧本备案数据</td>
+            <td class="desc">获取全国电影剧本备案的公示数据</td>
+            <td class="small">无</td>
+            <td class="params">ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="teleplay_record 行业经济 tmt行业 全国电视剧备案公示数据 行业经济 / tmt行业 / 全国电视剧备案公示数据 获取2009年以来全国拍摄制作电视剧备案公示数据 无 org:string, name:string, end_date:string, start_date:string, report_date:string, fields:array" data-category="行业经济">
+            <td class="num">082</td>
+            <td><code>teleplay_record</code></td>
+            <td>TMT行业</td>
+            <td>全国电视剧备案公示数据</td>
+            <td class="desc">获取2009年以来全国拍摄制作电视剧备案公示数据</td>
+            <td class="small">无</td>
+            <td class="params">org:string, name:string, end_date:string, start_date:string, report_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-7">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 07</p>
+            <h2>公募基金</h2>
+          </div>
+          <span class="count">8 tools</span>
+        </div>
+        <p class="basis">二级分布：基金列表 1, 基金管理人 1, 基金净值 1, 基金分红 1, 基金持仓 1, 基金规模 1, 基金经理 1, 基金技术面因子(专业版) 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="fund_basic 公募基金 基金列表 基金列表 公募基金 / 基金列表 获取公募基金数据列表，包括场内和场外基金 无 market:string, status:string, ts_code:string, fields:array" data-category="公募基金">
+            <td class="num">039</td>
+            <td><code>fund_basic</code></td>
+            <td>基金列表</td>
+            <td>基金列表</td>
+            <td class="desc">获取公募基金数据列表，包括场内和场外基金</td>
+            <td class="small">无</td>
+            <td class="params">market:string, status:string, ts_code:string, fields:array</td>
+          </tr>
+          <tr data-search="fund_company 公募基金 基金管理人 基金管理人 公募基金 / 基金管理人 获取公募基金管理人列表 无 fields:array" data-category="公募基金">
+            <td class="num">040</td>
+            <td><code>fund_company</code></td>
+            <td>基金管理人</td>
+            <td>基金管理人</td>
+            <td class="desc">获取公募基金管理人列表</td>
+            <td class="small">无</td>
+            <td class="params">fields:array</td>
+          </tr>
+          <tr data-search="fund_nav 公募基金 基金净值 基金净值 公募基金 / 基金净值 获取公募基金净值数据 无 market:string, ts_code:string, end_date:string, nav_date:string, start_date:string, fields:array" data-category="公募基金">
+            <td class="num">041</td>
+            <td><code>fund_nav</code></td>
+            <td>基金净值</td>
+            <td>基金净值</td>
+            <td class="desc">获取公募基金净值数据</td>
+            <td class="small">无</td>
+            <td class="params">market:string, ts_code:string, end_date:string, nav_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fund_div 公募基金 基金分红 基金分红 公募基金 / 基金分红 获取公募基金分红数据 无 ex_date:string, ts_code:string, ann_date:string, pay_date:string, fields:array" data-category="公募基金">
+            <td class="num">042</td>
+            <td><code>fund_div</code></td>
+            <td>基金分红</td>
+            <td>基金分红</td>
+            <td class="desc">获取公募基金分红数据</td>
+            <td class="small">无</td>
+            <td class="params">ex_date:string, ts_code:string, ann_date:string, pay_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fund_portfolio 公募基金 基金持仓 基金持仓 公募基金 / 基金持仓 获取公募基金持仓数据，季度更新 无 period:string, symbol:string, ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array" data-category="公募基金">
+            <td class="num">043</td>
+            <td><code>fund_portfolio</code></td>
+            <td>基金持仓</td>
+            <td>基金持仓</td>
+            <td class="desc">获取公募基金持仓数据，季度更新</td>
+            <td class="small">无</td>
+            <td class="params">period:string, symbol:string, ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fund_share 公募基金 基金规模 基金规模 公募基金 / 基金规模 获取基金规模数据，包含上海和深圳etf基金 无 market:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="公募基金">
+            <td class="num">104</td>
+            <td><code>fund_share</code></td>
+            <td>基金规模</td>
+            <td>基金规模</td>
+            <td class="desc">获取基金规模数据，包含上海和深圳ETF基金</td>
+            <td class="small">无</td>
+            <td class="params">market:string, ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fund_manager 公募基金 基金经理 基金经理 公募基金 / 基金经理 获取公募基金经理数据，包括基金经理简历等数据 无 name:string, limit:integer, offset:string, ts_code:string, ann_date:string, fields:array" data-category="公募基金">
+            <td class="num">105</td>
+            <td><code>fund_manager</code></td>
+            <td>基金经理</td>
+            <td>基金经理</td>
+            <td class="desc">获取公募基金经理数据，包括基金经理简历等数据</td>
+            <td class="small">无</td>
+            <td class="params">name:string, limit:integer, offset:string, ts_code:string, ann_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fund_factor_pro 公募基金 基金技术面因子(专业版) 基金技术面因子(专业版) 公募基金 / 基金技术面因子(专业版) 获取场内基金每日技术面因子数据，用于跟踪场内基金当前走势情况，数据由tushare社区自产，覆盖全历史；输出参数_bfq表示不复权，描述中说明了因子的默认传参，如需要特殊参数或者更多因子可以联系管理员评估 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="公募基金">
+            <td class="num">197</td>
+            <td><code>fund_factor_pro</code></td>
+            <td>基金技术面因子(专业版)</td>
+            <td>基金技术面因子(专业版)</td>
+            <td class="desc">获取场内基金每日技术面因子数据，用于跟踪场内基金当前走势情况，数据由Tushare社区自产，覆盖全历史；输出参数_bfq表示不复权，描述中说明了因子的默认传参，如需要特殊参数或者更多因子可以联系管理员评估</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-8">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 08</p>
+            <h2>港股数据</h2>
+          </div>
+          <span class="count">8 tools</span>
+        </div>
+        <p class="basis">二级分布：港股日线行情 1, 港股复权行情 1, 港股实时日线 1, 港股资产负债表 1, 港股利润表 1, 港股现金流量表 1, 港股财务指标数据 1, 港股复权因子 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="hk_daily 港股数据 港股日线行情 港股日线行情 港股数据 / 港股日线行情 获取港股每日增量和历史行情，每日18点左右更新当日数据 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="港股数据">
+            <td class="num">093</td>
+            <td><code>hk_daily</code></td>
+            <td>港股日线行情</td>
+            <td>港股日线行情</td>
+            <td class="desc">获取港股每日增量和历史行情，每日18点左右更新当日数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="hk_daily_adj 港股数据 港股复权行情 港股复权行情 港股数据 / 港股复权行情 获取港股复权行情，提供股票股本、市值和成交及换手多个数据指标 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="港股数据">
+            <td class="num">181</td>
+            <td><code>hk_daily_adj</code></td>
+            <td>港股复权行情</td>
+            <td>港股复权行情</td>
+            <td class="desc">获取港股复权行情，提供股票股本、市值和成交及换手多个数据指标</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="rt_hk_k 港股数据 港股实时日线 港股实时日线 港股数据 / 港股实时日线 获取港股实时日k线行情，支持按股票代码及股票代码通配符一次性提取全部股票实时日k线行情 ts_code ts_code*:string, fields:array" data-category="港股数据">
+            <td class="num">208</td>
+            <td><code>rt_hk_k</code></td>
+            <td>港股实时日线</td>
+            <td>港股实时日线</td>
+            <td class="desc">获取港股实时日k线行情，支持按股票代码及股票代码通配符一次性提取全部股票实时日k线行情</td>
+            <td class="small">ts_code</td>
+            <td class="params">ts_code*:string, fields:array</td>
+          </tr>
+          <tr data-search="hk_balancesheet 港股数据 港股资产负债表 港股资产负债表 港股数据 / 港股资产负债表 获取港股上市公司资产负债表 ts_code period:string, ts_code*:string, end_date:string, ind_name:string, start_date:string, fields:array" data-category="港股数据">
+            <td class="num">217</td>
+            <td><code>hk_balancesheet</code></td>
+            <td>港股资产负债表</td>
+            <td>港股资产负债表</td>
+            <td class="desc">获取港股上市公司资产负债表</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, end_date:string, ind_name:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="hk_income 港股数据 港股利润表 港股利润表 港股数据 / 港股利润表 获取港股上市公司财务利润表数据 ts_code period:string, ts_code*:string, end_date:string, ind_name:string, start_date:string, fields:array" data-category="港股数据">
+            <td class="num">218</td>
+            <td><code>hk_income</code></td>
+            <td>港股利润表</td>
+            <td>港股利润表</td>
+            <td class="desc">获取港股上市公司财务利润表数据</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, end_date:string, ind_name:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="hk_cashflow 港股数据 港股现金流量表 港股现金流量表 港股数据 / 港股现金流量表 获取港股上市公司现金流量表数据 ts_code period:string, ts_code*:string, end_date:string, ind_name:string, start_date:string, fields:array" data-category="港股数据">
+            <td class="num">219</td>
+            <td><code>hk_cashflow</code></td>
+            <td>港股现金流量表</td>
+            <td>港股现金流量表</td>
+            <td class="desc">获取港股上市公司现金流量表数据</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, end_date:string, ind_name:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="hk_fina_indicator 港股数据 港股财务指标数据 港股财务指标数据 港股数据 / 港股财务指标数据 获取港股上市公司财务指标数据，为避免服务器压力，现阶段每次请求最多返回200条记录，可通过设置日期多次请求获取更多数据。 ts_code period:string, ts_code*:string, end_date:string, start_date:string, report_type:string, fields:array" data-category="港股数据">
+            <td class="num">220</td>
+            <td><code>hk_fina_indicator</code></td>
+            <td>港股财务指标数据</td>
+            <td>港股财务指标数据</td>
+            <td class="desc">获取港股上市公司财务指标数据，为避免服务器压力，现阶段每次请求最多返回200条记录，可通过设置日期多次请求获取更多数据。</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, end_date:string, start_date:string, report_type:string, fields:array</td>
+          </tr>
+          <tr data-search="hk_adjfactor 港股数据 港股复权因子 港股复权因子 港股数据 / 港股复权因子 获取港股每日复权因子数据，每天滚动刷新 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="港股数据">
+            <td class="num">230</td>
+            <td><code>hk_adjfactor</code></td>
+            <td>港股复权因子</td>
+            <td>港股复权因子</td>
+            <td class="desc">获取港股每日复权因子数据，每天滚动刷新</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-9">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 09</p>
+            <h2>指数</h2>
+          </div>
+          <span class="count">7 tools</span>
+        </div>
+        <p class="basis">二级分布：指数基本信息 1, 大盘指数每日指标 1, 指数月线行情 1, 申万行业分类 1, 中信行业指数日行情 1, 申万行业成分 1, 指数技术面因子(专业版) 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="index_basic 指数 指数基本信息 指数基本信息 指数 / 指数基本信息 获取指数基础信息。 无 name:string, market:string, ts_code:string, category:string, publisher:string, fields:array" data-category="指数">
+            <td class="num">024</td>
+            <td><code>index_basic</code></td>
+            <td>指数基本信息</td>
+            <td>指数基本信息</td>
+            <td class="desc">获取指数基础信息。</td>
+            <td class="small">无</td>
+            <td class="params">name:string, market:string, ts_code:string, category:string, publisher:string, fields:array</td>
+          </tr>
+          <tr data-search="index_dailybasic 指数 大盘指数每日指标 大盘指数每日指标 指数 / 大盘指数每日指标 目前只提供上证综指，深证成指，上证50，中证500，中小板指，创业板指的每日指标数据 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="指数">
+            <td class="num">049</td>
+            <td><code>index_dailybasic</code></td>
+            <td>大盘指数每日指标</td>
+            <td>大盘指数每日指标</td>
+            <td class="desc">目前只提供上证综指，深证成指，上证50，中证500，中小板指，创业板指的每日指标数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="index_monthly 指数 指数月线行情 指数月线行情 指数 / 指数月线行情 获取指数月线行情,每月更新一次 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="指数">
+            <td class="num">075</td>
+            <td><code>index_monthly</code></td>
+            <td>指数月线行情</td>
+            <td>指数月线行情</td>
+            <td class="desc">获取指数月线行情,每月更新一次</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="index_classify 指数 申万行业分类 申万行业分类 指数 / 申万行业分类 获取申万行业分类，可以获取申万2014年版本（28个一级分类，104个二级分类，227个三级分类）和2021年本版（31个一级分类，134个二级分类，346个三级分类）列表信息 无 src:string, level:string, index_code:string, parent_code:string, fields:array" data-category="指数">
+            <td class="num">083</td>
+            <td><code>index_classify</code></td>
+            <td>申万行业分类</td>
+            <td>申万行业分类</td>
+            <td class="desc">获取申万行业分类，可以获取申万2014年版本（28个一级分类，104个二级分类，227个三级分类）和2021年本版（31个一级分类，134个二级分类，346个三级分类）列表信息</td>
+            <td class="small">无</td>
+            <td class="params">src:string, level:string, index_code:string, parent_code:string, fields:array</td>
+          </tr>
+          <tr data-search="ci_daily 指数 中信行业指数日行情 中信行业指数日行情 指数 / 中信行业指数日行情 获取中信行业指数日线行情 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="指数">
+            <td class="num">160</td>
+            <td><code>ci_daily</code></td>
+            <td>中信行业指数日行情</td>
+            <td>中信行业指数日行情</td>
+            <td class="desc">获取中信行业指数日线行情</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="index_member 指数 申万行业成分 申万行业成分 指数 / 申万行业成分 申万行业成分 无 is_new:string, ts_code:string, index_code:string, fields:array" data-category="指数">
+            <td class="num">177</td>
+            <td><code>index_member</code></td>
+            <td>申万行业成分</td>
+            <td>申万行业成分</td>
+            <td class="desc">申万行业成分</td>
+            <td class="small">无</td>
+            <td class="params">is_new:string, ts_code:string, index_code:string, fields:array</td>
+          </tr>
+          <tr data-search="idx_factor_pro 指数 指数技术面因子(专业版) 指数技术面因子(专业版) 指数 / 指数技术面因子(专业版) 获取指数每日技术面因子数据，用于跟踪指数当前走势情况，数据由tushare社区自产，覆盖全历史；输出参数_bfq表示不复权描述中说明了因子的默认传参，如需要特殊参数或者更多因子可以联系管理员评估，指数包括大盘指数 申万行业指数 中信指数 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="指数">
+            <td class="num">196</td>
+            <td><code>idx_factor_pro</code></td>
+            <td>指数技术面因子(专业版)</td>
+            <td>指数技术面因子(专业版)</td>
+            <td class="desc">获取指数每日技术面因子数据，用于跟踪指数当前走势情况，数据由Tushare社区自产，覆盖全历史；输出参数_bfq表示不复权描述中说明了因子的默认传参，如需要特殊参数或者更多因子可以联系管理员评估，指数包括大盘指数 申万行业指数 中信指数</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-10">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 10</p>
+            <h2>期货数据</h2>
+          </div>
+          <span class="count">6 tools</span>
+        </div>
+        <p class="basis">二级分布：合约信息 1, 每日结算参数 1, 历史分钟行情 1, 实时分钟行情 1, 期货周 1, 期货合约涨跌停价格 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="fut_basic 期货数据 合约信息 合约信息 期货数据 / 合约信息 获取期货合约列表数据 exchange exchange*:string, fut_code:string, fut_type:string, list_date:string, fields:array" data-category="期货数据">
+            <td class="num">050</td>
+            <td><code>fut_basic</code></td>
+            <td>合约信息</td>
+            <td>合约信息</td>
+            <td class="desc">获取期货合约列表数据</td>
+            <td class="small">exchange</td>
+            <td class="params">exchange*:string, fut_code:string, fut_type:string, list_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fut_settle 期货数据 每日结算参数 每日结算参数 期货数据 / 每日结算参数 获取每日结算参数数据，包括交易和交割费率等 无 ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array" data-category="期货数据">
+            <td class="num">054</td>
+            <td><code>fut_settle</code></td>
+            <td>每日结算参数</td>
+            <td>每日结算参数</td>
+            <td class="desc">获取每日结算参数数据，包括交易和交割费率等</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="ft_mins 期货数据 历史分钟行情 历史分钟行情 期货数据 / 历史分钟行情 获取全市场期货合约分钟数据，支持1min/5min/15min/30min/60min行情，提供python sdk和 http restful api两种方式，如果需要主力合约分钟，请先通过主力[mapping](https://tushare.pro/document/2?doc_id=189)接口（需要有至少2000积分）获取对应的合约代码后提取分钟。 freq, ts_code freq*:string, ts_code*:string, end_date:string, start_date:string, fields:array" data-category="期货数据">
+            <td class="num">101</td>
+            <td><code>ft_mins</code></td>
+            <td>历史分钟行情</td>
+            <td>历史分钟行情</td>
+            <td class="desc">获取全市场期货合约分钟数据，支持1min/5min/15min/30min/60min行情，提供Python SDK和 http Restful API两种方式，如果需要主力合约分钟，请先通过主力[mapping](https://tushare.pro/document/2?doc_id=189)接口（需要有至少2000积分）获取对应的合约代码后提取分钟。</td>
+            <td class="small">freq, ts_code</td>
+            <td class="params">freq*:string, ts_code*:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="rt_fut_min 期货数据 实时分钟行情 实时分钟行情 期货数据 / 实时分钟行情 获取全市场期货合约实时分钟数据，支持1min/5min/15min/30min/60min行情，提供python sdk、 http restful api和websocket三种方式，如果需要主力合约分钟，请先通过主力[mapping](https://tushare.pro/document/2?doc_id=189)接口获取对应的合约代码后提取分钟。 freq, ts_code freq*:string, ts_code*:string, fields:array" data-category="期货数据">
+            <td class="num">164</td>
+            <td><code>rt_fut_min</code></td>
+            <td>实时分钟行情</td>
+            <td>实时分钟行情</td>
+            <td class="desc">获取全市场期货合约实时分钟数据，支持1min/5min/15min/30min/60min行情，提供Python SDK、 http Restful API和websocket三种方式，如果需要主力合约分钟，请先通过主力[mapping](https://tushare.pro/document/2?doc_id=189)接口获取对应的合约代码后提取分钟。</td>
+            <td class="small">freq, ts_code</td>
+            <td class="params">freq*:string, ts_code*:string, fields:array</td>
+          </tr>
+          <tr data-search="fut_weekly_monthly 期货数据 期货周 月线行情(每日更新) 期货数据 / 期货周 / 月线行情(每日更新) 期货周/月线行情(每日更新) freq freq*:string, ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array" data-category="期货数据">
+            <td class="num">179</td>
+            <td><code>fut_weekly_monthly</code></td>
+            <td>期货周</td>
+            <td>月线行情(每日更新)</td>
+            <td class="desc">期货周/月线行情(每日更新)</td>
+            <td class="small">freq</td>
+            <td class="params">freq*:string, ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="ft_limit 期货数据 期货合约涨跌停价格 期货合约涨跌停价格 期货数据 / 期货合约涨跌停价格 获取所有期货合约每天的涨跌停价格及最低保证金率，数据开始于2005年。 无 cont:string, ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array" data-category="期货数据">
+            <td class="num">205</td>
+            <td><code>ft_limit</code></td>
+            <td>期货合约涨跌停价格</td>
+            <td>期货合约涨跌停价格</td>
+            <td class="desc">获取所有期货合约每天的涨跌停价格及最低保证金率，数据开始于2005年。</td>
+            <td class="small">无</td>
+            <td class="params">cont:string, ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-11">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 11</p>
+            <h2>大模型语料专题数据</h2>
+          </div>
+          <span class="count">6 tools</span>
+        </div>
+        <p class="basis">二级分布：新闻快讯（短讯） 1, 新闻通讯（长篇） 1, 上证e互动问答 1, 深证易互动问答 1, 国家政策库 1, 券商研究报告 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="news 大模型语料专题数据 新闻快讯（短讯） 新闻快讯（短讯） 大模型语料专题数据 / 新闻快讯（短讯） 获取主流新闻网站的快讯新闻数据,提供超过6年以上历史新闻。 end_date, src, start_date src*:string, end_date*:string, start_date*:string, fields:array" data-category="大模型语料专题数据">
+            <td class="num">055</td>
+            <td><code>news</code></td>
+            <td>新闻快讯（短讯）</td>
+            <td>新闻快讯（短讯）</td>
+            <td class="desc">获取主流新闻网站的快讯新闻数据,提供超过6年以上历史新闻。</td>
+            <td class="small">end_date, src, start_date</td>
+            <td class="params">src*:string, end_date*:string, start_date*:string, fields:array</td>
+          </tr>
+          <tr data-search="major_news 大模型语料专题数据 新闻通讯（长篇） 新闻通讯（长篇） 大模型语料专题数据 / 新闻通讯（长篇） 获取长篇通讯信息，覆盖主要新闻资讯网站，提供超过8年历史新闻。 无 src:string, end_date:string, start_date:string, fields:array" data-category="大模型语料专题数据">
+            <td class="num">096</td>
+            <td><code>major_news</code></td>
+            <td>新闻通讯（长篇）</td>
+            <td>新闻通讯（长篇）</td>
+            <td class="desc">获取长篇通讯信息，覆盖主要新闻资讯网站，提供超过8年历史新闻。</td>
+            <td class="small">无</td>
+            <td class="params">src:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="irm_qa_sh 大模型语料专题数据 上证e互动问答 上证e互动问答 大模型语料专题数据 / 上证e互动问答 获取上交所e互动董秘问答文本数据。上证e互动是由上海证券交易所建立、上海证券市场所有参与主体无偿使用的沟通平台,旨在引导和促进上市公司、投资者等各市场参与主体之间的信息沟通,构建集中、便捷的互动渠道。本接口数据记录了以上沟通问答的文本数据。 无 ts_code:string, end_date:string, pub_date:string, start_date:string, trade_date:string, fields:array" data-category="大模型语料专题数据">
+            <td class="num">203</td>
+            <td><code>irm_qa_sh</code></td>
+            <td>上证e互动问答</td>
+            <td>上证e互动问答</td>
+            <td class="desc">获取上交所e互动董秘问答文本数据。上证e互动是由上海证券交易所建立、上海证券市场所有参与主体无偿使用的沟通平台,旨在引导和促进上市公司、投资者等各市场参与主体之间的信息沟通,构建集中、便捷的互动渠道。本接口数据记录了以上沟通问答的文本数据。</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, pub_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="irm_qa_sz 大模型语料专题数据 深证易互动问答 深证易互动问答 大模型语料专题数据 / 深证易互动问答 互动易是由深交所官方推出,供投资者与上市公司直接沟通的平台,一站式公司资讯汇集,提供第一手的互动问答、投资者关系信息、公司声音等内容。 无 ts_code:string, end_date:string, pub_date:string, start_date:string, trade_date:string, fields:array" data-category="大模型语料专题数据">
+            <td class="num">204</td>
+            <td><code>irm_qa_sz</code></td>
+            <td>深证易互动问答</td>
+            <td>深证易互动问答</td>
+            <td class="desc">互动易是由深交所官方推出,供投资者与上市公司直接沟通的平台,一站式公司资讯汇集,提供第一手的互动问答、投资者关系信息、公司声音等内容。</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, pub_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="npr 大模型语料专题数据 国家政策库 国家政策库 大模型语料专题数据 / 国家政策库 获取国家行政机关公开披露的各类法规、条例政策、批复、通知等文本数据。 无 org:string, ptype:string, end_date:string, start_date:string, fields:array" data-category="大模型语料专题数据">
+            <td class="num">233</td>
+            <td><code>npr</code></td>
+            <td>国家政策库</td>
+            <td>国家政策库</td>
+            <td class="desc">获取国家行政机关公开披露的各类法规、条例政策、批复、通知等文本数据。</td>
+            <td class="small">无</td>
+            <td class="params">org:string, ptype:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="research_report 大模型语料专题数据 券商研究报告 券商研究报告 大模型语料专题数据 / 券商研究报告 获取券商研究报告-个股、行业等，历史数据从20170101开始提供，增量每天两次更新 无 ts_code:string, end_date:string, ind_name:string, start_date:string, trade_date:string, inst_csname:string, report_type:string, fields:array" data-category="大模型语料专题数据">
+            <td class="num">235</td>
+            <td><code>research_report</code></td>
+            <td>券商研究报告</td>
+            <td>券商研究报告</td>
+            <td class="desc">获取券商研究报告-个股、行业等，历史数据从20170101开始提供，增量每天两次更新</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, ind_name:string, start_date:string, trade_date:string, inst_csname:string, report_type:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-12">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 12</p>
+            <h2>美股数据</h2>
+          </div>
+          <span class="count">6 tools</span>
+        </div>
+        <p class="basis">二级分布：美股复权行情 1, 美股财务指标数据 1, 美股现金流量表 1, 美股利润表 1, 美股资产负债表 1, 美股复权因子 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="us_daily_adj 美股数据 美股复权行情 美股复权行情 美股数据 / 美股复权行情 获取美股复权行情，支持美股全市场股票，提供股本、市值、复权因子和成交信息等多个数据指标 无 limit:integer, offset:integer, ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array" data-category="美股数据">
+            <td class="num">180</td>
+            <td><code>us_daily_adj</code></td>
+            <td>美股复权行情</td>
+            <td>美股复权行情</td>
+            <td class="desc">获取美股复权行情，支持美股全市场股票，提供股本、市值、复权因子和成交信息等多个数据指标</td>
+            <td class="small">无</td>
+            <td class="params">limit:integer, offset:integer, ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="us_fina_indicator 美股数据 美股财务指标数据 美股财务指标数据 美股数据 / 美股财务指标数据 获取美股上市公司财务指标数据，目前只覆盖主要美股和中概股。为避免服务器压力，现阶段每次请求最多返回200条记录，可通过设置日期多次请求获取更多数据。 ts_code period:string, ts_code*:string, end_date:string, start_date:string, report_type:string, fields:array" data-category="美股数据">
+            <td class="num">222</td>
+            <td><code>us_fina_indicator</code></td>
+            <td>美股财务指标数据</td>
+            <td>美股财务指标数据</td>
+            <td class="desc">获取美股上市公司财务指标数据，目前只覆盖主要美股和中概股。为避免服务器压力，现阶段每次请求最多返回200条记录，可通过设置日期多次请求获取更多数据。</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, end_date:string, start_date:string, report_type:string, fields:array</td>
+          </tr>
+          <tr data-search="us_cashflow 美股数据 美股现金流量表 美股现金流量表 美股数据 / 美股现金流量表 获取美股上市公司现金流量表数据（目前只覆盖主要美股和中概股） ts_code period:string, ts_code*:string, end_date:string, ind_name:string, start_date:string, report_type:string, fields:array" data-category="美股数据">
+            <td class="num">223</td>
+            <td><code>us_cashflow</code></td>
+            <td>美股现金流量表</td>
+            <td>美股现金流量表</td>
+            <td class="desc">获取美股上市公司现金流量表数据（目前只覆盖主要美股和中概股）</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, end_date:string, ind_name:string, start_date:string, report_type:string, fields:array</td>
+          </tr>
+          <tr data-search="us_income 美股数据 美股利润表 美股利润表 美股数据 / 美股利润表 获取美股上市公司财务利润表数据（目前只覆盖主要美股和中概股） ts_code period:string, ts_code*:string, end_date:string, ind_name:string, start_date:string, report_type:string, fields:array" data-category="美股数据">
+            <td class="num">224</td>
+            <td><code>us_income</code></td>
+            <td>美股利润表</td>
+            <td>美股利润表</td>
+            <td class="desc">获取美股上市公司财务利润表数据（目前只覆盖主要美股和中概股）</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, end_date:string, ind_name:string, start_date:string, report_type:string, fields:array</td>
+          </tr>
+          <tr data-search="us_balancesheet 美股数据 美股资产负债表 美股资产负债表 美股数据 / 美股资产负债表 获取美股上市公司资产负债表（目前只覆盖主要美股和中概股） ts_code period:string, ts_code*:string, end_date:string, ind_name:string, start_date:string, report_type:string, fields:array" data-category="美股数据">
+            <td class="num">225</td>
+            <td><code>us_balancesheet</code></td>
+            <td>美股资产负债表</td>
+            <td>美股资产负债表</td>
+            <td class="desc">获取美股上市公司资产负债表（目前只覆盖主要美股和中概股）</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, end_date:string, ind_name:string, start_date:string, report_type:string, fields:array</td>
+          </tr>
+          <tr data-search="us_adjfactor 美股数据 美股复权因子 美股复权因子 美股数据 / 美股复权因子 获取美股每日复权因子数据，在每天美股收盘后滚动刷新 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="美股数据">
+            <td class="num">231</td>
+            <td><code>us_adjfactor</code></td>
+            <td>美股复权因子</td>
+            <td>美股复权因子</td>
+            <td class="desc">获取美股每日复权因子数据，在每天美股收盘后滚动刷新</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-13">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 13</p>
+            <h2>期货</h2>
+          </div>
+          <span class="count">5 tools</span>
+        </div>
+        <p class="basis">二级分布：日线行情 1, 每日持仓排名 1, 仓单日报 1, 期货主力与连续合约 1, 期货主要品种交易周报 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="fut_daily 期货 日线行情 日线行情 期货 / 日线行情 期货日线行情数据 无 ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array" data-category="期货">
+            <td class="num">051</td>
+            <td><code>fut_daily</code></td>
+            <td>日线行情</td>
+            <td>日线行情</td>
+            <td class="desc">期货日线行情数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fut_holding 期货 每日持仓排名 每日持仓排名 期货 / 每日持仓排名 获取每日成交持仓排名数据 无 symbol:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array" data-category="期货">
+            <td class="num">052</td>
+            <td><code>fut_holding</code></td>
+            <td>每日持仓排名</td>
+            <td>每日持仓排名</td>
+            <td class="desc">获取每日成交持仓排名数据</td>
+            <td class="small">无</td>
+            <td class="params">symbol:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fut_wsr 期货 仓单日报 仓单日报 期货 / 仓单日报 获取仓单日报数据，了解各仓库/厂库的仓单变化 无 symbol:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array" data-category="期货">
+            <td class="num">053</td>
+            <td><code>fut_wsr</code></td>
+            <td>仓单日报</td>
+            <td>仓单日报</td>
+            <td class="desc">获取仓单日报数据，了解各仓库/厂库的仓单变化</td>
+            <td class="small">无</td>
+            <td class="params">symbol:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fut_mapping 期货 期货主力与连续合约 期货主力与连续合约 期货 / 期货主力与连续合约 获取期货主力（或连续）合约与月合约映射数据 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="期货">
+            <td class="num">090</td>
+            <td><code>fut_mapping</code></td>
+            <td>期货主力与连续合约</td>
+            <td>期货主力与连续合约</td>
+            <td class="desc">获取期货主力（或连续）合约与月合约映射数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="fut_weekly_detail 期货 期货主要品种交易周报 期货主要品种交易周报 期货 / 期货主要品种交易周报 获取期货交易所主要品种每周交易统计信息，数据从2010年3月开始 无 prd:string, week:string, fields:array, end_week:string, exchange:string, start_week:string" data-category="期货">
+            <td class="num">110</td>
+            <td><code>fut_weekly_detail</code></td>
+            <td>期货主要品种交易周报</td>
+            <td>期货主要品种交易周报</td>
+            <td class="desc">获取期货交易所主要品种每周交易统计信息，数据从2010年3月开始</td>
+            <td class="small">无</td>
+            <td class="params">prd:string, week:string, fields:array, end_week:string, exchange:string, start_week:string</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-14">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 14</p>
+            <h2>债券专题</h2>
+          </div>
+          <span class="count">5 tools</span>
+        </div>
+        <p class="basis">二级分布：可转债转股结果 1, 可转债赎回信息 1, 可转债技术面因子(专业版） 1, 可转债债券评级 1, 可转债十大持有人 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="cb_share 债券专题 可转债转股结果 可转债转股结果 债券专题 / 可转债转股结果 获取可转债转股结果 ann_date, ts_code ts_code*:string, ann_date*:string, end_date:string, start_date:string, fields:array" data-category="债券专题">
+            <td class="num">123</td>
+            <td><code>cb_share</code></td>
+            <td>可转债转股结果</td>
+            <td>可转债转股结果</td>
+            <td class="desc">获取可转债转股结果</td>
+            <td class="small">ann_date, ts_code</td>
+            <td class="params">ts_code*:string, ann_date*:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="cb_call 债券专题 可转债赎回信息 可转债赎回信息 债券专题 / 可转债赎回信息 获取可转债到期赎回、强制赎回等信息。数据来源于公开披露渠道，供个人和机构研究使用，请不要用于数据商业目的。 无 ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array" data-category="债券专题">
+            <td class="num">138</td>
+            <td><code>cb_call</code></td>
+            <td>可转债赎回信息</td>
+            <td>可转债赎回信息</td>
+            <td class="desc">获取可转债到期赎回、强制赎回等信息。数据来源于公开披露渠道，供个人和机构研究使用，请不要用于数据商业目的。</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="cb_factor_pro 债券专题 可转债技术面因子(专业版） 可转债技术面因子(专业版） 债券专题 / 可转债技术面因子(专业版） 获取可转债每日技术面因子数据，用于跟踪可转债当前走势情况，数据由tushare社区自产，覆盖全历史；输出参数_bfq表示不复权，_qfq表示前复权 _hfq表示后复权，描述中说明了因子的默认传参，如需要特殊参数或者更多因子可以联系管理员评估 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="债券专题">
+            <td class="num">221</td>
+            <td><code>cb_factor_pro</code></td>
+            <td>可转债技术面因子(专业版）</td>
+            <td>可转债技术面因子(专业版）</td>
+            <td class="desc">获取可转债每日技术面因子数据，用于跟踪可转债当前走势情况，数据由Tushare社区自产，覆盖全历史；输出参数_bfq表示不复权，_qfq表示前复权 _hfq表示后复权，描述中说明了因子的默认传参，如需要特殊参数或者更多因子可以联系管理员评估</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="cb_rating 债券专题 可转债债券评级 可转债债券评级 债券专题 / 可转债债券评级 获取可转债评级历史记录 ts_code ts_code*:string, fields:array" data-category="债券专题">
+            <td class="num">252</td>
+            <td><code>cb_rating</code></td>
+            <td>可转债债券评级</td>
+            <td>可转债债券评级</td>
+            <td class="desc">获取可转债评级历史记录</td>
+            <td class="small">ts_code</td>
+            <td class="params">ts_code*:string, fields:array</td>
+          </tr>
+          <tr data-search="top10_cb_holders 债券专题 可转债十大持有人 可转债十大持有人 债券专题 / 可转债十大持有人 获取可转债前十大持有人 ts_code period:string, ts_code*:string, end_date:string, start_date:string, fields:array" data-category="债券专题">
+            <td class="num">255</td>
+            <td><code>top10_cb_holders</code></td>
+            <td>可转债十大持有人</td>
+            <td>可转债十大持有人</td>
+            <td class="desc">获取可转债前十大持有人</td>
+            <td class="small">ts_code</td>
+            <td class="params">period:string, ts_code*:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-15">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 15</p>
+            <h2>另类数据</h2>
+          </div>
+          <span class="count">4 tools</span>
+        </div>
+        <p class="basis">二级分布：新闻联播文字稿 1, 新冠状肺炎感染人数 1, 全球新冠疫情数据 1, 上市公司公告 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="cctv_news 另类数据 新闻联播文字稿 新闻联播文字稿 另类数据 / 新闻联播文字稿 获取新闻联播文字稿数据，数据开始于2017年。 date date*:string, fields:array" data-category="另类数据">
+            <td class="num">063</td>
+            <td><code>cctv_news</code></td>
+            <td>新闻联播文字稿</td>
+            <td>新闻联播文字稿</td>
+            <td class="desc">获取新闻联播文字稿数据，数据开始于2017年。</td>
+            <td class="small">date</td>
+            <td class="params">date*:string, fields:array</td>
+          </tr>
+          <tr data-search="ncov_num 另类数据 新冠状肺炎感染人数 新冠状肺炎感染人数 另类数据 / 新冠状肺炎感染人数 获取新冠状肺炎疫情感染人数统计数据 无 level:string, ann_date:string, end_date:string, area_name:string, start_date:string, fields:array" data-category="另类数据">
+            <td class="num">103</td>
+            <td><code>ncov_num</code></td>
+            <td>新冠状肺炎感染人数</td>
+            <td>新冠状肺炎感染人数</td>
+            <td class="desc">获取新冠状肺炎疫情感染人数统计数据</td>
+            <td class="small">无</td>
+            <td class="params">level:string, ann_date:string, end_date:string, area_name:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="ncov_global 另类数据 全球新冠疫情数据 全球新冠疫情数据 另类数据 / 全球新冠疫情数据 获取全球新冠疫情数据，包括国家和地区 无 country:string, end_date:string, province:string, start_date:string, publish_date:string, fields:array" data-category="另类数据">
+            <td class="num">107</td>
+            <td><code>ncov_global</code></td>
+            <td>全球新冠疫情数据</td>
+            <td>全球新冠疫情数据</td>
+            <td class="desc">获取全球新冠疫情数据，包括国家和地区</td>
+            <td class="small">无</td>
+            <td class="params">country:string, end_date:string, province:string, start_date:string, publish_date:string, fields:array</td>
+          </tr>
+          <tr data-search="anns_d 另类数据 上市公司公告 上市公司公告 另类数据 / 上市公司公告 获取全量公告数据，提供pdf下载url 无 ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array" data-category="另类数据">
+            <td class="num">153</td>
+            <td><code>anns_d</code></td>
+            <td>上市公司公告</td>
+            <td>上市公司公告</td>
+            <td class="desc">获取全量公告数据，提供pdf下载URL</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, ann_date:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-16">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 16</p>
+            <h2>港股</h2>
+          </div>
+          <span class="count">4 tools</span>
+        </div>
+        <p class="basis">二级分布：港股基础信息 1, 港股交易日历 1, 港股分钟行情 1, 港股实时行情 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="hk_basic 港股 港股基础信息 港股基础信息 港股 / 港股基础信息 获取港股列表信息 无 ts_code:string, list_status:string, fields:array" data-category="港股">
+            <td class="num">092</td>
+            <td><code>hk_basic</code></td>
+            <td>港股基础信息</td>
+            <td>港股基础信息</td>
+            <td class="desc">获取港股列表信息</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, list_status:string, fields:array</td>
+          </tr>
+          <tr data-search="hk_tradecal 港股 港股交易日历 港股交易日历 港股 / 港股交易日历 获取交易日历 无 is_open:string, end_date:string, start_date:string, fields:array" data-category="港股">
+            <td class="num">125</td>
+            <td><code>hk_tradecal</code></td>
+            <td>港股交易日历</td>
+            <td>港股交易日历</td>
+            <td class="desc">获取交易日历</td>
+            <td class="small">无</td>
+            <td class="params">is_open:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="hk_mins 港股 港股分钟行情 港股分钟行情 港股 / 港股分钟行情 港股分钟数据，支持1min/5min/15min/30min/60min行情，提供python sdk和 http restful api两种方式 freq, ts_code freq*:string, ts_code*:string, end_date:string, start_date:string, fields:array" data-category="港股">
+            <td class="num">157</td>
+            <td><code>hk_mins</code></td>
+            <td>港股分钟行情</td>
+            <td>港股分钟行情</td>
+            <td class="desc">港股分钟数据，支持1min/5min/15min/30min/60min行情，提供Python SDK和 http Restful API两种方式</td>
+            <td class="small">freq, ts_code</td>
+            <td class="params">freq*:string, ts_code*:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="rt_hk_tick 港股 港股实时行情 港股实时行情 港股 / 港股实时行情 获取港股实时行情 ts_code ts_code*:string, fields:array" data-category="港股">
+            <td class="num">190</td>
+            <td><code>rt_hk_tick</code></td>
+            <td>港股实时行情</td>
+            <td>港股实时行情</td>
+            <td class="desc">获取港股实时行情</td>
+            <td class="small">ts_code</td>
+            <td class="params">ts_code*:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-17">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 17</p>
+            <h2>股票数据</h2>
+          </div>
+          <span class="count">4 tools</span>
+        </div>
+        <p class="basis">二级分布：自选股组合 4</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="p_list 股票数据 自选股组合 自选股组合查询 股票数据 / 自选股组合 / 自选股组合查询 自选股组合查询，不加参数查询出所以自定义组合 无 name:string, fields:array" data-category="股票数据">
+            <td class="num">246</td>
+            <td><code>p_list</code></td>
+            <td>自选股组合</td>
+            <td>自选股组合查询</td>
+            <td class="desc">自选股组合查询，不加参数查询出所以自定义组合</td>
+            <td class="small">无</td>
+            <td class="params">name:string, fields:array</td>
+          </tr>
+          <tr data-search="p_save 股票数据 自选股组合 自选股组合保存 股票数据 / 自选股组合 / 自选股组合保存 创建或修改自选股组合 items, name desc:string, name*:string, items*:array, fields:array" data-category="股票数据">
+            <td class="num">247</td>
+            <td><code>p_save</code></td>
+            <td>自选股组合</td>
+            <td>自选股组合保存</td>
+            <td class="desc">创建或修改自选股组合</td>
+            <td class="small">items, name</td>
+            <td class="params">desc:string, name*:string, items*:array, fields:array</td>
+          </tr>
+          <tr data-search="p_delete 股票数据 自选股组合 自选股组合删除 股票数据 / 自选股组合 / 自选股组合删除 删除自选股组合 name name*:integer, fields:array" data-category="股票数据">
+            <td class="num">248</td>
+            <td><code>p_delete</code></td>
+            <td>自选股组合</td>
+            <td>自选股组合删除</td>
+            <td class="desc">删除自选股组合</td>
+            <td class="small">name</td>
+            <td class="params">name*:integer, fields:array</td>
+          </tr>
+          <tr data-search="p_get 股票数据 自选股组合 自选股组合成分查询 股票数据 / 自选股组合 / 自选股组合成分查询 查询组合的成分列表 name name*:string, fields:array" data-category="股票数据">
+            <td class="num">249</td>
+            <td><code>p_get</code></td>
+            <td>自选股组合</td>
+            <td>自选股组合成分查询</td>
+            <td class="desc">查询组合的成分列表</td>
+            <td class="small">name</td>
+            <td class="params">name*:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-18">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 18</p>
+            <h2>期权</h2>
+          </div>
+          <span class="count">3 tools</span>
+        </div>
+        <p class="basis">二级分布：期权合约信息 1, TICK数据 1, 期权分钟行情 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="opt_basic 期权 期权合约信息 期权合约信息 期权 / 期权合约信息 获取期权合约信息 无 ts_code:string, call_put:string, exchange:string, opt_code:string, list_date:string, fields:array" data-category="期权">
+            <td class="num">065</td>
+            <td><code>opt_basic</code></td>
+            <td>期权合约信息</td>
+            <td>期权合约信息</td>
+            <td class="desc">获取期权合约信息</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, call_put:string, exchange:string, opt_code:string, list_date:string, fields:array</td>
+          </tr>
+          <tr data-search="ft_tick 期权 tick数据 tick数据 期权 / tick数据 获取期权和期货的tick数据 symbol symbol*:string, end_date:string, start_date:string, fields:array" data-category="期权">
+            <td class="num">119</td>
+            <td><code>ft_tick</code></td>
+            <td>TICK数据</td>
+            <td>TICK数据</td>
+            <td class="desc">获取期权和期货的tick数据</td>
+            <td class="small">symbol</td>
+            <td class="params">symbol*:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+          <tr data-search="opt_mins 期权 期权分钟行情 期权分钟行情 期权 / 期权分钟行情 获取全市场期权合约分钟数据，支持1min/5min/15min/30min/60min行情，提供python sdk和 http restful api两种方式。 freq, ts_code freq*:string, ts_code*:string, end_date:string, start_date:string, fields:array" data-category="期权">
+            <td class="num">136</td>
+            <td><code>opt_mins</code></td>
+            <td>期权分钟行情</td>
+            <td>期权分钟行情</td>
+            <td class="desc">获取全市场期权合约分钟数据，支持1min/5min/15min/30min/60min行情，提供Python SDK和 http Restful API两种方式。</td>
+            <td class="small">freq, ts_code</td>
+            <td class="params">freq*:string, ts_code*:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-19">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 19</p>
+            <h2>美股</h2>
+          </div>
+          <span class="count">3 tools</span>
+        </div>
+        <p class="basis">二级分布：美股日线行情 1, 美股基础信息 1, 美股交易日历 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="us_daily 美股 美股日线行情 美股日线行情 美股 / 美股日线行情 获取美股行情（未复权），包括全部股票全历史行情，以及重要的市场和估值指标 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="美股">
+            <td class="num">124</td>
+            <td><code>us_daily</code></td>
+            <td>美股日线行情</td>
+            <td>美股日线行情</td>
+            <td class="desc">获取美股行情（未复权），包括全部股票全历史行情，以及重要的市场和估值指标</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="us_basic 美股 美股基础信息 美股基础信息 美股 / 美股基础信息 获取美股列表信息 无 limit:string, offset:string, ts_code:string, classify:string, fields:array" data-category="美股">
+            <td class="num">126</td>
+            <td><code>us_basic</code></td>
+            <td>美股基础信息</td>
+            <td>美股基础信息</td>
+            <td class="desc">获取美股列表信息</td>
+            <td class="small">无</td>
+            <td class="params">limit:string, offset:string, ts_code:string, classify:string, fields:array</td>
+          </tr>
+          <tr data-search="us_tradecal 美股 美股交易日历 美股交易日历 美股 / 美股交易日历 获取美股交易日历信息 无 is_open:string, end_date:string, start_date:string, fields:array" data-category="美股">
+            <td class="num">127</td>
+            <td><code>us_tradecal</code></td>
+            <td>美股交易日历</td>
+            <td>美股交易日历</td>
+            <td class="desc">获取美股交易日历信息</td>
+            <td class="small">无</td>
+            <td class="params">is_open:string, end_date:string, start_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-20">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 20</p>
+            <h2>小佩数据</h2>
+          </div>
+          <span class="count">2 tools</span>
+        </div>
+        <p class="basis">二级分布：动能因子 1, 估值因子 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="stock_mx 小佩数据 动能因子 动能因子 小佩数据 / 动能因子 获取小佩数据动量因子数据，可以获取股票动能评级数据，包括最新及过去历史数据 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="小佩数据">
+            <td class="num">155</td>
+            <td><code>stock_mx</code></td>
+            <td>动能因子</td>
+            <td>动能因子</td>
+            <td class="desc">获取小佩数据动量因子数据，可以获取股票动能评级数据，包括最新及过去历史数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+          <tr data-search="stock_vx 小佩数据 估值因子 估值因子 小佩数据 / 估值因子 小沛估值因子 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="小佩数据">
+            <td class="num">156</td>
+            <td><code>stock_vx</code></td>
+            <td>估值因子</td>
+            <td>估值因子</td>
+            <td class="desc">小沛估值因子</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-21">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 21</p>
+            <h2>期权数据</h2>
+          </div>
+          <span class="count">1 tools</span>
+        </div>
+        <p class="basis">二级分布：期权日线行情 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="opt_daily 期权数据 期权日线行情 期权日线行情 期权数据 / 期权日线行情 获取期权日线行情 无 ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array" data-category="期权数据">
+            <td class="num">066</td>
+            <td><code>opt_daily</code></td>
+            <td>期权日线行情</td>
+            <td>期权日线行情</td>
+            <td class="desc">获取期权日线行情</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-22">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 22</p>
+            <h2>外汇</h2>
+          </div>
+          <span class="count">1 tools</span>
+        </div>
+        <p class="basis">二级分布：外汇基础信息（海外） 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="fx_obasic 外汇 外汇基础信息（海外） 外汇基础信息（海外） 外汇 / 外汇基础信息（海外） 获取海外外汇基础信息，目前只有fxcm交易商的数据 无 ts_code:string, classify:string, exchange:string, fields:array" data-category="外汇">
+            <td class="num">080</td>
+            <td><code>fx_obasic</code></td>
+            <td>外汇基础信息（海外）</td>
+            <td>外汇基础信息（海外）</td>
+            <td class="desc">获取海外外汇基础信息，目前只有FXCM交易商的数据</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, classify:string, exchange:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-23">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 23</p>
+            <h2>外汇数据</h2>
+          </div>
+          <span class="count">1 tools</span>
+        </div>
+        <p class="basis">二级分布：外汇日线行情 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="fx_daily 外汇数据 外汇日线行情 外汇日线行情 外汇数据 / 外汇日线行情 获取外汇日线行情 无 ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array" data-category="外汇数据">
+            <td class="num">081</td>
+            <td><code>fx_daily</code></td>
+            <td>外汇日线行情</td>
+            <td>外汇日线行情</td>
+            <td class="desc">获取外汇日线行情</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, exchange:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-24">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 24</p>
+            <h2>财富管理</h2>
+          </div>
+          <span class="count">1 tools</span>
+        </div>
+        <p class="basis">二级分布：基金销售行业数据 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="fund_sales_vol 财富管理 基金销售行业数据 销售机构公募基金销售保有规模 财富管理 / 基金销售行业数据 / 销售机构公募基金销售保有规模 获取销售机构公募基金销售保有规模数据，本数据从2021年q1开始公布，季度更新 无 name:string, year:string, quarter:string, fields:array" data-category="财富管理">
+            <td class="num">134</td>
+            <td><code>fund_sales_vol</code></td>
+            <td>基金销售行业数据</td>
+            <td>销售机构公募基金销售保有规模</td>
+            <td class="desc">获取销售机构公募基金销售保有规模数据，本数据从2021年Q1开始公布，季度更新</td>
+            <td class="small">无</td>
+            <td class="params">name:string, year:string, quarter:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-25">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 25</p>
+            <h2>现货</h2>
+          </div>
+          <span class="count">1 tools</span>
+        </div>
+        <p class="basis">二级分布：上海黄金基础信息 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="sge_basic 现货 上海黄金基础信息 上海黄金基础信息 现货 / 上海黄金基础信息 获取上海黄金交易所现货合约基础信息 无 ts_code:string, fields:array" data-category="现货">
+            <td class="num">144</td>
+            <td><code>sge_basic</code></td>
+            <td>上海黄金基础信息</td>
+            <td>上海黄金基础信息</td>
+            <td class="desc">获取上海黄金交易所现货合约基础信息</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="category" id="cat-26">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tushare category 26</p>
+            <h2>现货数据</h2>
+          </div>
+          <span class="count">1 tools</span>
+        </div>
+        <p class="basis">二级分布：上海黄金现货日行情 1</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tool</th>
+                <th>二级分类</th>
+                <th>接口名</th>
+                <th>作用</th>
+                <th>必填参数</th>
+                <th>全部入参结构</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr data-search="sge_daily 现货数据 上海黄金现货日行情 上海黄金现货日行情 现货数据 / 上海黄金现货日行情 获取上海黄金交易所现货合约日线行情 无 ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array" data-category="现货数据">
+            <td class="num">145</td>
+            <td><code>sge_daily</code></td>
+            <td>上海黄金现货日行情</td>
+            <td>上海黄金现货日行情</td>
+            <td class="desc">获取上海黄金交易所现货合约日线行情</td>
+            <td class="small">无</td>
+            <td class="params">ts_code:string, end_date:string, start_date:string, trade_date:string, fields:array</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <footer>生成文件：tushare-mcp-tools-inventory.html</footer>
+  <script>
+    const search = document.getElementById('search');
+    const category = document.getElementById('category');
+    const resultLine = document.getElementById('resultLine');
+    const rows = Array.from(document.querySelectorAll('tbody tr'));
+    const sections = Array.from(document.querySelectorAll('.category'));
+    const total = rows.length;
+    function applyFilter() {
+      const q = search.value.trim().toLowerCase();
+      const cat = category.value;
+      let shown = 0;
+      rows.forEach(row => {
+        const okQ = !q || row.dataset.search.includes(q);
+        const okCat = !cat || row.dataset.category === cat;
+        const visible = okQ && okCat;
+        row.classList.toggle('hidden', !visible);
+        if (visible) shown += 1;
+      });
+      sections.forEach(section => {
+        const anyVisible = Array.from(section.querySelectorAll('tbody tr')).some(row => !row.classList.contains('hidden'));
+        section.classList.toggle('hidden-section', !anyVisible);
+      });
+      resultLine.textContent = `当前显示 ${shown} / ${total} 个 tools`;
+    }
+    search.addEventListener('input', applyFilter);
+    category.addEventListener('change', applyFilter);
+  </script>
+</body>
+</html>
