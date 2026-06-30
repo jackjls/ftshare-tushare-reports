@@ -24,7 +24,29 @@
     .card h2{margin:0 0 8px;font-size:20px}
     .card p{margin:0;color:var(--muted)}
     .metric{display:inline-block;margin-top:14px;border:1px solid var(--line);border-radius:6px;padding:6px 9px;color:#34404c;background:#fbfcfd;font-size:13px}
+    .global-search{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:20px;margin-bottom:18px}
+    .global-search h2{margin:0 0 8px;font-size:20px}
+    .global-search p{margin:0 0 14px;color:var(--muted)}
+    .search-row{display:grid;grid-template-columns:1fr auto;gap:10px}
+    .search-row input{width:100%;border:1px solid var(--line);border-radius:7px;padding:12px 14px;font-size:15px;background:#fff;color:var(--ink)}
+    .search-row button,.quick button{border:1px solid var(--line);border-radius:7px;background:#fbfcfd;color:#34404c;padding:10px 12px;font-size:14px;cursor:pointer}
+    .search-row button:hover,.quick button:hover{border-color:var(--accent);color:var(--accent)}
+    .quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .search-status{margin-top:12px;color:var(--muted);font-size:13px}
+    .search-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+    .platform-col{border:1px solid var(--line);border-radius:8px;background:#fbfcfd;overflow:hidden}
+    .platform-col h3{display:flex;justify-content:space-between;align-items:center;margin:0;padding:12px 14px;border-bottom:1px solid var(--line);font-size:16px}
+    .source-group{padding:12px 14px;border-bottom:1px solid var(--line)}
+    .source-group:last-child{border-bottom:0}
+    .source-title{display:flex;justify-content:space-between;gap:10px;color:#34404c;font-weight:700;font-size:13px;margin-bottom:8px}
+    .result-item{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);border-radius:7px;padding:10px;margin-top:8px}
+    .result-item:hover{border-color:var(--accent)}
+    .result-item strong{display:block;margin-bottom:4px;font-size:14px}
+    .result-item code{background:#eef3f6;border:1px solid #d8e1e7;border-radius:5px;padding:1px 5px;font-size:12px;color:#17202a}
+    .result-meta,.result-detail{color:var(--muted);font-size:12px;margin-top:5px}
+    .empty-results{border:1px dashed var(--line);border-radius:8px;padding:14px;color:var(--muted);background:#fbfcfd}
     @media(max-width:800px){.grid{grid-template-columns:1fr}.hero,main{padding-left:16px;padding-right:16px}}
+    @media(max-width:900px){.search-results{grid-template-columns:1fr}.search-row{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -36,6 +58,26 @@
     </div>
   </header>
   <main>
+    <section class="global-search">
+      <h2>全局检索</h2>
+      <p>输入关键词，同时检索 FTShare SDK、Skill、MCP 和 Tushare 官网接口、MCP、权限对比。</p>
+      <div class="search-row">
+        <input id="globalSearchInput" type="search" placeholder="例如：概念、资金流、财务、ETF、港股、宏观">
+        <button id="globalSearchClear" type="button">清空</button>
+      </div>
+      <div class="quick" aria-label="常用关键词">
+        <button type="button" data-query="概念">概念</button>
+        <button type="button" data-query="行情">行情</button>
+        <button type="button" data-query="资金">资金</button>
+        <button type="button" data-query="财务">财务</button>
+        <button type="button" data-query="ETF">ETF</button>
+        <button type="button" data-query="港股">港股</button>
+        <button type="button" data-query="宏观">宏观</button>
+        <button type="button" data-query="研报">研报</button>
+      </div>
+      <div id="globalSearchStatus" class="search-status">输入关键词后，会按 FTShare 和 Tushare 两侧展示匹配结果。</div>
+      <div id="globalSearchResults" class="search-results"></div>
+    </section>
     <section class="grid">
       <a class="card" href="ftshare-data-assets-inventory.html">
         <h2>FTShare SDK 176</h2>
@@ -73,5 +115,65 @@
         <span class="metric">官网 50 个单独权限接口</span>
       </a>    </section>
   </main>
+  <script src="global-search-index.js"></script>
+  <script>
+    const searchInput=document.getElementById('globalSearchInput');
+    const clearBtn=document.getElementById('globalSearchClear');
+    const statusEl=document.getElementById('globalSearchStatus');
+    const resultsEl=document.getElementById('globalSearchResults');
+    const index=window.GLOBAL_SEARCH_INDEX||[];
+    const sourceOrder={'SDK 176':1,'Skill 119':2,'MCP 159':3,'官网接口 237':1,'MCP 258':2,'权限对比 50':3};
+    function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+    function trim(v,n=96){v=String(v||'');return v.length>n?v.slice(0,n)+'...':v;}
+    function score(row,terms){
+      let s=0;
+      const name=String(row.name||'').toLowerCase(), title=String(row.title||'').toLowerCase(), cat=String(row.category||'').toLowerCase();
+      for(const t of terms){
+        if(name===t)s+=80; else if(name.includes(t))s+=45;
+        if(title.includes(t))s+=35;
+        if(cat.includes(t))s+=20;
+        if(String(row.detail||'').toLowerCase().includes(t))s+=10;
+        if(String(row.params||'').toLowerCase().includes(t))s+=6;
+      }
+      return s;
+    }
+    function renderSearch(){
+      const q=searchInput.value.trim().toLowerCase();
+      resultsEl.innerHTML='';
+      if(!q){statusEl.textContent='输入关键词后，会按 FTShare 和 Tushare 两侧展示匹配结果。';return;}
+      const terms=q.split(/\s+/).filter(Boolean);
+      const matches=index.filter(row=>terms.every(t=>row.text.includes(t))).map(row=>({...row,_score:score(row,terms)})).sort((a,b)=>b._score-a._score||a.platform.localeCompare(b.platform,'zh')||(sourceOrder[a.source]||9)-(sourceOrder[b.source]||9));
+      const byPlatform={FTShare:matches.filter(r=>r.platform==='FTShare'),Tushare:matches.filter(r=>r.platform==='Tushare')};
+      statusEl.textContent=`当前匹配 ${matches.length} 条：FTShare ${byPlatform.FTShare.length} 条，Tushare ${byPlatform.Tushare.length} 条`;
+      for(const platform of ['FTShare','Tushare']){
+        const rows=byPlatform[platform];
+        const col=document.createElement('div');
+        col.className='platform-col';
+        col.innerHTML=`<h3>${platform}<span>${rows.length} 条</span></h3>`;
+        if(!rows.length){
+          col.insertAdjacentHTML('beforeend','<div class="source-group"><div class="empty-results">没有匹配结果</div></div>');
+          resultsEl.appendChild(col);
+          continue;
+        }
+        const groups=[...new Set(rows.map(r=>r.source))].sort((a,b)=>(sourceOrder[a]||9)-(sourceOrder[b]||9)||a.localeCompare(b,'zh'));
+        for(const source of groups){
+          const groupRows=rows.filter(r=>r.source===source);
+          const shown=groupRows.slice(0,8);
+          const group=document.createElement('div');
+          group.className='source-group';
+          group.innerHTML=`<div class="source-title"><span>${esc(source)}</span><span>${groupRows.length} 条</span></div>`;
+          for(const row of shown){
+            group.insertAdjacentHTML('beforeend',`<a class="result-item" href="${esc(row.href)}"><strong><code>${esc(row.name||'-')}</code> ${esc(trim(row.title||'',56))}</strong><div class="result-meta">${esc(row.category||'未分类')}</div><div class="result-detail">${esc(trim(row.detail||row.params||row.required||''))}</div></a>`);
+          }
+          if(groupRows.length>shown.length)group.insertAdjacentHTML('beforeend',`<div class="result-detail">还有 ${groupRows.length-shown.length} 条，可换更精确关键词继续缩小范围。</div>`);
+          col.appendChild(group);
+        }
+        resultsEl.appendChild(col);
+      }
+    }
+    searchInput.addEventListener('input',renderSearch);
+    clearBtn.addEventListener('click',()=>{searchInput.value='';renderSearch();searchInput.focus();});
+    document.querySelectorAll('.quick button').forEach(btn=>btn.addEventListener('click',()=>{searchInput.value=btn.dataset.query;renderSearch();}));
+  </script>
 </body>
 </html>
