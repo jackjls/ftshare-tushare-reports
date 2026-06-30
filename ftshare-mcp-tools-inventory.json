@@ -1,0 +1,2525 @@
+[
+  {
+    "idx": 1,
+    "name": "aggregate_demo",
+    "category": "示例 / 聚合",
+    "description": "示例聚合型工具（占位）。并发取融资融券明细 + 个股主力资金，合并成摘要文本。参数 date(YYYYMMDD)、time(HHMM) 可选。需连通上游 v0 内网 (xz07:10102)。",
+    "short": "示例聚合型工具（占位）。并发取融资融券明细 + 个股主力资金，合并成摘要文本。",
+    "required": [],
+    "params": [
+      "date",
+      "time"
+    ],
+    "param_count": 2,
+    "is_ft": false
+  },
+  {
+    "idx": 2,
+    "name": "capital_flow",
+    "category": "聚合行情 / 旧工具",
+    "description": "主力资金/资金流。type 默认 stock=个股盘中15分钟切片资金流(可选 symbol 按标的过滤,Wind 风格 000001.SZ,也接受内码 000001.XSHE;返回 net_inflow_extra_large/large/medium/small + symbol + ts_nanos,无主力净额字段,需自算 main=extra_large+large)；可选 eastmoney_stock/eastmoney_market/eastmoney_sector(东财三件套)、northbound/southbound(南北向资金,必填 date=YYYYMMDD,返回通道聚合单对象非个股结构)。其余口径可选 date、time(HHMM)、page、page_size。",
+    "short": "主力资金/资金流。type 默认 stock=个股盘中15分钟切片资金流(可选 symbol 按标的过滤,Wind 风格 000001.SZ,也接受内码 000001.XSHE;",
+    "required": [],
+    "params": [
+      "date",
+      "page",
+      "page_size",
+      "symbol",
+      "time",
+      "type"
+    ],
+    "param_count": 6,
+    "is_ft": false
+  },
+  {
+    "idx": 3,
+    "name": "daily_ohlc",
+    "category": "聚合行情 / 旧工具",
+    "description": "日频高开低收。type 默认 stock(A股/通用证券日 OHLC,v0 /api/v0/stock-candlesticks 或 /api/v0/hk-stock-candlesticks,按 symbol 后缀路由,必填 symbol,until_ts_millis 不传则取当前时间)；可选 daec_stock(无 v0 路由,回退公网)、hk_stock(v0 /api/v0/hk/hk-candlesticks,必填 symbol+until_date=YYYY-MM-DD)、us_stock(stock_code,区间 ≤3 天)、eastmoney_board/eastmoney_board_latest(板块)、hk_index(index_code)、global_index(secid)、ths_board/ths_all_board。各 type 参数名不同,见字段说明。",
+    "short": "日频高开低收。type 默认 stock(A股/通用证券日 OHLC,v0 /api/v0/stock-candlesticks 或 /api/v0/hk-stock-candlesticks,按 symbol 后缀路由,必填 symbol,until_ts_millis 不传则取当前时间)；",
+    "required": [],
+    "params": [
+      "adjust",
+      "board_code",
+      "end_date",
+      "index_code",
+      "limit",
+      "page",
+      "page_size",
+      "secid",
+      "since",
+      "start_date",
+      "stock_code",
+      "symbol",
+      "type",
+      "until",
+      "until_date"
+    ],
+    "param_count": 15,
+    "is_ft": false
+  },
+  {
+    "idx": 4,
+    "name": "echo",
+    "category": "示例 / 聚合",
+    "description": "示例转发型工具（占位）。回显 message，不触网，用于演示 handler→service 分层。",
+    "short": "示例转发型工具（占位）。回显 message，不触网，用于演示 handler→service 分层。",
+    "required": [
+      "message"
+    ],
+    "params": [
+      "message"
+    ],
+    "param_count": 1,
+    "is_ft": false
+  },
+  {
+    "idx": 5,
+    "name": "ft_abnormal_trading_details",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询龙虎榜明细（异动成交详情），按交易日返回当日上榜标的明细：含标的涨跌幅、收盘价、成交额，以及买入额/卖出额前 5 名营业部明细。传入 `date` 时直接读取文件中心当日 CSV（`STRANGE_TRADE`），不传时回退内存缓存 `ABNORMAL_TRADING_DETAILS`。响应为 `Vec<AbnormalTradingDetailResponse>`（非分页，一次返回全部上榜标的），经 ft-data-server 层补充标的名称。\n提示: `date` 格式 YYYYMMDD；不传返回最新内存快照。; `top_buyers` / `top_sellers` 各为前 5 名营业部列表，含买入额/卖出额/净额。; 金额字段单位为元。",
+    "short": "查询龙虎榜明细（异动成交详情），按交易日返回当日上榜标的明细：含标的涨跌幅、收盘价、成交额，以及买入额/卖出额前 5 名营业部明细。传入 `date` 时直接读取文件中心当日 CSV（`STRANGE_TRADE`），不传时回退内存缓存 `ABNORMAL_TRADING_DETAILS`。",
+    "required": [],
+    "params": [
+      "date"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 6,
+    "name": "ft_abnormal_trading_overview",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询龙虎榜总览（异动成交概览），按交易日返回当日上榜标的的总览信息：仅含标的代码与涨跌幅，按交易所分桶（上交所 xshg / 深交所 xshe / 北交所 bjse）。传入 `date` 时直接读取文件中心当日 CSV，不传时回退内存缓存 `ABNORMAL_TRADING_OVERVIEW`。响应为单个 `AbnormalTradingOverviewResponse` 对象（非分页），经 ft-data-server 层补充标的名称。与「龙虎榜明细」的区别：总览不含营业部买卖明细与成交额，仅给上榜标的的涨跌幅清单，适合快速扫描上榜名单。\n提示: `date` 格式 YYYYMMDD；不传返回最新内存快照。; 响应按交易所分桶：`xshg`（上交所）/ `xshe`（深交所）/ `bjse`（北交所）。; 每项仅含涨跌幅，不含买卖营业部明细。",
+    "short": "查询龙虎榜总览（异动成交概览），按交易日返回当日上榜标的的总览信息：仅含标的代码与涨跌幅，按交易所分桶（上交所 xshg / 深交所 xshe / 北交所 bjse）。传入 `date` 时直接读取文件中心当日 CSV，不传时回退内存缓存 `ABNORMAL_TRADING_OVERVIEW`。",
+    "required": [],
+    "params": [
+      "date"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 7,
+    "name": "ft_auction_results",
+    "category": "A股基础 / 行情",
+    "description": "返回当日所有股票的盘前集合竞价结果（9:25 开盘集合竞价快照，来自 ClickHouse）：集合竞价开盘价/收盘价（最新价）、最高价、最低价、成交量、成交额、均价（vwap）。支持按 `ts_code` 单标的查询，或按 `trade_date` / `start_date`+`end_date` 区间查询。响应为 `PaginatedApiResponse` 信封（code/message/data），data 含分页字段（pageNum/pageSize/total/pages/records）。\n提示: 支持 `ts_code`（单标的）、`trade_date`（单日）、`start_date`+`end_date`（区间）组合查询。; 响应为 code/message/data 信封，data 为分页对象（camelCase：pageNum/pageSize/total/pages/records）。; `page_size` 上限 200。",
+    "short": "返回当日所有股票的盘前集合竞价结果（9:25 开盘集合竞价快照，来自 ClickHouse）：集合竞价开盘价/收盘价（最新价）、最高价、最低价、成交量、成交额、均价（vwap）。支持按 `ts_code` 单标的查询，或按 `trade_date` / `start_date`+`end_date` 区间查询。",
+    "required": [],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "start_date",
+      "trade_date",
+      "ts_code"
+    ],
+    "param_count": 6,
+    "is_ft": true
+  },
+  {
+    "idx": 8,
+    "name": "ft_baidu_financial_calendar",
+    "category": "日历 / 事件",
+    "description": "查询百度财经日历，按日期范围返回该区间内的财经事件，覆盖经济数据、新股 IPO、财报披露时间、交易提醒四类。可通过 `category` 筛选单类，不传返回全部。响应为分页信封 `PaginatedApiResponse`，`records` 为带类型标签的枚举（`category` 字段区分四类，各类字段同级扁平）。底层对 `start_date`/`end_date` 做 3 天范围校验，并按 (stat_date, time, title/code) 升序排序。数据来源：百度。返回结果先全量加载再内存分页。\n提示: `start_date` / `end_date` 必填，间隔 ≤ 3 天，否则返回 code=400。; `category` 可选，取值 `economic`/`ipo`/`report_time`/`trade_reminder`；非法值返回 code=400。; 数据来源：百度（路径中保留 `baidu` 来源标识）。; records 每行带 `category` 标签，四类条目字段不同，下表合并列出（缺失字段为 null）。",
+    "short": "查询百度财经日历，按日期范围返回该区间内的财经事件，覆盖经济数据、新股 IPO、财报披露时间、交易提醒四类。可通过 `category` 筛选单类，不传返回全部。",
+    "required": [
+      "start_date",
+      "end_date"
+    ],
+    "params": [
+      "category",
+      "end_date",
+      "page",
+      "page_size",
+      "start_date"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 9,
+    "name": "ft_balance",
+    "category": "A股财务 / 业绩",
+    "description": "查询 A 股上市公司资产负债表数据，底表 `ashare_balance`。返回**宽表**结构（每行一个报告期 + 多个财务科目列），数值字段为 `Option<Decimal>`，优先取「合并调整」报表类型，没有则取「合并未调整」。同一路径支持两种模式：模式A 传 `stock_code` 查单票所有报告期；模式B 不传 `stock_code` 时必填 `year + report_type + page + page_size`，按单个报告期分页查所有票。`report_type` 取值 `q1` / `q2` / `q3` / `annual`（兼容 `h1` → `q2`）。\n提示: `stock_code` 格式为 6 位数字 + 交易所后缀（如 `600519.SH`），模式A 与模式B 二选一。; 模式A 单票查询不分页，返回该票全部报告期；模式B 才按 `page/page_size` 分页。; 数值字段大多成对（原值 + `_yoy` 同比），同比无值时为 null；末尾含衍生字段 `asset_liability_ratio`（资产负债率）。",
+    "short": "查询 A 股上市公司资产负债表数据，底表 `ashare_balance`。返回**宽表**结构（每行一个报告期 + 多个财务科目列），数值字段为 `Option<Decimal>`，优先取「合并调整」报表类型，没有则取「合并未调整」。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "report_type",
+      "stock_code",
+      "year"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 10,
+    "name": "ft_cashflow",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询 A 股上市公司现金流量表数据，底表 `ashare_cashflow`。返回**宽表**结构（每行一个报告期 + 多个财务科目列），数值字段为 `Option<Decimal>`，优先取「合并调整」报表类型，没有则取「合并未调整」。同一路径支持两种模式：模式A 传 `stock_code` 查单票所有报告期；模式B 不传 `stock_code` 时必填 `year + report_type + page + page_size`，按单个报告期分页查所有票。报告类型 `report_type` 取值 `q1` / `q2` / `q3` / `annual`。\n提示: `stock_code` 格式为 6 位数字 + 交易所后缀（如 `000001.SZ`），模式A 与模式B 二选一。; 模式A 单票查询不分页，返回该票全部报告期；模式B 才按 `page/page_size` 分页。; 数值字段每对（原值 + `_yoy` 同比）成组返回，同比字段无值时为 null。",
+    "short": "查询 A 股上市公司现金流量表数据，底表 `ashare_cashflow`。返回**宽表**结构（每行一个报告期 + 多个财务科目列），数值字段为 `Option<Decimal>`，优先取「合并调整」报表类型，没有则取「合并未调整」。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "report_type",
+      "stock_code",
+      "year"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 11,
+    "name": "ft_consumer_credit_monthly",
+    "category": "宏观经济",
+    "description": "查询中国信贷数据（月度汇总计算结果，底层 `file_id` = M00000402）。按月份返回新增信贷当月值、同比、环比、当年累计及累计同比。底层从宏观经济指标库加载后按月聚合，按 `field_date` 年份（2000 年起）降序排列。响应为数组直出，元素为 `CreditComputed`，包含货币单位与币种字段。无入参。\n提示: `month` 格式化为「YYYY年MM月份」。; 金额字段单位见 `unit`（通常为亿元），币种见 `currency`。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询中国信贷数据（月度汇总计算结果，底层 `file_id` = M00000402）。按月份返回新增信贷当月值、同比、环比、当年累计及累计同比。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 12,
+    "name": "ft_consumer_customs_trade_monthly",
+    "category": "宏观经济",
+    "description": "查询中国海关进出口增减情况月度汇总计算结果。按月份返回当月出口额（M00007241）、出口同比/环比，当月进口额（M00007297）、进口同比/环比，以及累计出口/进口额（M00007269/M00007325）与各自累计同比。底层从宏观经济指标库加载后按月聚合，按 `field_date` 年份（2000 年起）降序排列。响应为数组直出，元素为 `CustomsTradeComputed`，含货币单位与币种。无入参。\n提示: `month` 格式化为「YYYY年MM月份」。; 金额单位见 `unit`（通常为亿美元 USD），币种见 `currency`。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询中国海关进出口增减情况月度汇总计算结果。按月份返回当月出口额（M00007241）、出口同比/环比，当月进口额（M00007297）、进口同比/环比，以及累计出口/进口额（M00007269/M00007325）与各自累计同比。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 13,
+    "name": "ft_consumer_fiscal_revenue_monthly",
+    "category": "宏观经济",
+    "description": "查询中国财政收入月度汇总计算结果。按月份返回当月财政收入合计（`file_id` = M00008501）、当月同比/环比、累计（M00001548）及累计同比（M00001549）。底层从宏观经济指标库加载后按月聚合，按 `field_date` 年份（2000 年起）降序排列。响应为数组直出，元素为 `FiscalRevenueComputed`，含货币单位与币种。无入参。\n提示: `month` 格式化为「YYYY年MM月份」。; 金额单位见 `unit`（通常为亿元），币种见 `currency`。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询中国财政收入月度汇总计算结果。按月份返回当月财政收入合计（`file_id` = M00008501）、当月同比/环比、累计（M00001548）及累计同比（M00001549）。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 14,
+    "name": "ft_consumer_fixed_asset_monthly",
+    "category": "宏观经济",
+    "description": "查询中国城镇固定资产投资月度汇总计算结果（底层 `file_id` = M00001580）。按月份返回本月投资（本月累计 - 上月累计）、同比、环比、原始累计值。底层从宏观经济指标库加载后按月聚合，按 `field_date` 年份（2000 年起）降序排列。响应为数组直出，元素为 `FixedAssetInvestmentComputed`，含货币单位与币种。无入参。\n提示: `month` 格式化为「YYYY年MM月份」。; 金额单位见 `unit`，币种见 `currency`。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询中国城镇固定资产投资月度汇总计算结果（底层 `file_id` = M00001580）。按月份返回本月投资（本月累计 - 上月累计）、同比、环比、原始累计值。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 15,
+    "name": "ft_consumer_forex_gold_monthly",
+    "category": "宏观经济",
+    "description": "查询中国国家外汇储备与黄金储备月度汇总计算结果。按月份返回外汇储备当月值（`file_id` = M00012713）、外汇同比/环比，黄金储备当月值（M00017197）、黄金同比/环比。底层从宏观经济指标库加载后按月聚合，按 `field_date` 年份（2000 年起）降序排列。响应为数组直出，元素为 `ForexGoldComputed`，含货币单位与币种。无入参。\n提示: `month` 格式化为「YYYY年MM月份」。; 金额单位见 `unit`，币种见 `currency`（外汇通常为亿美元，黄金通常为万盎司）。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询中国国家外汇储备与黄金储备月度汇总计算结果。按月份返回外汇储备当月值（`file_id` = M00012713）、外汇同比/环比，黄金储备当月值（M00017197）、黄金同比/环比。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 16,
+    "name": "ft_consumer_gdp_quarterly",
+    "category": "宏观经济",
+    "description": "查询中国 GDP 季度汇总结果。按季度（按 `field_date` 的季度）返回 GDP 总量、同比，以及第一/二/三产业增加值与各产业累计同比。季度标签按累积口径输出，如「YYYY年第1-3季度」。底层从宏观经济指标库加载后按季度聚合，按年份（2000 年起）降序排列。响应为数组直出，元素为 `GdpComputed`，含货币单位与币种。无入参。\n提示: `period` 为季度累积口径标签（如「2025年第1-3季度」），非单季度。; 金额单位见 `unit`（通常为亿元），币种见 `currency`。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询中国 GDP 季度汇总结果。按季度（按 `field_date` 的季度）返回 GDP 总量、同比，以及第一/二/三产业增加值与各产业累计同比。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 17,
+    "name": "ft_consumer_industrial_added_value_monthly",
+    "category": "宏观经济",
+    "description": "查询中国工业增加值增长月度汇总计算结果。按月份返回同比增长（`file_id` = M00006985）与累计同比增长（M00006990）。底层从宏观经济指标库加载后按月聚合，按 `field_date` 年份（2000 年起）降序排列。响应为数组直出，元素为 `IndustrialAddedValueComputed`。无入参。\n提示: `month` 格式化为「YYYY年MM月份」。; 数值单位为百分比（%），缺失为 null。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询中国工业增加值增长月度汇总计算结果。按月份返回同比增长（`file_id` = M00006985）与累计同比增长（M00006990）。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 18,
+    "name": "ft_consumer_money_supply_monthly",
+    "category": "宏观经济",
+    "description": "查询中国货币供应量（M0/M1/M2）月度汇总计算结果。按月份返回 M2、M1、M0 各自的当月数量、同比、环比。底层从宏观经济指标库加载后按月聚合，按 `field_date` 年份（2000 年起）降序排列。响应为数组直出，元素为 `MoneySupplyComputed`，含货币单位与币种。无入参。\n提示: `month` 格式化为「YYYY年MM月份」。; 数量单位见 `unit`（通常为万亿元），币种见 `currency`。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询中国货币供应量（M0/M1/M2）月度汇总计算结果。按月份返回 M2、M1、M0 各自的当月数量、同比、环比。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 19,
+    "name": "ft_consumer_pmi_monthly",
+    "category": "宏观经济",
+    "description": "查询中国采购经理指数（PMI）月度汇总计算结果，覆盖制造业与非制造业。按月份返回制造业/非制造业 PMI 当月值、同比、环比。底层从宏观经济指标库加载后按月聚合，按 `field_date` 年份（2000 年起）降序排列。响应为数组直出，元素为 `PmiComputed`。无入参。\n提示: `month` 格式化为「YYYY年MM月份」。; PMI 数值单位为百分比（%），缺失为 null。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询中国采购经理指数（PMI）月度汇总计算结果，覆盖制造业与非制造业。按月份返回制造业/非制造业 PMI 当月值、同比、环比。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 20,
+    "name": "ft_consumer_ppi_monthly",
+    "category": "宏观经济",
+    "description": "查询中国工业生产者出厂价格指数（PPI）月度汇总计算结果。按月份返回当月 PPI（`file_id` = M00001975）、同比（M00007210）、环比（M00007209）、当年累计月均。底层从宏观经济指标库加载后按月聚合，按 `field_date` 年份（2000 年起）降序排列。响应为数组直出，元素为 `PpiComputed`。无入参。\n提示: `month` 格式化为「YYYY年MM月份」。; 数值单位为百分比（%），缺失为 null。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询中国工业生产者出厂价格指数（PPI）月度汇总计算结果。按月份返回当月 PPI（`file_id` = M00001975）、同比（M00007210）、环比（M00007209）、当年累计月均。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 21,
+    "name": "ft_consumer_price_index_monthly",
+    "category": "宏观经济",
+    "description": "查询中国居民消费价格指数（CPI）月度汇总计算结果。按月份返回全国（含累计同比）、城市、农村三档 CPI 同比/环比/当月值。底层从宏观经济指标库按 `file_id` 加载后按月聚合，并按 `field_date` 年份（2000 年起）降序排列。响应为数组直出（非分页信封），元素为 `ComputedCpi`。无入参（v1 路由未暴露任何 query 参数）。\n提示: 月份字段 `month` 已格式化为中文「YYYY年MM月份」。; 数值字段单位为百分比（%），部分月份字段缺失时为 null。; 底层经 5s 瞬时失败策略缓存。",
+    "short": "查询中国居民消费价格指数（CPI）月度汇总计算结果。按月份返回全国（含累计同比）、城市、农村三档 CPI 同比/环比/当月值。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 22,
+    "name": "ft_consumer_retail_sales_monthly",
+    "category": "宏观经济",
+    "description": "查询中国社会消费品零售总额月度汇总计算结果。按月份返回当月值（`file_id` = M00002373）、同比（M00000313）、累计值（M00002374）、累计同比（M00002375）。底层从宏观经济指标库加载后按月聚合，按 `field_date` 年份（2000 年起）降序排列。响应为数组直出，元素为 `RetailSalesComputed`，含货币单位与币种。无入参。\n提示: `month` 格式化为「YYYY年MM月份」。; 金额单位见 `unit`（通常为亿元），币种见 `currency`。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询中国社会消费品零售总额月度汇总计算结果。按月份返回当月值（`file_id` = M00002373）、同比（M00000313）、累计值（M00002374）、累计同比（M00002375）。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 23,
+    "name": "ft_earnings_reports_paginated",
+    "category": "新闻 / 公告 / 研报",
+    "description": "查询 A 股业绩快报（`ashare_perf_quick`），返回已披露的业绩快报核心指标（EPS、营业总收入、净利润、ROE 等，含本期/上期/同比）。数据走 Redis 缓存。支持两种查询方式：① 传 `stock_code` 查单票全部业绩快报（不分页）；② 传 `year + report_type` 按报告期分页查所有票。`report_type` 为枚举 `ReportType`：`q1`（一季报）/ `q2`（半年报）/ `q3`（三季报）/ `annual`（年报）/ `announcement`。\n提示: `stock_code` 与 `year + report_type` 二选一；都不传返回空结果。; 单票查询（`stock_code`）不走分页，`total_pages` 固定 1。; `report_type` 枚举值为小写：`q1` / `q2` / `q3` / `annual` / `announcement`。",
+    "short": "查询 A 股业绩快报（`ashare_perf_quick`），返回已披露的业绩快报核心指标（EPS、营业总收入、净利润、ROE 等，含本期/上期/同比）。数据走 Redis 缓存。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "report_type",
+      "stock_code",
+      "year"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 24,
+    "name": "ft_eastmoney_board_constituents",
+    "category": "指数 / 行业 / 板块",
+    "description": "按板块代码查询东方财富概念板块的成份股列表，返回板块代码、板块名称及成份股数组（每只含 6 位股票代码 + 中文名称）。典型板块成份股数量从几十到两百不等（如 BK1024 绿色电力约 168 只）。\n提示: `board_code` 必填，取东方财富概念板块代码（BK 开头），未知代码会返回 404。; `stock_code` 为 6 位代码，**不含交易所后缀**。",
+    "short": "按板块代码查询东方财富概念板块的成份股列表，返回板块代码、板块名称及成份股数组（每只含 6 位股票代码 + 中文名称）。典型板块成份股数量从几十到两百不等（如 BK1024 绿色电力约 168 只）。",
+    "required": [
+      "board_code"
+    ],
+    "params": [
+      "board_code"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 25,
+    "name": "ft_eastmoney_board_daily_kline",
+    "category": "指数 / 行业 / 板块",
+    "description": "获取单个东方财富概念板块的历史日线 OHLC（全部字段按**字符串**返回，含开/收/高/低 + 成交量/成交额 + 振幅/涨跌幅/涨跌额/换手率 + 市场代码）。支持按日期范围过滤与分页。不同板块起始日期不同，老板块（BK0447）可追溯至 2013 年，新板块约 2021 年起。\n提示: `board_code` 必填。; 日期同时传时硬限 3 天跨度；不传日期则返回该板块全部历史。; 与「最新OHLC」接口不同：本接口所有字段（含 market/volume 等）一律按字符串返回。",
+    "short": "获取单个东方财富概念板块的历史日线 OHLC（全部字段按**字符串**返回，含开/收/高/低 + 成交量/成交额 + 振幅/涨跌幅/涨跌额/换手率 + 市场代码）。支持按日期范围过滤与分页。",
+    "required": [
+      "board_code"
+    ],
+    "params": [
+      "board_code",
+      "end_date",
+      "page",
+      "page_size",
+      "start_date"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 26,
+    "name": "ft_eastmoney_board_latest_kline",
+    "category": "指数 / 行业 / 板块",
+    "description": "获取东方财富概念板块的**最新一日** OHLC 行情（开/收/高/低 + 成交量/成交额 + 振幅/涨跌幅/涨跌额/换手率）。传 `board_code` 返回单板块最新一根；不传则返回**全部板块**各自最新一根（分页）。\n提示: `board_code` 可选；不传时用于扫全部板块最新行情。; `market` 为东财市场代码（如 90）。",
+    "short": "获取东方财富概念板块的**最新一日** OHLC 行情（开/收/高/低 + 成交量/成交额 + 振幅/涨跌幅/涨跌额/换手率）。传 `board_code` 返回单板块最新一根；",
+    "required": [],
+    "params": [
+      "board_code",
+      "page",
+      "page_size"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 27,
+    "name": "ft_eastmoney_concept_boards",
+    "category": "指数 / 行业 / 板块",
+    "description": "获取东方财富**概念板块**列表（板块代码以 `BK` 开头，如 BK1024）。返回数组（非分页），当前在线约 486 个概念板块。数据直接读取文件中心 CSV。\n提示: 此接口仅返回**概念**板块；成份股、最新/历史 K 线另见对应接口。; 板块代码（BKxxxx）可用作成份股与 K 线接口的入参。",
+    "short": "获取东方财富**概念板块**列表（板块代码以 `BK` 开头，如 BK1024）。返回数组（非分页），当前在线约 486 个概念板块。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 28,
+    "name": "ft_eastmoney_rank",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询东方财富股票排行榜最新一期快照。来源标识为东方财富（eastmoney），支持按榜单组（人气榜 / 飙升榜）与市场（A股 / 港股 / 美股）查询；返回榜单展示名、核心指标名（人气分 / 排名变化）、返回记录数与排行条目（当前排名、排名变化、统一代码、简称、人气分、最新价、涨跌额、涨跌幅、东财原始代码）。ft-data-server 做了带失败退避的内存缓存。响应为 `ApiResponse` 信封（code/message/data）。\n提示: 三层命名遵循 CLAUDE.md 来源标识约定：v0 `/stock-rank/eastmoney`、client `eastmoney_stock_rank`、v1 `/eastmoney-rank`、对外类型 `EastmoneyRan; `trade_date` 不传默认取最新一期；格式 `YYYY-MM-DD`。; 飙升榜 `rank_no` 不一定从 1 开始，核心指标为 `rank_change`。; 响应为 `ApiResponse<EastmoneyRankResponseData>` 信封结构。",
+    "short": "查询东方财富股票排行榜最新一期快照。来源标识为东方财富（eastmoney），支持按榜单组（人气榜 / 飙升榜）与市场（A股 / 港股 / 美股）查询；",
+    "required": [],
+    "params": [
+      "market",
+      "rank_group",
+      "trade_date"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 29,
+    "name": "ft_eastmoney_us_stock_daily_kline",
+    "category": "美股",
+    "description": "获取东方财富**美股历史日 K 线**（OHLC），按 `stock_code` 读取对应 CSV 的全部行，全部字段以字符串返回，支持按日期范围过滤与分页。数据来源：东方财富，本地维护按 secid 命名的 CSV 文件。响应为 `PaginatedResponse`（非信封）。注意：日期范围（start/end）跨度上限为 **3 天**（后端强校验）。\n提示: `stock_code` 为必填，纯代码不带市场前缀（如 AAPL）；找不到时返回 400。; 日期格式支持 `YYYY-MM-DD` 或 `YYYYMMDD`，输出统一为 `YYYY-MM-DD`。; 区间过滤 `start_date`/`end_date` 同时提供时，跨度不得超过 3 天，否则返回 400。; 响应结构为 `PaginatedResponse`（items/total_pages/total_items），无 code/message 信封。; 所有数值字段均以字符串形式返回（含 OHLC、成交量、成交额、振幅、klt、fqt）。",
+    "short": "获取东方财富**美股历史日 K 线**（OHLC），按 `stock_code` 读取对应 CSV 的全部行，全部字段以字符串返回，支持按日期范围过滤与分页。数据来源：东方财富，本地维护按 secid 命名的 CSV 文件。",
+    "required": [
+      "stock_code"
+    ],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "start_date",
+      "stock_code"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 30,
+    "name": "ft_eastmoney_us_stock_latest_kline",
+    "category": "美股",
+    "description": "获取东方财富**美股最新一根日 K 线**（取每只标的 CSV 的最后一行 OHLC）。传 `stock_code` 返回单只标的最新 K 线；不传则遍历缓存目录返回全部美股最新 K 线。数据来源：东方财富，本地维护按 secid 命名的 CSV 文件。响应为 `PaginatedResponse`（非信封）。\n提示: 不传 `stock_code` 时会扫描全部美股 K 线文件，响应较慢，建议优先按 `stock_code` 精准查询。; `stock_code` 为不带市场前缀的纯代码（如 ADV），找不到时返回 400 错误。; 响应结构为 `PaginatedResponse`（items/total_pages/total_items），无 code/message 信封。; 字段 `date` 为 ISO 日期，OHLC/amount 为 Decimal 字符串，volume 为整数。",
+    "short": "获取东方财富**美股最新一根日 K 线**（取每只标的 CSV 的最后一行 OHLC）。传 `stock_code` 返回单只标的最新 K 线；",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "stock_code"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 31,
+    "name": "ft_eastmoney_us_stock_list",
+    "category": "美股",
+    "description": "获取东方财富**美股列表**（从内存缓存返回），含证券 ID（secid `{market}.{code}`）、市值（美元）、最新价、涨跌幅、成交量、成交额、市盈率 TTM 等。数据来源：东方财富，本地维护 CSV 并加载到内存缓存。支持分页；`refresh=true` 时强制从 CSV 重新加载缓存。响应为 `PaginatedResponse`（非信封，顶层即分页对象）。\n提示: 列表数据由本地 CSV 缓存驱动，调用方传 `refresh=true` 会触发一次磁盘重载（较慢，慎用）。; secid 格式 `{market}.{code}`，如 `105.ADV`。; 响应结构与东方财富资金流/估值接口不同——本接口直接是 `PaginatedResponse`（items/total_pages/total_items），无 code/message 信封。",
+    "short": "获取东方财富**美股列表**（从内存缓存返回），含证券 ID（secid `{market}.{code}`）、市值（美元）、最新价、涨跌幅、成交量、成交额、市盈率 TTM 等。数据来源：东方财富，本地维护 CSV 并加载到内存缓存。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "refresh"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 32,
+    "name": "ft_etf_adjust_factor",
+    "category": "ETF / 基金",
+    "description": "查询 ETF 复权因子（当日复权因子 + 截至当日累计复权因子）。支持两种模式：① 单日扫描——指定 `trade_date` 返回该日复权因子快照，未指定 `symbol` 时返回所有标的单日快照；② 多日扫描——指定 `start_date` / `end_date` 返回区间内每个交易日的复权因子，**多日扫描必须指定 `symbol`**。通过 `xz02_mysql` 连接池查询 `base_data` 事件表。响应为 `ApiResponse` 信封（code/msg/data）。\n提示: 未指定 `symbol` 时仅支持单日扫描；区间扫描必须指定 `symbol`。; `trade_date` 为空时默认当天，非交易日回退到前一交易日。; `symbol` 输出统一为 `symbol.suffix` 格式（如 `510300.SH`）。; 公网实测每个标的当前仅返回最新交易日 1 条，未见历史多日序列。",
+    "short": "查询 ETF 复权因子（当日复权因子 + 截至当日累计复权因子）。支持两种模式：① 单日扫描——指定 `trade_date` 返回该日复权因子快照，未指定 `symbol` 时返回所有标的单日快照；",
+    "required": [],
+    "params": [
+      "end_date",
+      "limit",
+      "offset",
+      "start_date",
+      "symbol",
+      "trade_date"
+    ],
+    "param_count": 6,
+    "is_ft": true
+  },
+  {
+    "idx": 33,
+    "name": "ft_etf_components_all",
+    "category": "ETF / 基金",
+    "description": "获取全部 ETF 的成份股清单（每只 ETF 一条记录，含成份代码数组 + 成份名称数组 + 标的代码）。返回数组（非分页）。底层来自 `ETF_COMPONENTS` 内存快照，支持 `If-Modified-Since` 协商缓存，未变更时返回 304。同 `EtfComponentsAll` 协议结构（components / components_name / symbol 三字段）。\n提示: 无入参，直接 GET 即可；建议带 `If-Modified-Since` 头走协商缓存。; `components` 与 `components_name` 两个数组按相同下标对齐，下标 i 对应同一只成份股。; 单条记录的 `components` 可能较长（成份股数十至上千只），整包体积较大。",
+    "short": "获取全部 ETF 的成份股清单（每只 ETF 一条记录，含成份代码数组 + 成份名称数组 + 标的代码）。返回数组（非分页）。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 34,
+    "name": "ft_etf_description_all",
+    "category": "ETF / 基金",
+    "description": "获取全部 ETF 的基础信息（基金类型、托管人、流通份额、成立日期、管理人、是否两融、是否支持 T+0、跟踪指数信息等）。返回数组（非分页），底层来自 `ETF_DAILY` 内存快照，按 symbol 排序输出。每项含 `EtfDescription` + `symbol`（标的代码）。\n提示: 无入参，直接 GET 即可。; `float_shares`、`tracking_index` 等为 `Option`，可能为 null。; `asset_class` 取值：stock（股票型）/ bond（债券型）/ commodity（商品型）/ currency（货币型）。",
+    "short": "获取全部 ETF 的基础信息（基金类型、托管人、流通份额、成立日期、管理人、是否两融、是否支持 T+0、跟踪指数信息等）。返回数组（非分页），底层来自 `ETF_DAILY` 内存快照，按 symbol 排序输出。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 35,
+    "name": "ft_etf_fund_export",
+    "category": "ETF / 基金",
+    "description": "智投 ETF 基金导出（HDFS CSV 主表 + 持仓明细）。返回单只 ETF 的完整档案：基础属性（代码/名称/类型/风险等级）、规模与净值（tot_asset/aum/nv）、各区间收益率（日/6 月/年/3 年/5 年/成立以来）、换手率系列（日/周/月/年）、申赎限额、近一年收益率、30 日月均量额，以及聚合块 `total_return`（收益率汇总）/ `top10_holdings`（前十大持仓明细）/ `fund_managers`（历任基金经理）/ `nav_growth_rate`（净值增长）。响应带 code/msg/request_id/data 信封，data 内为 `as_of_date` + `PaginatedResponse`（items/total_pages/total_items）。\n提示: `request_id` 必填，由调用方生成，原样回填响应 `request_id`。; `page_size` 传 0 按默认 50 处理。; 字段众多，下面仅列核心字段；收益率/换手率系列字段名见输出参数表。; 数据样例待公网可访问后补真实数据。",
+    "short": "智投 ETF 基金导出（HDFS CSV 主表 + 持仓明细）。返回单只 ETF 的完整档案：基础属性（代码/名称/类型/风险等级）、规模与净值（tot_asset/aum/nv）、各区间收益率（日/6 月/年/3 年/5 年/成立以来）、换手率系列（日/周/月/年）、申赎限额、近一年收益率、30 日月均量额，以及聚合块 `total_return`（收益率汇总）/ `top10_holdings`（前十大持仓明细）/ `fund_managers`（历任基金经理）/ `nav_growth_rate`（净值增长）...",
+    "required": [
+      "request_id"
+    ],
+    "params": [
+      "page",
+      "page_size",
+      "request_id"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 36,
+    "name": "ft_etf_pcf_list_handler",
+    "category": "ETF / 基金",
+    "description": "获取指定交易日的 ETF PCF（申购赎回清单）文件列表，代理请求外部服务（如 xz04:20003）。返回 `EtfPcfListResponse`：分页元数据（total/page/page_size）+ items 列表，每项含 ETF 代码、日期、PCF 文件名。文件本身需另行调用下载接口（`/etf-pcf/etf-pcfs/{filename}`）获取 XML 内容。\n提示: `date` 必填，YYYYMMDD 格式，传非有效日期会被拒。; 列表只返回文件元信息，实际 PCF 内容（XML）需通过下载接口按 filename 获取。; 数据样例待公网可访问后补真实数据。",
+    "short": "获取指定交易日的 ETF PCF（申购赎回清单）文件列表，代理请求外部服务（如 xz04:20003）。返回 `EtfPcfListResponse`：分页元数据（total/page/page_size）+ items 列表，每项含 ETF 代码、日期、PCF 文件名。",
+    "required": [
+      "date"
+    ],
+    "params": [
+      "date",
+      "page",
+      "page_size"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 37,
+    "name": "ft_futures_contract_kline",
+    "category": "期货",
+    "description": "查询期货合约 K 线，返回 `KlineResponse{items,total}`。`symbol` 为 WIND 合约全码（如 `A2605.DCE`），store 会规范为点号前小写段。`interval` 默认 `1min`，支持 `1min/5min/15min/30min/60min/daily` 及由日线聚合的 `weekly/monthly/quarterly/yearly`（东八区；周以周五为周期末，月/季/年以末自然日为周期末；未满一周期则聚周期首日至数据内最后一根日线）。`start`/`end` 为毫秒时间戳，按聚合后时间戳筛选（闭区间）；不传则不限时间，仅 `start` 表示 `[start,+∞)`，禁止只传 `end`。`start`/`end` 同时传入时跨度须 ≤3 天。数据来自 ClickHouse 表 `basedata.futures_contract_kline`。\n提示: `symbol` 必填。; `interval` 默认 `1min`；别名：`1m/5m/15m/30m/1h/1d/1w/1mo/1q/1y`。; `start`/`end` 为毫秒时间戳；同时传入时跨度硬限制 ≤3 天；只传 `end` 会被拒。; 不按时间过滤（省略 start/end）时全历史返回，条数受 `limit` 约束，需全量请显式增大 `limit`。",
+    "short": "查询期货合约 K 线，返回 `KlineResponse{items,total}`。`symbol` 为 WIND 合约全码（如 `A2605.DCE`），store 会规范为点号前小写段。",
+    "required": [
+      "symbol"
+    ],
+    "params": [
+      "end",
+      "interval",
+      "limit",
+      "start",
+      "symbol"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 38,
+    "name": "ft_get_bse_mapping",
+    "category": "A股基础 / 行情",
+    "description": "北交所新旧代码对照表接口。按旧代码 `o_code`（如 `838163.BJ`）或新代码 `n_code`（如 `920163.BJ`）查询映射关系。不传参数时返回全量对照表。映射数据来源于 ClickHouse `basedata.stock_code_mapping`。响应为 `BseMappingItem` 列表。\n提示: `o_code` / `n_code` 均可选，不传返回全量。; 代码格式为带 `.BJ` 后缀（如 `838163.BJ` / `920163.BJ`）。; `list_date` 格式 YYYYMMDD。",
+    "short": "北交所新旧代码对照表接口。按旧代码 `o_code`（如 `838163.BJ`）或新代码 `n_code`（如 `920163.BJ`）查询映射关系。",
+    "required": [],
+    "params": [
+      "n_code",
+      "o_code"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 39,
+    "name": "ft_get_bullion_price",
+    "category": "可转债 / 贵金属",
+    "description": "查询指定标的的贵金属行情（日期 + 值），按 `start_date`/`end_date` 区间分页返回 `PaginatedResponse<BullionPriceItem>`。handler 校验 `start_date`/`end_date` 区间跨度 ≤3 天（`validate_yyyymmdd_range_3_days`），由 `query_bullion_price` 查询 ClickHouse。\n提示: `symbol`、`start_date`、`end_date`、`page`、`page_size` 均需传入。; `start_date`/`end_date` 为 YYYYMMDD，区间跨度硬限制 ≤3 天。; `value` 以字符串形式序列化（高精度 Decimal）。",
+    "short": "查询指定标的的贵金属行情（日期 + 值），按 `start_date`/`end_date` 区间分页返回 `PaginatedResponse<BullionPriceItem>`。handler 校验 `start_date`/`end_date` 区间跨度 ≤3 天（`validate_yyyymmdd_range_3_days`），由 `query_bullion_price` 查询 ClickHouse。",
+    "required": [
+      "symbol",
+      "start_date",
+      "end_date",
+      "page",
+      "page_size"
+    ],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "start_date",
+      "symbol"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 40,
+    "name": "ft_get_bullion_support_symbol",
+    "category": "可转债 / 贵金属",
+    "description": "查询贵金属支持的标的（标的代码、名称、单位、币种）。无入参，返回数组 `Vec<BullionSupportSymbol>`，由 `get_bullion_support_symbols` 返回内置清单。\n提示: 无入参，请求体为空对象。; 典型标的如 `XAUUSD`（现货黄金，美元/盎司）、`AU9999`（黄金，元/克）。",
+    "short": "查询贵金属支持的标的（标的代码、名称、单位、币种）。无入参，返回数组 `Vec<BullionSupportSymbol>`，由 `get_bullion_support_symbols` 返回内置清单。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 41,
+    "name": "ft_get_cashflow_stock_code",
+    "category": "资金 / 情绪 / 短线",
+    "description": "获取所有有现金流量表数据（`ashare_cashflow`）的股票代码与名称列表，**不分页**，一次返回全量。用于前端在调 `finance/cashflow` 前枚举可查询的标的。请求体为空。\n提示: 无入参，请求体可留空。; 返回 `stock_code` 格式为 6 位数字 + 交易所后缀（如 `000001.SZ`）。",
+    "short": "获取所有有现金流量表数据（`ashare_cashflow`）的股票代码与名称列表，**不分页**，一次返回全量。用于前端在调 `finance/cashflow` 前枚举可查询的标的。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 42,
+    "name": "ft_get_cb_base_data_handler",
+    "category": "可转债 / 贵金属",
+    "description": "按转债代码查询单只可转债基础信息（票面/付息/转股/赎回/上市等要素）。handler 校验 `symbol_code` 非空，命中返回单条 `CbBaseDataResponse`，未找到返回错误。数据为前一交易日可转债基础数据(v3) `V3_1`，由 `get_cb_base_data` 读取。\n提示: `symbol_code` 必填。; 枚举字段以字符串返回：`bond_type`（cb/eb/STb）、`trade_type`（dirty_price/clean_price）、`coupon_method`（stepup_rate/fixed_rate）。; 上市/转股相关字段未上市或未发生转股时为 `null`。",
+    "short": "按转债代码查询单只可转债基础信息（票面/付息/转股/赎回/上市等要素）。handler 校验 `symbol_code` 非空，命中返回单条 `CbBaseDataResponse`，未找到返回错误。",
+    "required": [
+      "symbol_code"
+    ],
+    "params": [
+      "symbol_code"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 43,
+    "name": "ft_get_cb_lists_handler",
+    "category": "可转债 / 贵金属",
+    "description": "获取可转债列表（债券全称、债券代码、正股代码、交易所）。无入参，返回 `CbListsResponse`。数据为前一交易日可转债基础数据(v3) `V3_1`，由 `get_cb_lists` 读取。\n提示: 无入参，请求体为空对象。; 返回全市场可转债清单。",
+    "short": "获取可转债列表（债券全称、债券代码、正股代码、交易所）。无入参，返回 `CbListsResponse`。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 44,
+    "name": "ft_get_china_futures_base_data_handler",
+    "category": "期货",
+    "description": "查询指定交易日的期货合约要素（交易单位/最小变动价位/保证金/合约乘数/上市日/最后交易日/交割等）。不传 `trade_date` 默认前一交易日（CST）。可按 WIND 合约全码过滤，未命中返回 `items: []`（HTTP 200）。返回 `ChinaFuturesBaseDataResponse`，由 `get_china_futures_base_data` 读取。\n提示: `trade_date` 不传则使用前一交易日（CST）。; `symbol` 为 WIND 合约全码（如 `A2605.DCE`），大小写不敏感；不传或空表示该日全部。; 未命中返回空 `items`，HTTP 仍 200。",
+    "short": "查询指定交易日的期货合约要素（交易单位/最小变动价位/保证金/合约乘数/上市日/最后交易日/交割等）。不传 `trade_date` 默认前一交易日（CST）。",
+    "required": [],
+    "params": [
+      "symbol",
+      "trade_date"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 45,
+    "name": "ft_get_china_futures_lists_handler",
+    "category": "期货",
+    "description": "查询指定交易日的期货合约列表（合约代码、交易所、品种、中文名称、合约类型）。不传 `trade_date` 默认前一交易日（CST）。返回 `ChinaFuturesListsResponse`，由 `get_china_futures_lists` 读取。\n提示: `trade_date` 不传则使用前一交易日（CST）。; 不按 `future_type` 过滤，原样带出合约类型。",
+    "short": "查询指定交易日的期货合约列表（合约代码、交易所、品种、中文名称、合约类型）。不传 `trade_date` 默认前一交易日（CST）。",
+    "required": [],
+    "params": [
+      "trade_date"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 46,
+    "name": "ft_get_company_hk",
+    "category": "其他",
+    "description": "按 `trade_code` 查询港股公司介绍，返回单条 `CompanyHkResponse`（公司名/注册信息/法人/地址/简介/主营业务/员工数/联系方式等）。无分页，`trade_code` 必填，空值报 `trade_code is required`。\n提示: 对外 v1 仅暴露 GET（底层 v0 同时支持 GET+POST）。; `trade_code` 必填，支持纯数字或带 `.HK` 后缀格式。; 注册资本单位为元。",
+    "short": "按 `trade_code` 查询港股公司介绍，返回单条 `CompanyHkResponse`（公司名/注册信息/法人/地址/简介/主营业务/员工数/联系方式等）。无分页，`trade_code` 必填，空值报 `trade_code is required`。",
+    "required": [
+      "trade_code"
+    ],
+    "params": [
+      "trade_code"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 47,
+    "name": "ft_get_eastmoney_dapan_flow",
+    "category": "资金 / 情绪 / 短线",
+    "description": "获取东方财富**大盘指数（沪深两市）日资金流**数据，含主力/超大单/大单/中单/小单四档净流入及净占比，以及上证/深证收盘价与涨跌幅。数据来源：东方财富，底表为 ClickHouse `basedata.dapan_daily_flow`。支持按交易日或日期区间过滤，不传参数返回全部数据。响应为 `PaginatedApiResponse` 信封（code/message/data）。\n提示: `trade_date` 与 `start_date`/`end_date` 互斥，二者只能取其一；区间需 `start_date` 与 `end_date` 同时提供。; 资金净流入字段以元为单位，数值较大（百亿级），建议前端按亿元展示。; 所有数值字段以字符串形式返回（避免精度丢失）。",
+    "short": "获取东方财富**大盘指数（沪深两市）日资金流**数据，含主力/超大单/大单/中单/小单四档净流入及净占比，以及上证/深证收盘价与涨跌幅。数据来源：东方财富，底表为 ClickHouse `basedata.dapan_daily_flow`。",
+    "required": [],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "start_date",
+      "trade_date"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 48,
+    "name": "ft_get_eastmoney_futures_position",
+    "category": "期货",
+    "description": "获取东方财富**期货每日成交持仓排行榜**数据，按合约/会员维度给出成交量、多头、空头、净多头、净空头的排名与持仓量及变化，含多头增/减仓、空头增/减仓排名，以及结算价、多头/空头平均价。数据来源：东方财富，底表为 ClickHouse `basedata.em_futures_daily_position`（多数字段 Nullable）。支持按交易所、品种、合约、会员、交易日或日期区间过滤。响应为 `PaginatedApiResponse` 信封（code/message/data）。\n提示: `exchange` 取值：shfe（上期所）/ dce（大商所）/ czce（郑商所）/ cffex（中金所）/ ine（能源中心）/ gfe（广期所）。; 每个合约每个交易日下会有多会员多行，总量较大，建议按合约+日期精准过滤。; `trade_date` 与 `start_date`/`end_date` 互斥。",
+    "short": "获取东方财富**期货每日成交持仓排行榜**数据，按合约/会员维度给出成交量、多头、空头、净多头、净空头的排名与持仓量及变化，含多头增/减仓、空头增/减仓排名，以及结算价、多头/空头平均价。数据来源：东方财富，底表为 ClickHouse `basedata.em_futures_daily_position`（多数字段 Nullable）。",
+    "required": [],
+    "params": [
+      "contract_code",
+      "end_date",
+      "exchange",
+      "member_name_abbr",
+      "page",
+      "page_size",
+      "start_date",
+      "trade_date",
+      "variety_code"
+    ],
+    "param_count": 9,
+    "is_ft": true
+  },
+  {
+    "idx": 49,
+    "name": "ft_get_eastmoney_hk_index_daily_kline",
+    "category": "港股 / 港股通 / AH",
+    "description": "获取东方财富**港股指数日 K 线**数据（HSI 恒生指数、HSCEI 国企指数、HSTECH 恒生科技等），含开/收/高/低、成交量、成交额、振幅、涨跌幅/涨跌额、换手率。数据来源：东方财富，底表为 ClickHouse `basedata.em_hk_index_daily_kline`。支持按指数代码、交易日或日期区间过滤，不传 `index_code` 返回全部指数。响应为 `PaginatedApiResponse` 信封（code/message/data）。\n提示: 日期格式为 `YYYY-MM-DD`（带横杠），与其他 eastmoney 资金流/估值接口的 `YYYYMMDD` 不同。; `index_code` 取恒生体系代码（HSI / HSCEI / HSTECH 等）。; `trade_date` 与 `start_date`/`end_date` 互斥。",
+    "short": "获取东方财富**港股指数日 K 线**数据（HSI 恒生指数、HSCEI 国企指数、HSTECH 恒生科技等），含开/收/高/低、成交量、成交额、振幅、涨跌幅/涨跌额、换手率。数据来源：东方财富，底表为 ClickHouse `basedata.em_hk_index_daily_kline`。",
+    "required": [],
+    "params": [
+      "end_date",
+      "index_code",
+      "page",
+      "page_size",
+      "start_date",
+      "trade_date"
+    ],
+    "param_count": 6,
+    "is_ft": true
+  },
+  {
+    "idx": 50,
+    "name": "ft_get_eastmoney_market_valuation",
+    "category": "资金 / 情绪 / 短线",
+    "description": "获取东方财富**市场日估值**数据（指数/板块整体层面），含市盈率 TTM、总市值/流通市值、上市公司家数、收盘点位与涨跌幅等。数据来源：东方财富，底表为 ClickHouse `basedata.em_market_daily_valuation`（多数字段 Nullable）。支持按市场代码（000001=上证指数、000300=沪深300 等）、交易日或日期区间过滤，不传 `market_code` 返回全部。响应为 `PaginatedApiResponse` 信封（code/message/data）。\n提示: `market_code` 既有指数代码（000001 上证、399001 深证、000300 沪深300），也有部分宽基/行业指数。; 估值字段较多存在 NULL，需前端兼容空值。; `trade_date` 与 `start_date`/`end_date` 互斥。",
+    "short": "获取东方财富**市场日估值**数据（指数/板块整体层面），含市盈率 TTM、总市值/流通市值、上市公司家数、收盘点位与涨跌幅等。数据来源：东方财富，底表为 ClickHouse `basedata.em_market_daily_valuation`（多数字段 Nullable）。",
+    "required": [],
+    "params": [
+      "end_date",
+      "market_code",
+      "page",
+      "page_size",
+      "start_date",
+      "trade_date"
+    ],
+    "param_count": 6,
+    "is_ft": true
+  },
+  {
+    "idx": 51,
+    "name": "ft_get_eastmoney_sector_flow",
+    "category": "资金 / 情绪 / 短线",
+    "description": "获取东方财富**板块（行业/概念/地域）日资金流**数据，含主力/超大单/大单/中单/小单四档净流入及净占比。数据来源：东方财富，底表为 ClickHouse `basedata.sector_daily_flow`。支持按板块代码（BK0488 等）、板块类型（industry/concept/regional）、交易日或日期区间过滤。响应为 `PaginatedApiResponse` 信封（code/message/data）。\n提示: `sector_type` 取值：industry（行业）/ concept（概念）/ regional（地域）。; `sector_code` 为东财板块代码，以 BK 开头（如 BK0488）。; `trade_date` 与 `start_date`/`end_date` 互斥。",
+    "short": "获取东方财富**板块（行业/概念/地域）日资金流**数据，含主力/超大单/大单/中单/小单四档净流入及净占比。数据来源：东方财富，底表为 ClickHouse `basedata.sector_daily_flow`。",
+    "required": [],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "sector_code",
+      "sector_type",
+      "start_date",
+      "trade_date"
+    ],
+    "param_count": 7,
+    "is_ft": true
+  },
+  {
+    "idx": 52,
+    "name": "ft_get_eastmoney_stock_flow",
+    "category": "资金 / 情绪 / 短线",
+    "description": "获取东方财富**个股日资金流**数据，含主力/超大单/大单/中单/小单四档净流入及净占比，以及收盘价与涨跌幅。数据来源：东方财富，底表为 ClickHouse `basedata.stock_daily_flow`。支持按股票代码、交易日或日期区间过滤。响应为 `PaginatedApiResponse` 信封（code/message/data）。\n提示: `symbol` 为纯数字股票代码（如 600522），不带交易所后缀。; `market` 字段：0=深/京，1=沪。; `trade_date` 与 `start_date`/`end_date` 互斥。",
+    "short": "获取东方财富**个股日资金流**数据，含主力/超大单/大单/中单/小单四档净流入及净占比，以及收盘价与涨跌幅。数据来源：东方财富，底表为 ClickHouse `basedata.stock_daily_flow`。",
+    "required": [],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "start_date",
+      "symbol",
+      "trade_date"
+    ],
+    "param_count": 6,
+    "is_ft": true
+  },
+  {
+    "idx": 53,
+    "name": "ft_get_eastmoney_stock_valuation",
+    "category": "资金 / 情绪 / 短线",
+    "description": "获取东方财富**个股日估值**数据，含市盈率（TTM/LYR）、市净率（MRQ）、市现率、市销率、PEG、总市值/流通市值、总股本/流通股本等。数据来源：东方财富，底表为 ClickHouse `basedata.em_stock_daily_valuation`（多数字段 Nullable）。支持按股票代码、交易日或日期区间过滤，不传 `symbol` 返回全部。响应为 `PaginatedApiResponse` 信封（code/message/data）。\n提示: 估值字段较多存在 NULL（如停牌、亏损标的 PE 可空），需前端兼容空值。; `trade_date` 与 `start_date`/`end_date` 互斥。",
+    "short": "获取东方财富**个股日估值**数据，含市盈率（TTM/LYR）、市净率（MRQ）、市现率、市销率、PEG、总市值/流通市值、总股本/流通股本等。数据来源：东方财富，底表为 ClickHouse `basedata.em_stock_daily_valuation`（多数字段 Nullable）。",
+    "required": [],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "start_date",
+      "symbol",
+      "trade_date"
+    ],
+    "param_count": 6,
+    "is_ft": true
+  },
+  {
+    "idx": 54,
+    "name": "ft_get_etf_components_handler",
+    "category": "ETF / 基金",
+    "description": "根据标的代码查询单只 ETF 的成份股清单（成份代码数组 + 成份名称数组 + 标的代码）。与全量接口 `etf-components-all` 单条结构一致，未找到时由 API 层返回错误（404 语义）。返回单个 `EtfComponentsAll` 对象。\n提示: `symbol` 必填，带交易所后缀（如 510300.XSHG、159915.XSHE）。; `components` 与 `components_name` 两个数组按相同下标对齐，下标 i 对应同一只成份股。; 未找到该 ETF 成份时返回错误，调用方需处理 not-found。",
+    "short": "根据标的代码查询单只 ETF 的成份股清单（成份代码数组 + 成份名称数组 + 标的代码）。与全量接口 `etf-components-all` 单条结构一致，未找到时由 API 层返回错误（404 语义）。",
+    "required": [
+      "symbol"
+    ],
+    "params": [
+      "symbol"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 55,
+    "name": "ft_get_etf_pre",
+    "category": "ETF / 基金",
+    "description": "获取指定交易日的全部 ETF 盘前信息（申赎单位、净值、现金差额、是否公布 IOPV、申赎允许情况、预估现金部分等）。不传 `date` 时使用当日（CST），当日数据缓存在内存。返回 `EtfPreResponse`（trade_date + items 列表），每项与 data-protocol `ETFDailyPreDataV2` 字段一致。\n提示: 不传 `date` 用当日；传 `date` 用指定交易日（YYYYMMDD）。当日数据走内存缓存，同日重复请求直接命中。; `creation_redemption_flag` 为位掩码：1=允许申购，2=允许赎回，用位与判断。; `member_market_type` 为成分股类型位掩码：1=上交所 2=深交所 4=港交所 8=北交所 16=外汇 32=其他。; 数据样例待公网可访问后补真实数据。",
+    "short": "获取指定交易日的全部 ETF 盘前信息（申赎单位、净值、现金差额、是否公布 IOPV、申赎允许情况、预估现金部分等）。不传 `date` 时使用当日（CST），当日数据缓存在内存。",
+    "required": [],
+    "params": [
+      "date"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 56,
+    "name": "ft_get_etf_pre_single_handler",
+    "category": "ETF / 基金",
+    "description": "根据标的代码查询单只 ETF 的盘前信息（申赎单位、净值、现金差额、是否公布 IOPV、申赎允许情况、预估现金部分等）。不传 `date` 时使用当日（CST），未找到时由 API 层返回错误（404 语义）。返回单个 `EtfPreItem` 对象，字段与 `etf-pre-data` 列表项一致。\n提示: `symbol` 必填，带交易所后缀（如 510300.XSHG、159915.XSHE）。; 不传 `date` 用当日（CST）；未找到该 ETF 盘前信息时返回错误。; `creation_redemption_flag` 为位掩码：1=允许申购，2=允许赎回；`member_market_type` 为成分股类型位掩码（1=上交所 2=深交所 4=港交所 8=北交所 16=外汇 32=其他）。; 数据样例待公网可访问后补真实数据。",
+    "short": "根据标的代码查询单只 ETF 的盘前信息（申赎单位、净值、现金差额、是否公布 IOPV、申赎允许情况、预估现金部分等）。不传 `date` 时使用当日（CST），未找到时由 API 层返回错误（404 语义）。",
+    "required": [
+      "symbol"
+    ],
+    "params": [
+      "date",
+      "symbol"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 57,
+    "name": "ft_get_fund_basicinfo",
+    "category": "ETF / 基金",
+    "description": "按基金代码查询基金基本信息（管理人/托管人/运作方式/投资目标/费率要素等静态档案）。handler 校验 `institution_code` 非空，命中返回单条 `FundBasicinfoResponse`，未命中返回错误。数据由 `query_fund_basicinfo` 经 Redis 缓存 + ClickHouse 回源。\n提示: `institution_code` 必填（基金代码）。; `page` / `page_size` 在本接口未参与基础信息查询，仅与同 Request 类型复用相关。",
+    "short": "按基金代码查询基金基本信息（管理人/托管人/运作方式/投资目标/费率要素等静态档案）。handler 校验 `institution_code` 非空，命中返回单条 `FundBasicinfoResponse`，未命中返回错误。",
+    "required": [
+      "institution_code"
+    ],
+    "params": [
+      "institution_code",
+      "page",
+      "page_size"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 58,
+    "name": "ft_get_fund_cal_return",
+    "category": "ETF / 基金",
+    "description": "按基金代码 + 区间类型查询基金累计收益率序列。handler 校验 `institution_code` 与 `cal_type` 非空，根据区间类型（1M/3M/6M/1Y/3Y/5Y/YTD）取复权单位净值序列计算累计收益率，返回数组（非分页）。数据经 `query_fund_cal_return` 查询 ClickHouse。\n提示: `institution_code`、`cal_type` 均必填。; `cal_type` 取值：`1M` / `3M` / `6M` / `1Y` / `3Y` / `5Y` / `YTD`。; 收益率字段在 JSON 中序列化为 `return`（Rust 字段名 `return_rate`）。",
+    "short": "按基金代码 + 区间类型查询基金累计收益率序列。handler 校验 `institution_code` 与 `cal_type` 非空，根据区间类型（1M/3M/6M/1Y/3Y/5Y/YTD）取复权单位净值序列计算累计收益率，返回数组（非分页）。",
+    "required": [
+      "institution_code",
+      "cal-type"
+    ],
+    "params": [
+      "cal-type",
+      "institution_code"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 59,
+    "name": "ft_get_fund_nav",
+    "category": "ETF / 基金",
+    "description": "按基金代码分页查询基金净值序列（单位净值/累计净值/复权净值/日增长率/每万份收益/7日年化/申赎状态/分红配送）。返回 `PaginatedResponse<FundNavResponse>`，handler 校验 `institution_code` 非空，默认 `page=1`、`page_size=50`。数据经 Redis 缓存 + ClickHouse 回源。\n提示: `institution_code` 必填。; 时间序列数据，按 `end_date`（截止日期）排序分页。",
+    "short": "按基金代码分页查询基金净值序列（单位净值/累计净值/复权净值/日增长率/每万份收益/7日年化/申赎状态/分红配送）。返回 `PaginatedResponse<FundNavResponse>`，handler 校验 `institution_code` 非空，默认 `page=1`、`page_size=50`。",
+    "required": [
+      "institution_code"
+    ],
+    "params": [
+      "institution_code",
+      "page",
+      "page_size"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 60,
+    "name": "ft_get_fund_overview",
+    "category": "ETF / 基金",
+    "description": "分页查询所有基金概览（近两个交易日单位/累计净值、日增长值与增长率、基金类别、申购状态）。返回 `PaginatedResponse<FundOverviewItem>`，数据由 `query_fund_overview` 查询，经 Redis 缓存。\n提示: 无净值的基金对应字段为 `null`。; `daily_growth_ratio` 保留两位小数。",
+    "short": "分页查询所有基金概览（近两个交易日单位/累计净值、日增长值与增长率、基金类别、申购状态）。返回 `PaginatedResponse<FundOverviewItem>`，数据由 `query_fund_overview` 查询，经 Redis 缓存。",
+    "required": [
+      "page",
+      "page_size"
+    ],
+    "params": [
+      "page",
+      "page_size"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 61,
+    "name": "ft_get_fund_support_symbols",
+    "category": "ETF / 基金",
+    "description": "分页查询所有支持的基金标的（基金代码 + 基金名称）。返回 `PaginatedResponse<FundSupportSymbolItem>`，由 `query_fund_support_symbols` 查询 ClickHouse。\n提示: `page` / `page_size` 入参（协议定义无 Option 标注，建议调用方传入合理值）。",
+    "short": "分页查询所有支持的基金标的（基金代码 + 基金名称）。返回 `PaginatedResponse<FundSupportSymbolItem>`，由 `query_fund_support_symbols` 查询 ClickHouse。",
+    "required": [
+      "page",
+      "page_size"
+    ],
+    "params": [
+      "page",
+      "page_size"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 62,
+    "name": "ft_get_hk_basinfo_get / get_hk_basinfo_post",
+    "category": "港股 / 港股通 / AH",
+    "description": "按 `hk_code` 查询港股个股信息视图（基础信息 + 最新市值/估值合并视图），返回单条 `HkStockViewResponse`。字段含板块/上市状态/关联 A 股代码、总股本/总市值/港股市值、PE/PS/PB/PCF/股息率等（数值字段为 `f64`）。GET 与 POST 走同一 inner 逻辑，返回结构一致。`hk_code` 必填，空值或查不到/底层日线文件缺失返回 400，其它内部错误返回 500。\n提示: 对外 v1 仅暴露 GET（v1 调 get_hk_stock_view；底层 v0 同时支持 GET+POST）。; `hk_code` 支持纯数字（`00700`）或带 `.HK`（`00700.HK`），内部会规范化补 `.HK`。; 数值字段为 `f64`（非 Decimal），与 F9 `market-cap-hk` 字段口径类似但类型不同。; 底层依赖日线静态文件，文件缺失返回 400。",
+    "short": "按 `hk_code` 查询港股个股信息视图（基础信息 + 最新市值/估值合并视图），返回单条 `HkStockViewResponse`。字段含板块/上市状态/关联 A 股代码、总股本/总市值/港股市值、PE/PS/PB/PCF/股息率等（数值字段为 `f64`）。",
+    "required": [
+      "hk_code"
+    ],
+    "params": [
+      "hk_code"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 63,
+    "name": "ft_get_hk_candlesticks",
+    "category": "港股 / 港股通 / AH",
+    "description": "按 `trade_code` + 日期范围查询港股 K 线，返回 `HkCandlesticksResponse`（外层含 `trade_code` + `items` 数组）。底层来源表 `hkshareeodprices`。支持前复权/不复权，间隔单位仅支持 day/month/quarter/year（无分钟），`interval_value` 当前仅支持 1。`limit` 为可选保留最近 N 根。\n提示: 对外 v1 仅暴露 GET（底层 v0 同时支持 GET+POST）。; 时间参数为日期（`since_date` / `until_date`，YYYY-MM-DD），非时间戳；与 F3 `hk-stock-candlesticks`（毫秒戳 + 3 天时间窗）是两套独立接口。; 港股代码内部规范化为 5 位数字 + `.HK`。; 复权 `adjust_kind` 默认 forward（前复权），仅 forward / none 两档。",
+    "short": "按 `trade_code` + 日期范围查询港股 K 线，返回 `HkCandlesticksResponse`（外层含 `trade_code` + `items` 数组）。底层来源表 `hkshareeodprices`。",
+    "required": [
+      "trade_code",
+      "interval_unit",
+      "until_date"
+    ],
+    "params": [
+      "adjust_kind",
+      "interval_unit",
+      "interval_value",
+      "limit",
+      "since_date",
+      "trade_code",
+      "until_date"
+    ],
+    "param_count": 7,
+    "is_ft": true
+  },
+  {
+    "idx": 64,
+    "name": "ft_get_hk_valuatnanalyd",
+    "category": "港股 / 港股通 / AH",
+    "description": "港股估值分析分页查询，返回 `PaginatedResponse<HkStkValuatnAnalydItem>`。可按 `trade_code` 查指定个股全部交易日的估值序列，或留空查全市场分页。每项含当日收盘价、成交量/额、波动率、港股股数/市值、换手率、PE/PS/PB/PCF/股息率等。默认 `page=1`、`page_size=20`，`page_size` 上限 500。\n提示: 对外 v1 仅暴露 GET（底层 v0 同时支持 GET+POST）。; `trade_code` 可选：留空分页查全市场；指定则查该股全部交易日估值序列。; 与 F9 `market-cap-hk` 区别：本接口是按日估值**时间序列**（分页），F9 是单条最新一期快照。; `update_time` 为 int64 整数时间戳（格式如 `20251202214424`）。",
+    "short": "港股估值分析分页查询，返回 `PaginatedResponse<HkStkValuatnAnalydItem>`。可按 `trade_code` 查指定个股全部交易日的估值序列，或留空查全市场分页。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "trade_code"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 65,
+    "name": "ft_get_market_cap_hk",
+    "category": "其他",
+    "description": "按 `trade_code` 查询港股市值/估值分析最新一期数据，返回单条 `MarketCapHkResponse`。含总股本（= H 股 + A 股 + B 股股数）、总市值（= 总股本 × 收盘价）、港股市值/流通市值、静态/动态/滚动 PE、PS、PB、PCF、股息率等估值指标。无分页，`trade_code` 必填，查不到报 `trade_code not found`。\n提示: 对外 v1 仅暴露 GET（底层 v0 同时支持 GET+POST）。; `trade_code` 必填，store 查不到返回 `trade_code not found`。; 仅返回最新一期数据，非时间序列；如需历史估值见 F12 `hk-valuatnanalyd`。",
+    "short": "按 `trade_code` 查询港股市值/估值分析最新一期数据，返回单条 `MarketCapHkResponse`。含总股本（= H 股 + A 股 + B 股股数）、总市值（= 总股本 × 收盘价）、港股市值/流通市值、静态/动态/滚动 PE、PS、PB、PCF、股息率等估值指标。",
+    "required": [
+      "trade_code"
+    ],
+    "params": [
+      "trade_code"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 66,
+    "name": "ft_get_nth_trade_date",
+    "category": "其他",
+    "description": "根据给定 N，返回当前日期向前第 N 个交易日（N >= 1）。基于底层交易日历过滤非交易日，返回当前日期与目标第 N 个交易日。响应为 `GetNthTradeDateResponse`。\n提示: `n` 必须 >= 1。; 「当前日期」以服务端当日为准，目标交易日为向前（历史方向）数第 N 个。",
+    "short": "根据给定 N，返回当前日期向前第 N 个交易日（N >= 1）。基于底层交易日历过滤非交易日，返回当前日期与目标第 N 个交易日。",
+    "required": [
+      "n"
+    ],
+    "params": [
+      "n"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 67,
+    "name": "ft_get_price_change",
+    "category": "A股基础 / 行情",
+    "description": "单票 N 日涨跌幅接口。给定 `stock_code`、基准日 `base_date`、交易日数量 `n` 与方向 `direction`，自动过滤非交易日后计算区间涨跌幅。`forward` = 以基准日为结束日向前取 N 个交易日；`backward` = 以基准日为起始日向后取 N 个交易日。返回起止交易日、起止收盘价（复权后保留 2 位小数）、价格变动额与涨跌幅百分比。建议 `n` 不超过 365。\n提示: `stock_code` 为 6 位纯数字代码（兼容沪/深/创业板/科创板）。; `direction` 仅接受 `forward` / `backward`。; 起止价格已按复权类型处理，保留 2 位小数。; 建议查询区间 `n` 不超过 365 个交易日。",
+    "short": "单票 N 日涨跌幅接口。给定 `stock_code`、基准日 `base_date`、交易日数量 `n` 与方向 `direction`，自动过滤非交易日后计算区间涨跌幅。",
+    "required": [
+      "stock_code",
+      "base_date",
+      "n",
+      "direction"
+    ],
+    "params": [
+      "base_date",
+      "direction",
+      "n",
+      "stock_code"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 68,
+    "name": "ft_get_stk_ah_comparison",
+    "category": "港股 / 港股通 / AH",
+    "description": "查询 AH 股比价分页数据，返回 `PaginatedResponse<StkAhComparisonItem>`。支持按 `hk_code`（港股）/`ts_code`（A 股）+ 单日或日期区间过滤，返回每对 A/H 标的的历史比价记录：含双方名称/收盘价/涨跌幅、A/H 比价（= A 股收盘价 / 港股收盘价）、A/H 溢价率（=（A/H − 1）× 100）。默认 `page=1`、`page_size=50`，校验层 `page_size` 上限 500，store 层再钳到 1000。\n提示: 对外 v1 仅暴露 GET（底层 v0 同时支持 GET+POST）。; 可单按 `hk_code` 或 `ts_code` 过滤，也可配合 `trade_date` 或 `start_date`/`end_date` 区间。; `hk_code` 支持 `700` 或 `00700.HK`；`ts_code` 需 `xxxxxx.SH/SZ/BJ` 后缀格式。; 字段注释「最大 1000」与校验层 `validate_page` 上限 500 存在冗余，实际生效以校验层 500 为准。",
+    "short": "查询 AH 股比价分页数据，返回 `PaginatedResponse<StkAhComparisonItem>`。支持按 `hk_code`（港股）/`ts_code`（A 股）+ 单日或日期区间过滤，返回每对 A/H 标的的历史比价记录：含双方名称/收盘价/涨跌幅、A/H 比价（= A 股收盘价 / 港股收盘价）、A/H 溢价率（=（A/H − 1）× 100）。",
+    "required": [],
+    "params": [
+      "end_date",
+      "hk_code",
+      "page",
+      "page_size",
+      "start_date",
+      "trade_date",
+      "ts_code"
+    ],
+    "param_count": 7,
+    "is_ft": true
+  },
+  {
+    "idx": 69,
+    "name": "ft_get_stock_institution_holdings",
+    "category": "新闻 / 公告 / 研报",
+    "description": "查询 A 股指定报告期机构持股汇总信息。按年份 + 报告期（`report_type`）+ 机构类型（`inst_type`）查询，返回各标的该报告期的机构持股汇总：机构总数、持股数量（万股）、市值（元）、增减仓类型/数量/比例等。`report_type`、`inst_type`、`year` 均必填。响应为 `PaginatedResponse` 分页结构（items/total_pages/total_items）。\n提示: `report_type` 取值：q1 / q2 / q3 / annual / announcement。; `inst_type` 取值（snake_case）：all_inst / fund / qfii / insurance / social_security / securities / trust / other。; 缺少 `report_type`/`inst_type`/`year` 时返回错误。",
+    "short": "查询 A 股指定报告期机构持股汇总信息。按年份 + 报告期（`report_type`）+ 机构类型（`inst_type`）查询，返回各标的该报告期的机构持股汇总：机构总数、持股数量（万股）、市值（元）、增减仓类型/数量/比例等。",
+    "required": [
+      "year",
+      "report_type",
+      "inst_type"
+    ],
+    "params": [
+      "inst_type",
+      "page",
+      "page_size",
+      "report_type",
+      "year"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 70,
+    "name": "ft_get_stock_institution_holdings_detail",
+    "category": "新闻 / 公告 / 研报",
+    "description": "查询 A 股单票机构持仓详细信息。按股票代码 + 年份 + 报告期 + 机构类型查询，返回该标的在指定报告期被各机构持仓的明细：机构名称、持股数量、市值、净值比例、流通比例、总股本比例等。`stock_code`、`report_type`、`inst_type`、`year` 均必填。响应为 `PaginatedResponse` 分页结构（items/total_pages/total_items）。\n提示: `report_type` 取值：q1 / q2 / q3 / annual / announcement。; `inst_type` 取值：all_inst（返回全部）/ fund / qfii / insurance / social_security / securities / trust / other，非 all_inst 时按机构类型过; 缺少必填参数时返回错误。",
+    "short": "查询 A 股单票机构持仓详细信息。按股票代码 + 年份 + 报告期 + 机构类型查询，返回该标的在指定报告期被各机构持仓的明细：机构名称、持股数量、市值、净值比例、流通比例、总股本比例等。",
+    "required": [
+      "stock_code",
+      "year",
+      "report_type",
+      "inst_type"
+    ],
+    "params": [
+      "inst_type",
+      "page",
+      "page_size",
+      "report_type",
+      "stock_code",
+      "year"
+    ],
+    "param_count": 6,
+    "is_ft": true
+  },
+  {
+    "idx": 71,
+    "name": "ft_get_stock_institution_share_holdings",
+    "category": "新闻 / 公告 / 研报",
+    "description": "查询机构指定报告期机构持股汇总（机构角度）。按机构 ID + 年份 + 报告期 + 持仓类型查询，返回该机构在该报告期的持仓明细列表（持股数量、市值、净值/流通/总股本比例）、前 10 大持仓占比等。`institution_id`、`report_type`、`year`、`invest_type` 均必填。响应为数组 `Vec<GetStockInstitutionShareHoldingsResponse>`，命中时通常为 1 条。\n提示: `report_type` 取值：q1 / q2 / q3 / annual / announcement。; `invest_type` 取值：all / stock / fund / bond / other。; 缺少必填参数时返回错误。",
+    "short": "查询机构指定报告期机构持股汇总（机构角度）。按机构 ID + 年份 + 报告期 + 持仓类型查询，返回该机构在该报告期的持仓明细列表（持股数量、市值、净值/流通/总股本比例）、前 10 大持仓占比等。",
+    "required": [
+      "institution_id",
+      "year",
+      "report_type",
+      "invest_type"
+    ],
+    "params": [
+      "institution_id",
+      "invest_type",
+      "report_type",
+      "year"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 72,
+    "name": "ft_get_stock_list",
+    "category": "A股基础 / 行情",
+    "description": "获取所有股票代码与名称列表。无入参，返回全量股票的代码（如 `000001.SZ`）与名称。响应为 `StockListResponse`，`items` 为 `StockListItem` 列表。\n提示: 无入参，直接返回全量股票列表。; 不分页，数据量较大时注意单次返回体积。; `stock_code` 输出为带交易所后缀格式（如 `000001.SZ`）。",
+    "short": "获取所有股票代码与名称列表。无入参，返回全量股票的代码（如 `000001.SZ`）与名称。",
+    "required": [],
+    "params": [
+      "（无）"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 73,
+    "name": "ft_get_stock_share_handler",
+    "category": "A股股东 / 股权 / 公司事件",
+    "description": "获取单票指定日期股本信息。返回该标的在指定日期的总股本、A 股流通/限售/无限售股本、B 股股本、H 股股本、境外上市股本、流通股本合计等字段。`stock_code` 与 `date` 均为必填，`date` 格式 YYYYMMDD。响应为 `PaginatedResponse` 分页结构（items/total_pages/total_items），命中时仅返回 1 条。\n提示: `stock_code` 与 `date` 均必填，`date` 格式 YYYYMMDD。; 未命中数据时 items 为空数组。",
+    "short": "获取单票指定日期股本信息。返回该标的在指定日期的总股本、A 股流通/限售/无限售股本、B 股股本、H 股股本、境外上市股本、流通股本合计等字段。",
+    "required": [
+      "stock_code",
+      "date"
+    ],
+    "params": [
+      "date",
+      "stock_code"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 74,
+    "name": "ft_global_index_daily_kline",
+    "category": "指数 / 行业 / 板块",
+    "description": "获取全球指数（含部分 A 股/港股宽基）的**历史日K线**，返回 `{total, items}` 结构（非分页，按时间区间一次性返回）。每根 K 线含开高低收 + 成交量 + 成交额 + 振幅 + 涨跌幅 + 涨跌额 + 换手率，价格字符串形式。`secid` 采用东方财富全球指数编码（如 `100.NDX` 纳斯达克、`100.DJIA` 道琼斯、`100.SPX` 标普500、`100.HSI` 恒生、`100.N225` 日经225）。注意：早期年份（如 1990 年代）的 `volume`/`amount`/`turnover` 多为 0（指数无成交量概念），近期数据成交量字段逐步有值。\n提示: `secid` 必填，东方财富全球指数编码格式，如 `100.NDX`、`100.DJIA`、`100.SPX`、`100.HSI`、`100.N225`。; 与「全球指数基础信息」接口的 symbol（`IXIC`/`DJI`/`HSI`）不是同一套编码，不可直接互用。; `start_date`/`end_date` 均为 `YYYY-MM-DD` 字符串；时间下限因标的而异（见数据范围）。; 价格字段为字符串，负涨跌额带 `-`。; 指数无成交额/换手率概念，`amount`/`turnover` 常为 `\"0.00\"`/`\"0.0000\"`。",
+    "short": "获取全球指数（含部分 A 股/港股宽基）的**历史日K线**，返回 `{total, items}` 结构（非分页，按时间区间一次性返回）。每根 K 线含开高低收 + 成交量 + 成交额 + 振幅 + 涨跌幅 + 涨跌额 + 换手率，价格字符串形式。",
+    "required": [
+      "secid"
+    ],
+    "params": [
+      "end_date",
+      "secid",
+      "start_date"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 75,
+    "name": "ft_goodwill_industry",
+    "category": "其他",
+    "description": "按报告期查询 A 股各行业的商誉汇总，返回每个行业的公司数、商誉规模、净资产、商誉占净资产比例、净利润规模。数据来源于 xz02 数据库商誉表。响应为 `ApiResponse` 信封（code/message/data），data 含查询 `date`、`total` 与 `items`。\n提示: `date` 必填，报告期通常为季末/年末（如 20250331、20241231）。; 行业维度汇总，非个股。; 多数字段为 `Option<T>`，缺失返回 null。",
+    "short": "按报告期查询 A 股各行业的商誉汇总，返回每个行业的公司数、商誉规模、净资产、商誉占净资产比例、净利润规模。数据来源于 xz02 数据库商誉表。",
+    "required": [
+      "date"
+    ],
+    "params": [
+      "date",
+      "page",
+      "page_size"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 76,
+    "name": "ft_goodwill_market_overview",
+    "category": "其他",
+    "description": "查询 A 股商誉市场总览，返回每个报告期的全市场商誉规模、商誉减值、净资产、商誉占净资产比例、减值占净资产比例、净利润规模、减值占净利润比例等总量指标。数据来源于 xz02 数据库商誉市场总览表。请求无业务参数。响应为 `ApiResponse` 信封（code/message/data），data 含 `total` 与 `items`。\n提示: 请求参数为空（`GoodwillMarketOverviewRequest {}`）。; 全市场总量维度，非个股/非行业。; 多数字段为 `Option<String>`，缺失返回 null。",
+    "short": "查询 A 股商誉市场总览，返回每个报告期的全市场商誉规模、商誉减值、净资产、商誉占净资产比例、减值占净资产比例、净利润规模、减值占净利润比例等总量指标。数据来源于 xz02 数据库商誉市场总览表。",
+    "required": [],
+    "params": [
+      "（无业务参数）"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 77,
+    "name": "ft_goodwill_predict",
+    "category": "其他",
+    "description": "按报告期查询 A 股个股商誉减值预期/业绩预告明细，返回业绩变动说明、预告期间、最新商誉、上期商誉、预告净利润下限/上限、业绩变动幅度下限/上限、上年同期净利润、公告日期、所属市场。数据来源于 xz02 数据库商誉预测表。响应为 `PaginatedApiResponse` 分页信封，data 含 `pageNum/pageSize/total/pages/records`。\n提示: `date` 必填，报告期通常为季末/年末。; 对应「商誉减值预期/业绩预告」口径，非实际减值（实际减值见 `goodwill/stock-impairment`）。; 多数字段为 `Option<String>`，缺失返回 null。",
+    "short": "按报告期查询 A 股个股商誉减值预期/业绩预告明细，返回业绩变动说明、预告期间、最新商誉、上期商誉、预告净利润下限/上限、业绩变动幅度下限/上限、上年同期净利润、公告日期、所属市场。数据来源于 xz02 数据库商誉预测表。",
+    "required": [
+      "date"
+    ],
+    "params": [
+      "date",
+      "page",
+      "page_size"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 78,
+    "name": "ft_goodwill_stock_detail",
+    "category": "其他",
+    "description": "按报告期查询 A 股个股商誉明细，返回每只股票的商誉规模、商誉占净资产比例、净利润规模、净利润同比、上期商誉、公告日期、所属板块。数据来源于 xz02 数据库商誉明细表。响应为 `PaginatedApiResponse` 分页信封，data 含 `pageNum/pageSize/total/pages/records`。\n提示: `date` 必填，报告期通常为季末/年末。; 个股维度明细。; 多数字段为 `Option<String>`，缺失返回 null。",
+    "short": "按报告期查询 A 股个股商誉明细，返回每只股票的商誉规模、商誉占净资产比例、净利润规模、净利润同比、上期商誉、公告日期、所属板块。数据来源于 xz02 数据库商誉明细表。",
+    "required": [
+      "date"
+    ],
+    "params": [
+      "date",
+      "page",
+      "page_size"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 79,
+    "name": "ft_goodwill_stock_impairment",
+    "category": "其他",
+    "description": "按报告期查询 A 股个股商誉减值明细，返回每只股票的商誉规模、商誉变动、商誉占净资产比例、净利润规模、商誉减值占净利润比例、公告日期、所属板块。数据来源于 xz02 数据库商誉减值表。响应为 `PaginatedApiResponse` 分页信封，data 含 `pageNum/pageSize/total/pages/records`。\n提示: `date` 必填，报告期通常为季末/年末。; 个股维度商誉减值明细。; `goodwill_change` 为负表示减值；多数字段为 `Option<String>`，缺失返回 null。",
+    "short": "按报告期查询 A 股个股商誉减值明细，返回每只股票的商誉规模、商誉变动、商誉占净资产比例、净利润规模、商誉减值占净利润比例、公告日期、所属板块。数据来源于 xz02 数据库商誉减值表。",
+    "required": [
+      "date"
+    ],
+    "params": [
+      "date",
+      "page",
+      "page_size"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 80,
+    "name": "ft_hk_cashflow",
+    "category": "港股 / 港股通 / AH",
+    "description": "港股现金流量表分页查询，返回 `PaginatedResponse<HkCashflowItem>`。所有过滤条件可自由组合：`stock_code` 单独 → 查该股全部报告期；`year` + `report_type` → 按年度+报告类型查全市场；`stock_code` + `year` + `report_type` → 精确查某股某年某报告期；`start_date`/`end_date` → 按报告期范围查。**至少需要一个过滤条件**，`year` 限制最近 3 年。每项为扁平宽表（非 EAV 长表），含元数据（10 字段）+ 经营/投资/融资三大活动及汇总共约 110 个金额科目字段（多为 `Option<Decimal>`）。默认 `page=1`、`page_size=20`，`page_size` 上限 500。\n提示: 对外 v1 仅暴露 GET（底层 v0 同时支持 GET+POST）。; 必须至少传一个过滤条件（`stock_code`、`start_date`、`end_date`、或 `year`+`report_type`）。; 宽表结构：每个报告期一行，所有现金流科目横向展开；下表仅列元数据 + 各类代表字段，完整科目集见 `data-api-protocol/src/v0/api/fundamentals/hk_cashflow.rs:313-564`。; `report_type` 取值：`annual`（年报）/ `semi`（半年报）。; 内部字段（`id`/`company_id`/*_id/`op_mode`/`update_…",
+    "short": "港股现金流量表分页查询，返回 `PaginatedResponse<HkCashflowItem>`。所有过滤条件可自由组合：`stock_code` 单独 → 查该股全部报告期；",
+    "required": [],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "report_type",
+      "start_date",
+      "stock_code",
+      "year"
+    ],
+    "param_count": 7,
+    "is_ft": true
+  },
+  {
+    "idx": 81,
+    "name": "ft_hk_sh_stock_connect_members",
+    "category": "港股 / 港股通 / AH",
+    "description": "获取沪市港股通成份列表（即通过上交所通道可买的港股标的）。无入参、无分页，返回内存快照 `Arc<[StockConnectMember]>`，每项仅含成份标的代码（`SymbolKey`）。该数据由后台定时刷新，调用时返回最新成份名单。\n提示: 对外 v1 仅暴露 GET（底层 v0 同时支持 GET+POST）。; 成份名单以最新快照为准，无历史变更序列。; 与「深港通成份」（`hk-sz-stock-connect-members`）互斥，分别覆盖沪市/深市港股通通道。",
+    "short": "获取沪市港股通成份列表（即通过上交所通道可买的港股标的）。无入参、无分页，返回内存快照 `Arc<[StockConnectMember]>`，每项仅含成份标的代码（`SymbolKey`）。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 82,
+    "name": "ft_hk_sz_stock_connect_members",
+    "category": "港股 / 港股通 / AH",
+    "description": "获取深市港股通成份列表（即通过深交所通道可买的港股标的）。无入参、无分页，返回内存快照 `Arc<[StockConnectMember]>`，每项仅含成份标的代码（`SymbolKey`）。该数据由后台定时刷新，调用时返回最新成份名单。\n提示: 对外 v1 仅暴露 GET（底层 v0 同时支持 GET+POST）。; 成份名单以最新快照为准，无历史变更序列。; 与「沪港通成份」（`hk-sh-stock-connect-members`）互斥，分别覆盖深市/沪市港股通通道。",
+    "short": "获取深市港股通成份列表（即通过深交所通道可买的港股标的）。无入参、无分页，返回内存快照 `Arc<[StockConnectMember]>`，每项仅含成份标的代码（`SymbolKey`）。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 83,
+    "name": "ft_income",
+    "category": "A股财务 / 业绩",
+    "description": "查询 A 股上市公司利润表数据，底表 `ashare_income`。返回**宽表**结构（每行一个报告期 + 多个财务科目列），数值字段为 `Option<Decimal>`，优先取「合并调整」报表类型，没有则取「合并未调整」。同一路径支持两种模式：模式A 传 `stock_code` 查单票所有报告期；模式B 不传 `stock_code` 时必填 `year + report_type + page + page_size`，按单个报告期分页查所有票。`report_type` 取值 `q1` / `q2` / `q3` / `annual`（兼容 `h1` → `q2`）。\n提示: `stock_code` 格式为 6 位数字 + 交易所后缀（如 `000001.SZ`），模式A 与模式B 二选一。; 模式A 单票查询不分页，返回该票全部报告期；模式B 才按 `page/page_size` 分页。; 数值字段每对（原值 + `_yoy` 同比）成组返回，同比无值时为 null。",
+    "short": "查询 A 股上市公司利润表数据，底表 `ashare_income`。返回**宽表**结构（每行一个报告期 + 多个财务科目列），数值字段为 `Option<Decimal>`，优先取「合并调整」报表类型，没有则取「合并未调整」。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "report_type",
+      "stock_code",
+      "year"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 84,
+    "name": "ft_index_description_all",
+    "category": "指数 / 行业 / 板块",
+    "description": "获取全部指数的基础信息（全称、简称、市净率 PB、市盈率 TTM），返回**数组**（非分页）。覆盖沪深京三市全部指数，按 `symbol` 升序排列。每项含指数代码（如 `000001.XSHG`）、全称（如「上证综合指数」）、简称（如「上证指数」）。市净率/市盈率为最新快照值，部分退市或等权指数（如 `000070.XSHG` 能源等权）该字段为 `null`。\n提示: 无入参，直接 GET 即可。; `symbol` 为标的代码，含交易所后缀：上交所 `.XSHG`、深交所 `.XSHE`、北交所 `.BJSE`。; `pb` / `pe_ttm` 为最新估值快照，退市/无估值指数为 `null`。",
+    "short": "获取全部指数的基础信息（全称、简称、市净率 PB、市盈率 TTM），返回**数组**（非分页）。覆盖沪深京三市全部指数，按 `symbol` 升序排列。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 85,
+    "name": "ft_index_description_list_handler",
+    "category": "指数 / 行业 / 板块",
+    "description": "分页获取中证系列指数（中证指数有限公司发布）的描述信息，含指数代码、来源机构（如「中证指数」）、指数名称、指数简介（编制说明文字）。返回**分页结构**：`total` 为指数总数，`index_descriptions` 为当页列表。每项含 `url_hash`，可用其调用 `index_description/{url_hash}` 下载该指数的 PDF 编制文件。底层转调外部爬虫服务（如 `xz04:20003`）。\n提示: 路径含 `index` 子前缀：`/market/data/index/index_description`。; `index_orig` 标识发布机构（中证指数等），与 `index_name` 不同。; `url_hash` 可用于下载对应指数编制细则 PDF（走 `index_description/{url_hash}` 文件接口）。",
+    "short": "分页获取中证系列指数（中证指数有限公司发布）的描述信息，含指数代码、来源机构（如「中证指数」）、指数名称、指数简介（编制说明文字）。返回**分页结构**：`total` 为指数总数，`index_descriptions` 为当页列表。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 86,
+    "name": "ft_index_weight_list_handler",
+    "category": "指数 / 行业 / 板块",
+    "description": "分页获取单只中证系列指数某一期的**成份股权重明细**。返回**分页结构**，每项为一只成份股（`component_code` + `component_name`）在该期（`date`）的权重（`weight`，小数字符串）。典型大盘指数（如沪深300）单期约 300 只成份，总指数 1232 条（跨多期）。`url_hash` 可用于下载整份权重 xlsx 文件。`index_code` 必填，`date` 可选（不传则取该指数最新期）。底层转调外部爬虫服务（如 `xz04:20003`）。\n提示: 路径含 `index` 子前缀：`/market/data/index/index_weight`。; `index_code` **必填**，为空会被拒（400）。; `date` 可选；建议先从 `index_weight_summary` 拿到可用 `date` 再按期查。; `weight` 为字符串形式的小数权重（如 `0.0609`），非百分比。",
+    "short": "分页获取单只中证系列指数某一期的**成份股权重明细**。返回**分页结构**，每项为一只成份股（`component_code` + `component_name`）在该期（`date`）的权重（`weight`，小数字符串）。",
+    "required": [
+      "index_code"
+    ],
+    "params": [
+      "date",
+      "index_code",
+      "page",
+      "page_size"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 87,
+    "name": "ft_index_weight_summary_handler",
+    "category": "指数 / 行业 / 板块",
+    "description": "分页获取中证系列指数的**权重期数汇总**。返回**分页结构**，每项为一只指数（`index_code`）下所有可用的权重快照期数（`periods`），每个期数含采集 `date` 与 `url_hash`。`url_hash` 用于下载对应期数整份权重明细 xlsx 文件（走 `index_weight/{url_hash}` 文件接口）。典型返回每只指数保留最近约 4 个期数（按月，月末或月末前一交易日）。底层转调外部爬虫服务（如 `xz04:20003`）。\n提示: 路径含 `index` 子前缀：`/market/data/index/index_weight_summary`。; 本接口只给「哪些指数 × 哪些期数」的索引，要拿每期具体成份权重需走 `index_weight`（按 `index_code`+`date`）或 `index_weight/{url_hash}`（下载 xlsx）。; `url_hash` 与 `index_weight` 接口的 `url_hash` 对应同一份文件。",
+    "short": "分页获取中证系列指数的**权重期数汇总**。返回**分页结构**，每项为一只指数（`index_code`）下所有可用的权重快照期数（`periods`），每个期数含采集 `date` 与 `url_hash`。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 88,
+    "name": "ft_limit_down_pool",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询当日跌停股池。从内存涨跌停事件状态（`LIMIT_EVENT_MAP`）筛选 `limit_down_enter` 非空的股票，返回跌停相关字段：跌停价、进入跌停时间点数组、翘板时间数组、最后封板时间、开板（翘板）次数、跌停封单资金。已过滤非股票标的（可转债等）。返回裸数组（非信封）。\n提示: 仅返回当日有过跌停（`limit_down_enter` 非空）的股票。; `limit_down_seal_value` 为跌停封单资金，跌停时累加卖一跌停价挂单额，其余为 0。; 返回为裸 JSON 数组，无 code/message 信封。",
+    "short": "查询当日跌停股池。从内存涨跌停事件状态（`LIMIT_EVENT_MAP`）筛选 `limit_down_enter` 非空的股票，返回跌停相关字段：跌停价、进入跌停时间点数组、翘板时间数组、最后封板时间、开板（翘板）次数、跌停封单资金。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 89,
+    "name": "ft_limit_event_timeline_3s",
+    "category": "其他",
+    "description": "查询个股当日涨跌停事件 3 秒级时间线。每 3 秒将全市场涨跌停事件快照写入 ClickHouse，本接口读取内存中维护的最新涨跌停事件状态（`LIMIT_EVENT_MAP`），返回每只股票当日的涨跌停时间线：涨停价/跌停价、进入/炸板（涨停）/进入/翘板（跌停）时间点数组、首次封板/最后封板时间、炸板/开板次数、跌停封单资金等。支持传 `symbol` 查单只，不传则返回全市场（仅股票，过滤可转债等）。返回裸数组（非信封）。\n提示: `symbol` 可选，传则查单只；不传返回全市场（已过滤非股票标的）。; `symbol` 找不到或非股票标的时返回错误。; 价格字段：有对应涨/跌停进入记录时返回真实价，否则为 0。; 返回为裸 JSON 数组，无 code/message 信封。",
+    "short": "查询个股当日涨跌停事件 3 秒级时间线。每 3 秒将全市场涨跌停事件快照写入 ClickHouse，本接口读取内存中维护的最新涨跌停事件状态（`LIMIT_EVENT_MAP`），返回每只股票当日的涨跌停时间线：涨停价/跌停价、进入/炸板（涨停）/进入/翘板（跌停）时间点数组、首次封板/最后封板时间、炸板/开板次数、跌停封单资金等。",
+    "required": [],
+    "params": [
+      "symbol"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 90,
+    "name": "ft_limit_up_break_pool",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询当日炸板股池。从内存涨跌停事件状态（`LIMIT_EVENT_MAP`）筛选 `limit_up_break` 非空且当前状态非涨停（`status != limit_up`）的股票，即曾经封涨停但已被打开的标的，返回涨停相关字段。已过滤非股票标的（可转债等）。返回裸数组（非信封）。\n提示: 仅返回当日封板后被打开（`limit_up_break` 非空）且当前已不在涨停状态的股票。; 当前仍在涨停的股票不在炸板池中（请用「涨停池」）。; 返回为裸 JSON 数组，无 code/message 信封。",
+    "short": "查询当日炸板股池。从内存涨跌停事件状态（`LIMIT_EVENT_MAP`）筛选 `limit_up_break` 非空且当前状态非涨停（`status != limit_up`）的股票，即曾经封涨停但已被打开的标的，返回涨停相关字段。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 91,
+    "name": "ft_limit_up_pool",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询当日涨停股池。从内存涨跌停事件状态（`LIMIT_EVENT_MAP`）筛选 `limit_up_enter` 非空的股票，返回涨停相关字段：涨停价、进入涨停时间点数组、炸板时间数组、首次封板时间、炸板次数。已过滤非股票标的（可转债等）。返回裸数组（非信封）。\n提示: 仅返回当日有过涨停（`limit_up_enter` 非空）的股票。; 返回为裸 JSON 数组，无 code/message 信封。; 历日涨停股池请用「昨日涨停池」接口。",
+    "short": "查询当日涨停股池。从内存涨跌停事件状态（`LIMIT_EVENT_MAP`）筛选 `limit_up_enter` 非空的股票，返回涨停相关字段：涨停价、进入涨停时间点数组、炸板时间数组、首次封板时间、炸板次数。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 92,
+    "name": "ft_limit_up_pool_yesterday",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询前一交易日涨停股池。取 `prev_trading_date`（前一交易日），从 ClickHouse 涨跌停事件表（`TABLE_TIMELINE`，FINAL）查询 `limit_up_enter` 非空的记录，返回结构与「涨停池」一致。用于回看昨日涨停股表现。返回裸数组（非信封）。\n提示: 固定取前一交易日，不接受 `trade_date` 参数指定日期。; 返回结构与「涨停池」相同（LimitUpPoolItem）。; 返回为裸 JSON 数组，无 code/message 信封。",
+    "short": "查询前一交易日涨停股池。取 `prev_trading_date`（前一交易日），从 ClickHouse 涨跌停事件表（`TABLE_TIMELINE`，FINAL）查询 `limit_up_enter` 非空的记录，返回结构与「涨停池」一致。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 93,
+    "name": "ft_lpr_monthly",
+    "category": "宏观经济",
+    "description": "查询中国贷款市场报价利率（LPR）月度汇总计算结果。按日期返回 LPR 1 年期利率（`file_id` = M00000553）与 5 年期利率（M00000554）的当日值。底层从宏观经济指标库加载后按 `field_date` 聚合，按年份（2000 年起）降序排列。响应为数组直出，元素为 `LprComputed`。无入参。\n提示: `date` 为 ISO 格式日期（如「2025-12-22」）。; 利率单位为百分比（%），缺失为 null。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询中国贷款市场报价利率（LPR）月度汇总计算结果。按日期返回 LPR 1 年期利率（`file_id` = M00000553）与 5 年期利率（M00000554）的当日值。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 94,
+    "name": "ft_major_contract",
+    "category": "期货",
+    "description": "按签约日期区间查询 A 股上市公司披露的重大合同，返回合同双方、合同类型/名称、合同金额、占上年营收比例、签约日/披露日等。数据来源于东方财富（eastmoney）重大合同数据。`start_date` / `end_date` 必填且区间跨度受 `validate_date_str_range_3_days` 约束（最大 3 天）。响应为 `ApiResponse` 信封，data 含 `total` 与 `items`。\n提示: `start_date` / `end_date` 必填，日期区间跨度不得超过 3 天。; `amounts` 为合同金额，`zsnd_yysr_bl` 为占上年营收比例（%）。; 多数字段为 `Option<String>`，缺失返回 null。",
+    "short": "按签约日期区间查询 A 股上市公司披露的重大合同，返回合同双方、合同类型/名称、合同金额、占上年营收比例、签约日/披露日等。数据来源于东方财富（eastmoney）重大合同数据。",
+    "required": [
+      "start_date",
+      "end_date"
+    ],
+    "params": [
+      "end_date",
+      "start_date"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 95,
+    "name": "ft_major_contract_by_symbol",
+    "category": "期货",
+    "description": "按证券代码（标的）查询该 A 股上市公司披露的重大合同，返回合同双方、合同类型/名称、合同金额、占上年营收比例、签约日/披露日等。数据来源于东方财富（eastmoney）重大合同数据。响应为 `PaginatedApiResponse` 分页信封，data 含 `pageNum/pageSize/total/pages/records`。\n提示: `symbol` 必填，为证券代码。; 返回结构与 `major_contract`（按签约日区间）的单条 item 一致，区别在本接口按标的过滤后分页。; 多数字段为 `Option<String>`，缺失返回 null。",
+    "short": "按证券代码（标的）查询该 A 股上市公司披露的重大合同，返回合同双方、合同类型/名称、合同金额、占上年营收比例、签约日/披露日等。数据来源于东方财富（eastmoney）重大合同数据。",
+    "required": [
+      "symbol"
+    ],
+    "params": [
+      "page",
+      "page_size",
+      "symbol"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 96,
+    "name": "ft_major_contract_summary",
+    "category": "期货",
+    "description": "近一年 A 股上市公司重大合同汇总，按证券代码汇总该年度的合同笔数、合同金额合计、上一年金额合计、去年营收、营收占比、最新营收等。数据来源于东方财富（eastmoney）重大合同汇总数据。响应为 `PaginatedApiResponse` 分页信封，data 含 `pageNum/pageSize/total/pages/records`。\n提示: 请求无业务必填参数，仅分页。; 汇总维度为「近一年」，非按签约日区间筛选。; 多数字段为 `Option<String>`，缺失返回 null。",
+    "short": "近一年 A 股上市公司重大合同汇总，按证券代码汇总该年度的合同笔数、合同金额合计、上一年金额合计、去年营收、营收占比、最新营收等。数据来源于东方财富（eastmoney）重大合同汇总数据。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 97,
+    "name": "ft_margin_trading_details",
+    "category": "其他",
+    "description": "查询融资融券明细，按交易日返回全市场两融快照（每标的一行）。支持按 `date` 指定交易日；不传 `date` 时使用当前内存快照。底层为 `data-api-server` 的 `margin_trading_details` handler：传入日期时直接读取文件中心对应交易日的 CSV，不传时回退到内存缓存 `MARGIN_TRADE`。响应经 ft-data-server 层转换为分页结构（`PaginatedResponse<MarginTradingDetailResponse>`），并补充标的名称。注意：v1 对外路径只有 `/margin-trading-details`，底层 v0 另有 `/margin-trading-details/paginated` 与非分页变体，两者字段一致、区别仅分页语义。\n提示: `date` 格式 YYYYMMDD；不传返回最新内存快照。; 金额字段单位为元，量字段单位为股。; 响应为 `PaginatedResponse` 结构（items + total_pages + total_items）。",
+    "short": "查询融资融券明细，按交易日返回全市场两融快照（每标的一行）。支持按 `date` 指定交易日；",
+    "required": [],
+    "params": [
+      "date",
+      "page",
+      "page_size"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 98,
+    "name": "ft_margin_trading_details_paginated",
+    "category": "其他",
+    "description": "融资融券明细分页查询（v0 内部接口）。与 `margin_trading_details` 行为一致：传入 `date` 时读取文件中心当日 CSV，不传时回退内存 `MARGIN_TRADE` 快照；区别在于显式返回 `PaginatedResponse<MarginTradingDetail>`（含 `total_pages`/`total_items`），而非截断列表。底层 handler 为 `margin_trading_details_paginated`。\n提示: 该接口未在 ft-data-server 对外暴露独立 v1 路径，对外调用请使用 `融资融券明细` 的 v1 路径（其本身已分页）。; 字段语义、单位同「融资融券明细」。",
+    "short": "融资融券明细分页查询（v0 内部接口）。与 `margin_trading_details` 行为一致：传入 `date` 时读取文件中心当日 CSV，不传时回退内存 `MARGIN_TRADE` 快照；",
+    "required": [],
+    "params": [
+      "date",
+      "page",
+      "page_size"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 99,
+    "name": "ft_northbound",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询北向资金（沪深股通）交易日交易数据。按交易日返回当日北向资金成交总额、币种，以及沪股通（SH）/ 深股通（SZ）分市场通道的成交额与成交笔数。`date` 必填（YYYYMMDD），底层从南北向数据模块按日期加载。响应为 `NorthboundResponseResponse` 信封（code/message/data），data 中含日期、币种、总成交额与分市场通道。\n提示: `date` 必填，格式 YYYYMMDD。; `amount` / `total_amount` 单位元（币种见 `currency` 字段）。; 响应为 code/message/data 信封结构。",
+    "short": "查询北向资金（沪深股通）交易日交易数据。按交易日返回当日北向资金成交总额、币种，以及沪股通（SH）/ 深股通（SZ）分市场通道的成交额与成交笔数。",
+    "required": [
+      "date"
+    ],
+    "params": [
+      "date"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 100,
+    "name": "ft_performance_forecasts_paginated",
+    "category": "A股财务 / 业绩",
+    "description": "查询 A 股上市公司**业绩预告**数据，底表 `ashare_perf_fcst`（经 Redis 缓存）。每条记录是一个标的在一个报告期的预告：含预告类型（预增 / 预减 / 略增 / 略减 / 续亏 / 扭亏 / 续盈 等）、预测值上下限、同比变化上下限、去年同期值。同一路径支持两种模式：模式A 传 `stock_code` 查单票所有报告期的预告；模式B 不传 `stock_code` 时必填 `year + report_type + page + page_size`，按单个报告期分页查所有票。`report_type` 取值 `q1` / `q2` / `q3` / `annual`。\n提示: `stock_code` 格式为 6 位数字 + 交易所后缀（如 `000001.SZ`），模式A 与模式B 二选一。; 模式A 单票查询不分页，返回该票全部报告期；模式B 才按 `page/page_size` 分页。; 预告为预测值区间，`forecast_value_min` / `forecast_value_max` 必成对出现；同比百分比同理。; `forecast_subject`（预测科目）区分净利润 / 营业收入等不同预告口径。",
+    "short": "查询 A 股上市公司**业绩预告**数据，底表 `ashare_perf_fcst`（经 Redis 缓存）。每条记录是一个标的在一个报告期的预告：含预告类型（预增 / 预减 / 略增 / 略减 / 续亏 / 扭亏 / 续盈 等）、预测值上下限、同比变化上下限、去年同期值。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "report_type",
+      "stock_code",
+      "year"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 101,
+    "name": "ft_reserve_ratio_monthly",
+    "category": "宏观经济",
+    "description": "查询中国人民币存款准备金率月度汇总计算结果。按日期返回中小型金融机构（`file_id` = M00000550）与大型金融机构（M00000549）的存款准备金率当月值。底层从宏观经济指标库加载后按 `field_date` 聚合，按年份（2000 年起）降序排列。响应为数组直出，元素为 `ReserveRatioComputed`。无入参。\n提示: `date` 格式化为中文月份标签（如「2025年12月」）。; 准备金率单位为百分比（%），缺失为 null。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询中国人民币存款准备金率月度汇总计算结果。按日期返回中小型金融机构（`file_id` = M00000550）与大型金融机构（M00000549）的存款准备金率当月值。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 102,
+    "name": "ft_risk_warning_stock_quotes",
+    "category": "A股基础 / 行情",
+    "description": "查询指定交易日的风险警示股票名单及其实时行情。每项在「风险警示股」基础上 `flatten` 嵌入 `StockInfo`（实时行情快照），含最新价、开/高/低/前收、涨跌额/涨跌幅、成交量/成交额、均价、委比、多周期涨跌幅、涨停/跌停价及是否封板、市值、流通股本等。`date` 必填（YYYYMMDD）。响应为 `ApiResponse` 信封（code/message/data），data 含日期、总数、名单+行情列表。\n提示: `date` 必填，格式 YYYYMMDD。; 每项 = 风险警示基础字段（stock_code/stock_name/risk_type）+ StockInfo 实时行情字段（扁平展开，非嵌套）。; 响应为 code/message/data 信封，data 为对象（非分页）。",
+    "short": "查询指定交易日的风险警示股票名单及其实时行情。每项在「风险警示股」基础上 `flatten` 嵌入 `StockInfo`（实时行情快照），含最新价、开/高/低/前收、涨跌额/涨跌幅、成交量/成交额、均价、委比、多周期涨跌幅、涨停/跌停价及是否封板、市值、流通股本等。",
+    "required": [
+      "date"
+    ],
+    "params": [
+      "date"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 103,
+    "name": "ft_risk_warning_stocks",
+    "category": "A股基础 / 行情",
+    "description": "查询指定交易日的风险警示股票基础名单（ST/*ST 等）。返回当日风险警示股票的代码、名称、风险类型标签。`date` 必填（YYYYMMDD）。响应为 `ApiResponse` 信封（code/message/data），data 含日期、总数、名单列表。\n提示: `date` 必填，格式 YYYYMMDD。; 响应为 code/message/data 信封，data 为对象（非分页）。; 如需带实时行情，用「风险警示股行情」接口（`/risk-warning-stocks/quotes`）。",
+    "short": "查询指定交易日的风险警示股票基础名单（ST/*ST 等）。返回当日风险警示股票的代码、名称、风险类型标签。",
+    "required": [
+      "date"
+    ],
+    "params": [
+      "date"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 104,
+    "name": "ft_semantic_search_news_handler",
+    "category": "新闻 / 公告 / 研报",
+    "description": "语义搜索新闻接口。根据搜索文字 `query` 转调外部语义检索服务，返回相关新闻列表。支持按 `year`（年份）或 `start_time` / `end_time`（时间区间）限定搜索范围，时间区间需在同一 3 天窗口内（校验 `validate_datetime_range_3_days`）。响应为 `SearchResult` 列表，含新闻 ID、来源站点、文章链接、发布/抓取时间、标题、媒体、摘要、正文、匹配分数等。\n提示: `query` 必填。; 同时传 `start_time` / `end_time` 时，区间跨度不得超过 3 天。; 接口转调外部服务，开放路由，可能受上游可用性与延迟影响。",
+    "short": "语义搜索新闻接口。根据搜索文字 `query` 转调外部语义检索服务，返回相关新闻列表。",
+    "required": [
+      "query"
+    ],
+    "params": [
+      "end_time",
+      "limit",
+      "query",
+      "start_time",
+      "year"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 105,
+    "name": "ft_sh_hk_stock_connect_members",
+    "category": "港股 / 港股通 / AH",
+    "description": "获取沪股通成份列表（即通过港股市场可买的上交所 A 股标的）。无入参、无分页，返回内存快照 `Arc<[StockConnectMember]>`，每项仅含成份标的代码（`SymbolKey`）。该数据由后台定时刷新，调用时返回最新成份名单。\n提示: 对外 v1 仅暴露 GET（底层 v0 同时支持 GET+POST）。; 成份名单以最新快照为准，无历史变更序列。; 与「深股通成份」（`sz-hk-stock-connect-members`）互斥，分别覆盖沪市/深市 A 股通道。",
+    "short": "获取沪股通成份列表（即通过港股市场可买的上交所 A 股标的）。无入参、无分页，返回内存快照 `Arc<[StockConnectMember]>`，每项仅含成份标的代码（`SymbolKey`）。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 106,
+    "name": "ft_shareholders_meeting",
+    "category": "A股股东 / 股权 / 公司事件",
+    "description": "查询 A 股上市公司股东大会通知信息，返回每场股东大会的会议名称、股权登记日、现场/网络投票起止日、决议公告日、通知日期及审议议案等。数据来源于东方财富（eastmoney）股东大会公告，底层通过 `load_shareholders_meeting` 全量加载后分页返回。响应为 `PaginatedApiResponse` 信封（code/message/data），data 为分页对象。\n提示: 无请求过滤参数，全量分页返回所有股东大会通知。; 多数字段为 `Option<String>`，缺失字段返回 null。; `start_adjust_date` 为开始调整日期，`equity_record_date` 为股权登记日。",
+    "short": "查询 A 股上市公司股东大会通知信息，返回每场股东大会的会议名称、股权登记日、现场/网络投票起止日、决议公告日、通知日期及审议议案等。数据来源于东方财富（eastmoney）股东大会公告，底层通过 `load_shareholders_meeting` 全量加载后分页返回。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 107,
+    "name": "ft_southbound",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询南向资金（港股通）交易日交易数据。按交易日返回当日南向资金合计买入额/卖出额/净买额/成交笔数，以及沪港通（SH_HK）/ 深港通（SZ_HK）分市场通道明细。`date` 必填（YYYYMMDD）。响应为 `SouthboundResponseResponse` 信封（code/message/data）。与北向接口的区别：南向分通道含独立的买入额/卖出额/净买额三项（北向仅有成交额）。\n提示: `date` 必填，格式 YYYYMMDD。; 金额字段单位为元（币种见 `currency` 字段）；净买额 = 买入额 - 卖出额。; 响应为 code/message/data 信封结构。",
+    "short": "查询南向资金（港股通）交易日交易数据。按交易日返回当日南向资金合计买入额/卖出额/净买额/成交笔数，以及沪港通（SH_HK）/ 深港通（SZ_HK）分市场通道明细。",
+    "required": [
+      "date"
+    ],
+    "params": [
+      "date"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 108,
+    "name": "ft_stk_limit",
+    "category": "ETF / 基金",
+    "description": "每日涨跌停价格接口（Tushare `stk_limit` 风格）。支持多种查询模式：① 按 `trade_date` 查单日全市场（可用 `instrument_type` 过滤 stock/etf/cb，不传返回三类、排除指数）；② 按 `symbol`（或 `symbol_id`+`market_id`）+ `start_date`/`end_date` 查单票历史区间。返回每个标的每个交易日的昨收、涨停价、跌停价。响应为 `StkLimitItem` 列表（含 `trade_date`/`ts_code`/`instrument_type`/`pre_close`/`up_limit`/`down_limit`）。\n提示: `instrument_type` 取值 `stock` / `etf` / `cb`；不传返回三类（排除指数）。; `symbol` 支持 `000001.SZ` / `000001.XSHE` / `600519.SH` 等格式；存在 `symbol` 时忽略 `symbol_id`+`market_id`。; 区间查询（`start_date`/`end_date`）需配合 `symbol` 或 `symbol_id`+`market_id`。; `page` 默认 1，`page_size` 默认 50、最大 500。",
+    "short": "每日涨跌停价格接口（Tushare `stk_limit` 风格）。支持多种查询模式：① 按 `trade_date` 查单日全市场（可用 `instrument_type` 过滤 stock/etf/cb，不传返回三类、排除指数）；",
+    "required": [],
+    "params": [
+      "end_date",
+      "instrument_type",
+      "market_id",
+      "page",
+      "page_size",
+      "start_date",
+      "symbol",
+      "symbol_id",
+      "trade_date"
+    ],
+    "param_count": 9,
+    "is_ft": true
+  },
+  {
+    "idx": 109,
+    "name": "ft_stk_premarket",
+    "category": "A股基础 / 行情",
+    "description": "每日股本（盘前）数据接口（Tushare `stk_premarket` 风格）。支持多种查询模式：① 按 `trade_date` 查单日全市场；② 按 `ts_code` + `start_date`/`end_date` 查单票历史区间。返回每个标的每个交易日的总股本、A 股流通股本、昨收、涨跌停价、价格（当日为预测开盘价、历史为收盘价）及据此计算的总市值与流通市值。响应为 `StkPremarketItem` 列表。\n提示: `ts_code` 支持 `000001.SZ` / `600519.SH` 等格式。; 区间查询（`start_date`/`end_date`）需配合 `ts_code`。; `price` 字段：当日为预测开盘价，历史为收盘价。; `total_mv` = `totshare_num` × `price`；`float_mv` = `ashare_circ_num` × `price`。; `page` 默认 1，`page_size` 默认 50、最大 500。",
+    "short": "每日股本（盘前）数据接口（Tushare `stk_premarket` 风格）。支持多种查询模式：① 按 `trade_date` 查单日全市场；",
+    "required": [],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "start_date",
+      "trade_date",
+      "ts_code"
+    ],
+    "param_count": 6,
+    "is_ft": true
+  },
+  {
+    "idx": 110,
+    "name": "ft_stock_adjust_factor",
+    "category": "ETF / 基金",
+    "description": "查询股票复权因子（当日复权因子 + 截至当日累计复权因子）。支持两种模式：① 单日扫描——指定 `trade_date` 返回该日复权因子快照，未指定 `symbol` 时返回所有标的单日快照；② 多日扫描——指定 `start_date` / `end_date` 返回区间内每个交易日的复权因子，多日扫描必须指定 `symbol`。通过 `xz02_mysql` 连接池查询 `base_data` 事件表。响应为 `ApiResponse` 信封（code/message/data）。\n提示: 未指定 `symbol` 时仅支持单日扫描；区间扫描必须指定 `symbol`。; `trade_date` 为空时默认当天，非交易日回退到前一交易日。; `symbol` 输出统一为 `symbol.suffix` 格式（如 `600000.SH`）。; 与 ETF 复权因子接口同协议（AdjustFactorRequest/AdjustFactorItem）。",
+    "short": "查询股票复权因子（当日复权因子 + 截至当日累计复权因子）。支持两种模式：① 单日扫描——指定 `trade_date` 返回该日复权因子快照，未指定 `symbol` 时返回所有标的单日快照；",
+    "required": [],
+    "params": [
+      "end_date",
+      "limit",
+      "offset",
+      "start_date",
+      "symbol",
+      "trade_date"
+    ],
+    "param_count": 6,
+    "is_ft": true
+  },
+  {
+    "idx": 111,
+    "name": "ft_stock_announcements",
+    "category": "新闻 / 公告 / 研报",
+    "description": "查询 A 股公告列表，底层从 ClickHouse `ashare_announcements` 表查询并通过 Redis 缓存。同一路径两种模式：① **按标的**——`stock_code` 存在时查询单票所有公告；② **按日期范围**——`start_date` 存在时查询指定日期范围内全市场公告，日期范围校验不能超过 3 天。返回 `PaginatedResponse`（items/total_pages/total_items）。\n提示: 二选一：必须提供 `stock_code`（按标的查）或 `start_date`（按日期范围查），否则报错。; `type` 当前只支持 `\"stock\"`。; 按日期范围查询时，`start_date` / `end_date` 格式 `YYYYMMDD`，区间不能超过 3 天；`end_date` 不填默认当前时间。; 公告正文文件下载请用 `/api/v1/market/data/announcements/stock-announcements/{url_hash}`（另见独立接口）。",
+    "short": "查询 A 股公告列表，底层从 ClickHouse `ashare_announcements` 表查询并通过 Redis 缓存。同一路径两种模式：① **按标的**——`stock_code` 存在时查询单票所有公告；",
+    "required": [
+      "type",
+      "page",
+      "page_size"
+    ],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "start_date",
+      "stock_code",
+      "type"
+    ],
+    "param_count": 6,
+    "is_ft": true
+  },
+  {
+    "idx": 112,
+    "name": "ft_stock_candlesticks",
+    "category": "ETF / 基金",
+    "description": "获取标的（股票/ETF/指数/债券）历史 K 线，返回**数组**（非分页）。日K典型返回每根 K 线含开高低收 + 成交量 + 成交额，价格单位元。支持分/日/周/月/年多种周期，支持前/后复权。\n提示: `symbol`、`interval_unit`、`until_ts_millis` 必填。; since/until 是**毫秒时间戳**，跨度硬限制 ≤3 天，超过会被拒。; 分时数据要拉长周期需分段循环调用。; 默认不复权（None），可设 Forward 前复权 / Backward 后复权。",
+    "short": "获取标的（股票/ETF/指数/债券）历史 K 线，返回**数组**（非分页）。日K典型返回每根 K 线含开高低收 + 成交量 + 成交额，价格单位元。",
+    "required": [
+      "symbol",
+      "interval_unit",
+      "until_ts_millis"
+    ],
+    "params": [
+      "adjust_kind",
+      "interval_unit",
+      "interval_value",
+      "limit",
+      "since_ts_millis",
+      "symbol",
+      "until_ts_millis"
+    ],
+    "param_count": 7,
+    "is_ft": true
+  },
+  {
+    "idx": 113,
+    "name": "ft_stock_candlesticks_batch",
+    "category": "ETF / 基金",
+    "description": "批量获取多个标的历史 K 线（股票/ETF/指数/债券）。返回数组，每项为 `(symbol, Vec<StockCandlestick>)`。支持分/日/周/月/年周期与前/后复权，单标的返回结构与 `stock-candlesticks` 一致。\n提示: `symbols`、`interval_unit`、`until_ts_millis` 必填。; since/until 是毫秒时间戳，单标的跨度硬限制 ≤3 天，超过会被拒。; 需要长周期分时数据请分段循环调用，或对每个标的并发单接口请求。",
+    "short": "批量获取多个标的历史 K 线（股票/ETF/指数/债券）。返回数组，每项为 `(symbol, Vec<StockCandlestick>)`。",
+    "required": [
+      "symbols",
+      "interval_unit",
+      "until_ts_millis"
+    ],
+    "params": [
+      "adjust_kind",
+      "interval_unit",
+      "interval_value",
+      "limit",
+      "since_ts_millis",
+      "symbols",
+      "until_ts_millis"
+    ],
+    "param_count": 7,
+    "is_ft": true
+  },
+  {
+    "idx": 114,
+    "name": "ft_stock_capital_flows_paginated",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询股票资金流向，按交易日返回全市场个股资金净流入分档：超大单 / 大单 / 中单 / 小单净流入，并派生主力净流入（= 超大单 + 大单）。传入 `date` 时按 `ts_nanos` 分区日期从 ClickHouse 查询该交易日 15:30 快照，不传时使用当前内存缓存（`CAPITAL_FLOW_MAP`）。响应为 `PaginatedResponse<CapitalFlowResponse>`，经 ft-data-server 层补充标的名称。\n提示: `date` 格式 YYYYMMDD；不传返回最新内存快照。; 净流入字段单位为元；主力净流入 = 超大单净流入 + 大单净流入。; 响应为 `PaginatedResponse` 结构（items + total_pages + total_items）。",
+    "short": "查询股票资金流向，按交易日返回全市场个股资金净流入分档：超大单 / 大单 / 中单 / 小单净流入，并派生主力净流入（= 超大单 + 大单）。传入 `date` 时按 `ts_nanos` 分区日期从 ClickHouse 查询该交易日 15:30 快照，不传时使用当前内存缓存（`CAPITAL_FLOW_MAP`）。",
+    "required": [],
+    "params": [
+      "date",
+      "page",
+      "page_size"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 115,
+    "name": "ft_stock_comment_desire_em",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询单只 A 股的千股千评「市场热度-市场参与意愿」序列。按交易日返回该标的的市场参与意愿指数、5 日参与意愿、及其变化值。响应为 `ApiResponse` 信封（code/message/data），data 含 symbol、total 及 items 数组。\n提示: `symbol` 必填，格式为纯数字代码（如 `600000`），无交易所后缀。; `participation_wish` 为当日参与意愿，`participation_wish_5days` 为 5 日参与意愿。",
+    "short": "查询单只 A 股的千股千评「市场热度-市场参与意愿」序列。按交易日返回该标的的市场参与意愿指数、5 日参与意愿、及其变化值。",
+    "required": [
+      "symbol"
+    ],
+    "params": [
+      "symbol"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 116,
+    "name": "ft_stock_comment_em",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询东方财富「千股千评」主表数据。返回全市场 A 股的千股千评综合快照，包含证券代码、简称、交易日、收盘价、涨跌幅、换手率、动态市盈率、主力成本、机构参与度、综合评分、排名、市场关注度等字段。底层从东财千股千评数据加载后做内存分页。响应为 `PaginatedApiResponse` 信封（code/message/data），data 为分页对象（pageNum/pageSize/total/pages/records）。\n提示: 不支持按标的过滤，返回的是全市场快照；如需单票请用 `stock-comment/org-participate`、`/score`、`/focus`、`/desire` 等子接口。; 字段值多为字符串形式的数值（如 `\"12.5000\"`、`\"-2.8600\"`），消费方需自行解析。; `change_rate` 单位为百分比，`turnover_rate` 单位为百分比。",
+    "short": "查询东方财富「千股千评」主表数据。返回全市场 A 股的千股千评综合快照，包含证券代码、简称、交易日、收盘价、涨跌幅、换手率、动态市盈率、主力成本、机构参与度、综合评分、排名、市场关注度等字段。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 117,
+    "name": "ft_stock_comment_focus_em",
+    "category": "美股",
+    "description": "查询单只 A 股的千股千评「市场热度-用户关注指数」序列。按交易日返回该标的的用户关注度、关注度排名、全市场总数、关注度变化及收盘价。响应为 `ApiResponse` 信封（code/message/data），data 含 symbol、total 及 items 数组。\n提示: `symbol` 必填，格式为纯数字代码（如 `600000`），无交易所后缀。; `market_focus_rank` 数值越小代表关注度越高。",
+    "short": "查询单只 A 股的千股千评「市场热度-用户关注指数」序列。按交易日返回该标的的用户关注度、关注度排名、全市场总数、关注度变化及收盘价。",
+    "required": [
+      "symbol"
+    ],
+    "params": [
+      "symbol"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 118,
+    "name": "ft_stock_comment_org_participate_em",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询单只 A 股的「机构参与度」历史序列。机构参与度来自千股千评主表，反映机构资金对该标的的参与活跃程度。按交易日返回该标的历史机构参与度。响应为 `ApiResponse` 信封（code/message/data），data 含 symbol、total 及 items 数组。\n提示: `symbol` 必填，格式为纯数字代码（如 `600000`），无交易所后缀。; 返回的是该标的历史机构参与度序列，每行一个交易日。",
+    "short": "查询单只 A 股的「机构参与度」历史序列。机构参与度来自千股千评主表，反映机构资金对该标的的参与活跃程度。",
+    "required": [
+      "symbol"
+    ],
+    "params": [
+      "symbol"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 119,
+    "name": "ft_stock_comment_score_em",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询单只 A 股的千股千评「综合评价-历史评分」序列。按诊断日期返回该标的历史综合评分。响应为 `ApiResponse` 信封（code/message/data），data 含 symbol、total 及 items 数组。\n提示: `symbol` 必填，格式为纯数字代码（如 `600000`），无交易所后缀。; `diagnose_date` 为千股千评的诊断日期，与交易日期可能不同。",
+    "short": "查询单只 A 股的千股千评「综合评价-历史评分」序列。按诊断日期返回该标的历史综合评分。",
+    "required": [
+      "symbol"
+    ],
+    "params": [
+      "symbol"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 120,
+    "name": "ft_stock_filter",
+    "category": "A股基础 / 行情",
+    "description": "股票实时行情筛选接口。支持按板块/交易所 `board` 与上市日期起点 `listing_date_since` 筛选股票，并返回筛选股票的实时行情（开高低收、涨跌幅、量额、振幅、换手率、市值、PE、累计复权因子、5/10/20/60/120 日及年初至今涨跌幅、涨跌停价等）。响应为 `PaginatedApiResponse<StockFilterItem>` 信封（code/message/data），data 为分页对象（camelCase：pageNum/pageSize/total/pages/records）。\n提示: `board` 取值：`star`（科创板）/ `chi_next`（创业板）/ `bjse`（北交所）/ `xshg`（沪市）/ `xshe`（深市）/ `main`（主板）。; 支持新股（按 `listing_date_since` 筛选）。; 大量字段为可选（实时行情未覆盖时为空）。",
+    "short": "股票实时行情筛选接口。支持按板块/交易所 `board` 与上市日期起点 `listing_date_since` 筛选股票，并返回筛选股票的实时行情（开高低收、涨跌幅、量额、振幅、换手率、市值、PE、累计复权因子、5/10/20/60/120 日及年初至今涨跌幅、涨跌停价等）。",
+    "required": [],
+    "params": [
+      "board",
+      "listing_date_since",
+      "page",
+      "page_size"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 121,
+    "name": "ft_stock_float_holders",
+    "category": "A股股东 / 股权 / 公司事件",
+    "description": "查询 A 股十大流通股东。支持两种模式：① 指定 `stock_code` 返回该标的的全部历史十大流通股东记录；② `is_last=true` 时返回所有标的最新一期的十大流通股东数据（分页）。数据从 Redis 缓存读取（底层数据源 ClickHouse `asare_top10_float_holder` 表）。响应为 `PaginatedResponse` 分页结构（items/total_pages/total_items）。\n提示: 未指定 `stock_code` 时，需配合 `is_last=true` 才有数据返回。; `fen_holders` 为该报告期前十大流通股东明细数组。; 数据更新随上市公司定期报告披露。",
+    "short": "查询 A 股十大流通股东。支持两种模式：① 指定 `stock_code` 返回该标的的全部历史十大流通股东记录；",
+    "required": [],
+    "params": [
+      "is_last",
+      "page",
+      "page_size",
+      "stock_code"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 122,
+    "name": "ft_stock_ggcg_em_handler",
+    "category": "A股股东 / 股权 / 公司事件",
+    "description": "东方财富股东增减持数据。接口名与 `symbol` 参数对齐 AkShare `stock_ggcg_em`，`symbol` 为数据类型筛选：`全部`/`股东增持`/`股东减持`，默认 `全部`。返回股东名称、变动数量/比例、变动后持股、变动起止与公告日期等。响应为 `PaginatedApiResponse` 信封（code/message/data），data 为分页对象（records/pageNum/pageSize/total/pages）。字段序列化为 camelCase。\n提示: `symbol` 默认 `全部`，可传 `股东增持` / `股东减持` 过滤。; 数据来源东方财富（来源标识 em）。",
+    "short": "东方财富股东增减持数据。接口名与 `symbol` 参数对齐 AkShare `stock_ggcg_em`，`symbol` 为数据类型筛选：`全部`/`股东增持`/`股东减持`，默认 `全部`。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "symbol"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 123,
+    "name": "ft_stock_ggmx_buy_ranking_handler",
+    "category": "资金 / 情绪 / 短线",
+    "description": "董监高持股变动增持排行。按时间窗口内每股最新 `change_date` 的增持金额降序排行。`time_range` 支持 `1m`/`3m`/`6m`/`1y`/`2y`，默认 `1m`。返回每股窗口内增持总股数、增持总金额（万元）、最新价、涨跌幅、窗口起止日期等。响应为 `PaginatedApiResponse` 信封（code/message/data），data 为分页对象。字段序列化为 camelCase。\n提示: `time_range` 默认 `1m`。; 数据来源东方财富董监高持股变动明细（同 stock-ggmx）。",
+    "short": "董监高持股变动增持排行。按时间窗口内每股最新 `change_date` 的增持金额降序排行。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "time_range"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 124,
+    "name": "ft_stock_ggmx_handler",
+    "category": "A股股东 / 股权 / 公司事件",
+    "description": "东方财富董监高持股变动明细。支持按股票代码、变动方向（增持/减持）、变动日期范围分页查询。返回变动人、职务、变动股数/金额、变动均价、变动后持股、变动比例、当日收盘价/涨跌幅等明细字段。响应为 `PaginatedApiResponse` 信封（code/message/data），data 为分页对象。字段序列化为 camelCase。\n提示: 所有入参均为可选，参数支持 camelCase 与 snake_case 双别名。; 日期格式为 `YYYY-MM-DD`。; 数据来源东方财富。",
+    "short": "东方财富董监高持股变动明细。支持按股票代码、变动方向（增持/减持）、变动日期范围分页查询。",
+    "required": [],
+    "params": [
+      "change_direction",
+      "end_date",
+      "page",
+      "page_size",
+      "start_date",
+      "stock_code"
+    ],
+    "param_count": 6,
+    "is_ft": true
+  },
+  {
+    "idx": 125,
+    "name": "ft_stock_ggmx_sell_ranking_handler",
+    "category": "资金 / 情绪 / 短线",
+    "description": "董监高持股变动减持排行。按时间窗口内每股最新 `change_date` 的减持金额降序排行。`time_range` 支持 `1m`/`3m`/`6m`/`1y`/`2y`，默认 `1m`。返回每股窗口内减持总股数、减持总金额（万元）、最新价、涨跌幅、窗口起止日期等。响应为 `PaginatedApiResponse` 信封（code/message/data），data 为分页对象。字段序列化为 camelCase。\n提示: `time_range` 默认 `1m`。; 数据来源东方财富董监高持股变动明细（同 stock-ggmx）。",
+    "short": "董监高持股变动减持排行。按时间窗口内每股最新 `change_date` 的减持金额降序排行。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "time_range"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 126,
+    "name": "ft_stock_holders",
+    "category": "A股股东 / 股权 / 公司事件",
+    "description": "查询 A 股十大股东。支持两种模式：① 指定 `stock_code` 返回该标的的全部历史十大股东记录；② `is_last=true` 时返回所有标的最新一期的十大股东数据（分页）。数据从 Redis 缓存读取（底层数据源 ClickHouse `asare_top10_holder` 表）。响应为 `PaginatedResponse` 分页结构（items/total_pages/total_items）。\n提示: 未指定 `stock_code` 时，需配合 `is_last=true` 才有数据返回。; `fen_holders` 为该报告期前十大股东明细数组。; 数据更新随上市公司定期报告披露。",
+    "short": "查询 A 股十大股东。支持两种模式：① 指定 `stock_code` 返回该标的的全部历史十大股东记录；",
+    "required": [],
+    "params": [
+      "is_last",
+      "page",
+      "page_size",
+      "stock_code"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 127,
+    "name": "ft_stock_holders_number",
+    "category": "A股股东 / 股权 / 公司事件",
+    "description": "查询 A 股股东人数。支持两种模式：① 指定 `stock_code` 返回该标的的全部历史股东人数记录；② `is_last=true` 时返回所有标的最新一期的股东人数数据（分页）。除股东人数外，含人均流通股、筹码集中度、人均持股金额、十大股东/十大流通股东合计持股比例等衍生指标。数据从 Redis 缓存读取。响应为 `PaginatedResponse` 分页结构。\n提示: 未指定 `stock_code` 时，需配合 `is_last=true` 才有数据返回。; 数据更新随上市公司定期报告披露。",
+    "short": "查询 A 股股东人数。支持两种模式：① 指定 `stock_code` 返回该标的的全部历史股东人数记录；",
+    "required": [],
+    "params": [
+      "is_last",
+      "page",
+      "page_size",
+      "stock_code"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 128,
+    "name": "ft_stock_intraday_auction_volume",
+    "category": "美股",
+    "description": "查询连续竞价成交占比（全市场聚合模式），按分钟返回当日（或指定交易日）全市场及分交易所的成交量/成交额占比分时序列。不传 `trade_date` 时返回当日实时市场连续竞价分时占比；传入 `trade_date=YYYYMMDD` 时优先读取 `basedata.history_continuous_auction_volume_market` 历史表，未命中则按 `history_minute_str` / `history_day_str` 回补；若 `trade_date` 为今日则自动降级为实时数据（历史表尚未落库）。响应为 `PaginatedApiResponse<AuctionVolumeMarketItem>`（code/message/data 信封 + 分页），每条为一分钟的聚合快照，含整体（overall，沪+深+北）及上交所（xshg）/ 深交所（xshe）/ 北交所（bjse）分市场维度。\n提示: `trade_date` 格式 YYYYMMDD；不传返回当日实时数据，传入当日会降级为实时。; 每条记录为一分钟快照；`ts_millis` 为该分钟收盘时间戳（毫秒）。; `volume_ratio` = 该分钟成交量 / 全天总成交量；`turnover_ratio` = 该分钟成交额 / 全天总成交额。; 响应为 PaginatedApiResponse 信封（code/message/data，data 含 page_num/page_size/total/pages/records）。",
+    "short": "查询连续竞价成交占比（全市场聚合模式），按分钟返回当日（或指定交易日）全市场及分交易所的成交量/成交额占比分时序列。不传 `trade_date` 时返回当日实时市场连续竞价分时占比；",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "trade_date"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 129,
+    "name": "ft_stock_intraday_auction_volume_symbol",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询单只标的的连续竞价成交占比（个股模式），按分钟返回该标的当日（或指定交易日）成交量/成交额占比分时序列。不传 `trade_date` 时返回当日实时个股数据；传入 `trade_date=YYYYMMDD` 时返回历史分钟线派生结果；若 `trade_date` 为今日则自动降级为实时数据（历史表尚未落库）。必须同时指定 `symbol` 与可选 `trade_date`；缺 `symbol` 时返回空列表。`symbol` 格式为 `code.suffix`（suffix 支持 XSHG/SH、XSHE/SZ、BJSE/BJ）。响应为 `PaginatedApiResponse<AuctionVolumeItem>`（code/message/data 信封 + 分页），每条为一分钟的个股快照。\n提示: `symbol` 格式 `code.suffix`（如 `600000.SH`），suffix 支持 XSHG/SH、XSHE/SZ、BJSE/BJ。; `trade_date` 格式 YYYYMMDD；不传返回当日实时数据，传入当日会降级为实时。; `volume_ratio` = 该分钟成交量 / 全天总成交量；`turnover_ratio` = 该分钟成交额 / 全天总成交额。; 缺 `symbol` 返回空 records。",
+    "short": "查询单只标的的连续竞价成交占比（个股模式），按分钟返回该标的当日（或指定交易日）成交量/成交额占比分时序列。不传 `trade_date` 时返回当日实时个股数据；",
+    "required": [
+      "symbol"
+    ],
+    "params": [
+      "page",
+      "page_size",
+      "symbol",
+      "trade_date"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 130,
+    "name": "ft_stock_ipos",
+    "category": "A股基础 / 行情",
+    "description": "获取 A 股 IPO（新股发行）信息。每项含发行价、发行数量、网上发行数量、发行市盈率、行业市盈率、申购上限、申购代码、申购日期、上市日期等，带标的代码。返回全量 IPO 缓存按 pagination 截断。数据来自内存中的 IPO 缓存。\n提示: 仅支持分页，不支持筛选；需带 total 的分页请用 `stock-ipos/paginated`。; `symbol` 输出格式受请求头 `X-Data-API-Symbol-Format` 控制。",
+    "short": "获取 A 股 IPO（新股发行）信息。每项含发行价、发行数量、网上发行数量、发行市盈率、行业市盈率、申购上限、申购代码、申购日期、上市日期等，带标的代码。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 131,
+    "name": "ft_stock_pledge_detail",
+    "category": "A股股东 / 股权 / 公司事件",
+    "description": "股权质押个股详细，返回每只股票的报告日期、质押比例、质押笔数、质押市值、质押无限售股数、质押限售股数、较上年变动等。数据来源于中国证券登记结算公司（CSDC）`ashare_pledgecsdc` 表。支持两种模式：① 指定 `stock_code` 查询单只股票的质押历史；② 不传 `stock_code` 且 `is_last=true` 返回所有股票最新一期的质押数据。响应为 `PaginatedResponse` 信封（items/total_pages/total_items），带瞬态失败缓存。\n提示: 不传 `stock_code` 时必须 `is_last=true`，否则报错「请提供 stock_code 或设置 is_last=true」。; `trade_code` 统一为 `symbol.suffix` 格式（如 `600001.SH`）。; 金额/股数字段序列化为字符串（保留精度）。",
+    "short": "股权质押个股详细，返回每只股票的报告日期、质押比例、质押笔数、质押市值、质押无限售股数、质押限售股数、较上年变动等。数据来源于中国证券登记结算公司（CSDC）`ashare_pledgecsdc` 表。",
+    "required": [],
+    "params": [
+      "is_last",
+      "page",
+      "page_size",
+      "stock_code"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 132,
+    "name": "ft_stock_pledge_summary",
+    "category": "A股股东 / 股权 / 公司事件",
+    "description": "股权质押 A 股市场总览，返回交易日期、A 股质押总比例、质押公司数量、质押笔数、质押总股数、质押总市值、沪深 300 指数、沪深 300 周涨跌幅等总量指标。数据来源于中国证券登记结算公司（CSDC）`ashare_pledgecsdc` 表与市场行情聚合。请求仅分页参数。响应为 `PaginatedApiResponse` 分页信封，data 含 `pageNum/pageSize/total/pages/records`。\n提示: 请求仅 `page` / `page_size`，无业务筛选。; 全市场总量维度，非个股。; 金额类字段序列化为字符串（保留精度）。",
+    "short": "股权质押 A 股市场总览，返回交易日期、A 股质押总比例、质押公司数量、质押笔数、质押总股数、质押总市值、沪深 300 指数、沪深 300 周涨跌幅等总量指标。数据来源于中国证券登记结算公司（CSDC）`ashare_pledgecsdc` 表与市场行情聚合。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size"
+    ],
+    "param_count": 2,
+    "is_ft": true
+  },
+  {
+    "idx": 133,
+    "name": "ft_stock_rating_top5",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询指定日期券单评级分市场 Top5（飞兔数据来源）。按 `date` 返回该日期各分市场（all/xshg/xshe/bjse）评级 Top5 列表，含标的 symbolid、交易所 exid、等级、年化收益率、胜率等。档位 `variant` 默认 `300001`（30w01），可传 `300000`（30w）等；`type` 控制市场筛选，默认 `all`。数据读缓存。响应为 `StockRatingTop5Response`，内含按市场分组的 Top5 列表。\n提示: 数据来自飞兔（来源标识 feitu）。; `date` 必填，格式 YYYYMMDD。; `variant` 默认 `300001`；`type` 默认 `all`，可选 xshg / xshe / bjse。",
+    "short": "查询指定日期券单评级分市场 Top5（飞兔数据来源）。按 `date` 返回该日期各分市场（all/xshg/xshe/bjse）评级 Top5 列表，含标的 symbolid、交易所 exid、等级、年化收益率、胜率等。",
+    "required": [
+      "date"
+    ],
+    "params": [
+      "date",
+      "type",
+      "variant"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 134,
+    "name": "ft_stock_reports",
+    "category": "新闻 / 公告 / 研报",
+    "description": "查询 A 股研报列表，底层从 ClickHouse `eastmoney_stock_{year}` 表查询（按标的或按日期范围）。同一路径两种模式：① **按标的**——`stock_code` 存在时查询单票所有研报；② **按日期范围**——`start_date` 存在时查询指定日期范围内全市场研报，日期范围校验不能超过 3 天。每条研报含评级（本次/上次评级名称与等级、评级变动中文描述）、研究员、机构等。返回 `PaginatedResponse`（items/total_pages/total_items）。\n提示: 二选一：必须提供 `stock_code`（按标的查）或 `start_date`（按日期范围查），否则报错。; `type` 当前只支持 `\"stock\"`。; 按日期范围查询时，`start_date` / `end_date` 格式 `YYYYMMDD`，区间不能超过 3 天；`end_date` 不填默认当前时间。; `report_institution` 字段序列化名为 `report_Institution`（大写 I），消费方注意大小写。; `rating_change` 为中文：维持 / 上调 / 下调 / 首次覆盖。; 研报正文文件下载请用 `/api/v1/market/data/report/stock-reports/{url_hash}`（另见独立接口）。",
+    "short": "查询 A 股研报列表，底层从 ClickHouse `eastmoney_stock_{year}` 表查询（按标的或按日期范围）。同一路径两种模式：① **按标的**——`stock_code` 存在时查询单票所有研报；",
+    "required": [
+      "type",
+      "page",
+      "page_size"
+    ],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "start_date",
+      "stock_code",
+      "type"
+    ],
+    "param_count": 6,
+    "is_ft": true
+  },
+  {
+    "idx": 135,
+    "name": "ft_stock_share_chg",
+    "category": "A股股东 / 股权 / 公司事件",
+    "description": "查询 A 股股东增减持明细。支持两种模式：① 指定 `stock_code` 按股票代码分页查询该标的的全部历史增减持记录；② `is_last=true` 时返回所有标的最新一期的增减持数据（分页）。返回持股变动主体、变动类型（增持/减持）、变动前后持股数量、最新价、涨跌幅、变动起止/公告日期等。数据从 Redis 缓存读取（底层数据源 ClickHouse 股东增减持表）。响应为 `PaginatedResponse` 分页结构。\n提示: 未指定 `stock_code` 时，需配合 `is_last=true` 才有数据返回。; `shareholding_change_info` 取值仅「增持」「减持」。",
+    "short": "查询 A 股股东增减持明细。支持两种模式：① 指定 `stock_code` 按股票代码分页查询该标的的全部历史增减持记录；",
+    "required": [],
+    "params": [
+      "is_last",
+      "page",
+      "page_size",
+      "stock_code"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 136,
+    "name": "ft_stock_unlock_by_date_handler",
+    "category": "A股股东 / 股权 / 公司事件",
+    "description": "按解禁日期范围查询全市场限售解禁批次及股东明细，批次维度分页。返回结构、嵌套股东明细字段与 `stock-unlock`（按证券代码查询）完全一致，区别在本接口按解禁日区间筛选全市场批次。数据来源于东方财富（eastmoney）解禁批次表（`em_stock_unlock_batch` + `em_stock_unlock_holder`）。响应为 `PaginatedApiResponse` 分页信封，data 含 `pageNum/pageSize/total/pages/records`。\n提示: `start_date` / `end_date` 必填。; 字段序列化为 camelCase，详见 `records`/`holders` 字段表（与「限售解禁」接口一致）。; 同一批次 records 内嵌 `holders` 股东明细。",
+    "short": "按解禁日期范围查询全市场限售解禁批次及股东明细，批次维度分页。返回结构、嵌套股东明细字段与 `stock-unlock`（按证券代码查询）完全一致，区别在本接口按解禁日区间筛选全市场批次。",
+    "required": [
+      "start_date",
+      "end_date"
+    ],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "start_date"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 137,
+    "name": "ft_stock_unlock_handler",
+    "category": "A股股东 / 股权 / 公司事件",
+    "description": "按证券代码查询限售解禁批次及股东明细，批次维度分页。每个批次含解禁日、股东户数、解禁股数/当前流通股数/未流通股数、解禁市值、解禁比例（总量/流通）、新股价、限售股份类型、解禁前 20 日/后 20 日涨跌幅、爬取日期、来源，并嵌套该批次下的股东明细列表。数据来源于东方财富（eastmoney）解禁批次表（`em_stock_unlock_batch` + `em_stock_unlock_holder`）。响应为 `PaginatedApiResponse` 分页信封，data 含 `pageNum/pageSize/total/pages/records`。\n提示: `stock_code` 必填，为证券代码。; 分页以「批次」为粒度，每个批次 records 内嵌 `holders` 股东明细。; 字段序列化为 camelCase（如 `stockCode`、`unlockDate`、`holderCount`）。",
+    "short": "按证券代码查询限售解禁批次及股东明细，批次维度分页。每个批次含解禁日、股东户数、解禁股数/当前流通股数/未流通股数、解禁市值、解禁比例（总量/流通）、新股价、限售股份类型、解禁前 20 日/后 20 日涨跌幅、爬取日期、来源，并嵌套该批次下的股东明细列表。",
+    "required": [
+      "stock_code"
+    ],
+    "params": [
+      "page",
+      "page_size",
+      "stock_code"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 138,
+    "name": "ft_suspension_list",
+    "category": "A股基础 / 行情",
+    "description": "返回当日所有停牌股票列表，包含盘前停牌（status 8）和盘中临时停牌（status 9）、全天停牌（status 10）。每条含停牌类型、停牌时间、复牌时间（盘中临停才有时间字段）。支持 `trade_date` 参数查询历史日停牌记录，默认当天。响应为 `PaginatedApiResponse` 信封（code/message/data），data 含分页字段（pageNum/pageSize/total/pages/records）。\n提示: `trade_date` 默认当天，可传历史交易日 YYYYMMDD。; `suspend_time` / `resume_time` 仅盘中临时停牌（intra-day）有值，盘前/全天停牌为 null。; 响应为 code/message/data 信封，data 为分页对象（camelCase：pageNum/pageSize/total/pages/records）。; `page_size` 上限 200。",
+    "short": "返回当日所有停牌股票列表，包含盘前停牌（status 8）和盘中临时停牌（status 9）、全天停牌（status 10）。每条含停牌类型、停牌时间、复牌时间（盘中临停才有时间字段）。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "trade_date"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 139,
+    "name": "ft_sw_industry_constituent_history",
+    "category": "指数 / 行业 / 板块",
+    "description": "查询单个申万行业的**成份股调入调出历史**，返回该行业（含一/二/三级行业归属）下的全部成份股及其调入日期（inDate）、调出日期（outDate）。返回 `ApiResponse` 形态（`{code,message,data:{total,items}}`，字段 camelCase）。典型一级行业约 300 只成份股。\n提示: `industry_code` 必填，带 `.SI` 后缀，如 801010.SI。; 返回非分页，`data.items` 为全部记录，`data.total` 为数量。; `inDate`/`outDate` 可为 null（仍在职）。",
+    "short": "查询单个申万行业的**成份股调入调出历史**，返回该行业（含一/二/三级行业归属）下的全部成份股及其调入日期（inDate）、调出日期（outDate）。返回 `ApiResponse` 形态（`{code,message,data:{total,items}}`，字段 camelCase）。",
+    "required": [
+      "industry_code"
+    ],
+    "params": [
+      "industry_code"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 140,
+    "name": "ft_sw_industry_daily_metrics",
+    "category": "指数 / 行业 / 板块",
+    "description": "查询单个申万行业的**日频估值/资金/量价**指标时间序列，含 PE（LYR/TTM 及分位/中位数）、PB、股息率、换手率、总市值、收盘价、破净比例、指数收盘、成交额及拥挤度等约 40 项字段（字段全部为字符串）。按行业层级（1/2/3）分表查询，单行业约 1200+ 个交易日。\n提示: `level` 必填（1/2/3），`start_date`/`end_date`/`industry_code` 必填。; 日期格式 **YYYYMMDD**；`industry_code` 必须带 `.SI` 后缀（如 801010.SI），不带会查不到数据。; 返回 `{code,message,data:{pageNum,pageSize,total,pages,records}}` 形态，字段 camelCase、全部为字符串。; 字段较多，下方输出参数表列核心列，完整字段见协议结构 `SwIndustryDailyMetricsItem`。",
+    "short": "查询单个申万行业的**日频估值/资金/量价**指标时间序列，含 PE（LYR/TTM 及分位/中位数）、PB、股息率、换手率、总市值、收盘价、破净比例、指数收盘、成交额及拥挤度等约 40 项字段（字段全部为字符串）。按行业层级（1/2/3）分表查询，单行业约 1200+ 个交易日。",
+    "required": [
+      "level",
+      "start_date",
+      "end_date",
+      "industry_code"
+    ],
+    "params": [
+      "end_date",
+      "industry_code",
+      "level",
+      "page",
+      "page_size",
+      "start_date"
+    ],
+    "param_count": 6,
+    "is_ft": true
+  },
+  {
+    "idx": 141,
+    "name": "ft_sw_industry_overview",
+    "category": "指数 / 行业 / 板块",
+    "description": "按交易日查询申万行业**全部层级**（一/二/三级行业）的估值概况快照，含成份股数、PE（LYR/TTM）及历史分位、PB 及分位、股息率（dv_ratio）及分位。返回 `PaginatedApiResponse`（自定义 `{code,message,data:{pageNum,pageSize,total,pages,records}}` 形态，字段为 camelCase）。单日全层级约 498 条。\n提示: `date` 必填，格式 **YYYYMMDD**（带 `-` 会报 invalid date format）。; `level` 可选，传 1/2/3 过滤行业层级；不传返回全部层级。; 返回为 `{code,message,data}` 包裹的分页结构，`records` 为行数组，非顶层 items/total_items。; 估值字段均为字符串。",
+    "short": "按交易日查询申万行业**全部层级**（一/二/三级行业）的估值概况快照，含成份股数、PE（LYR/TTM）及历史分位、PB 及分位、股息率（dv_ratio）及分位。返回 `PaginatedApiResponse`（自定义 `{code,message,data:{pageNum,pageSize,total,pages,records}}` 形态，字段为 camelCase）。",
+    "required": [
+      "date"
+    ],
+    "params": [
+      "date",
+      "level",
+      "page",
+      "page_size"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 142,
+    "name": "ft_sz_hk_stock_connect_members",
+    "category": "港股 / 港股通 / AH",
+    "description": "获取深股通成份列表（即通过港股市场可买的深交所 A 股标的）。无入参、无分页，返回内存快照 `Arc<[StockConnectMember]>`，每项仅含成份标的代码（`SymbolKey`）。该数据由后台定时刷新，调用时返回最新成份名单。\n提示: 对外 v1 仅暴露 GET（底层 v0 同时支持 GET+POST）。; 成份名单以最新快照为准，无历史变更序列。; 与「沪股通成份」（`sh-hk-stock-connect-members`）互斥，分别覆盖深市/沪市 A 股通道。",
+    "short": "获取深股通成份列表（即通过港股市场可买的深交所 A 股标的）。无入参、无分页，返回内存快照 `Arc<[StockConnectMember]>`，每项仅含成份标的代码（`SymbolKey`）。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 143,
+    "name": "ft_tax_revenue_monthly",
+    "category": "宏观经济",
+    "description": "查询全国税收收入月度汇总计算结果。按月份返回税收收入合计当月值（`file_id` = M00008508）、累计值（M00007635）、累计同比（M00007636），以及计算出的月度环比与月度同比。底层从宏观经济指标库加载后按月聚合，按 `field_date` 年份（2000 年起）降序排列。响应为数组直出，元素为 `TaxRevenueComputed`。无入参。\n提示: `month` 格式化为「YYYY年MM月」。; 金额单位为亿元，百分比字段单位为 %；缺失为 null。; `mom_growth` / `monthly_yoy_growth` 为后端计算值，非原始入库。; 经 5s 瞬时失败策略缓存。",
+    "short": "查询全国税收收入月度汇总计算结果。按月份返回税收收入合计当月值（`file_id` = M00008508）、累计值（M00007635）、累计同比（M00007636），以及计算出的月度环比与月度同比。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 144,
+    "name": "ft_ths_all_board_kline",
+    "category": "指数 / 行业 / 板块",
+    "description": "获取同花顺**全部板块**（概念/行业/地区，csrc 跳过）在指定日期范围内的日 K 线。结果按板块再按日期拼接成一张长表，分页返回。典型一个 3 交易日窗口约返回 900+ 行（≈ 470 个有 K 线的板块 × 3 天）。\n提示: 日期格式支持 `YYYY-MM-DD` 或 `YYYYMMDD`。; `start_date`/`end_date` 均可选；同时传时硬限 3 天跨度，超过返回错误。; 结果自动跳过 csrc 模块（无 K 线）。; 数值字段均为字符串。",
+    "short": "获取同花顺**全部板块**（概念/行业/地区，csrc 跳过）在指定日期范围内的日 K 线。结果按板块再按日期拼接成一张长表，分页返回。",
+    "required": [],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "start_date"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 145,
+    "name": "ft_ths_board_kline",
+    "category": "指数 / 行业 / 板块",
+    "description": "获取单个同花顺板块的历史日 K 线（开高低收 + 成交量），全部数值按**字符串**返回。返回 `PaginatedResponse`，`total_items` 为该板块全部交易日数。典型板块如行业类（881101）有 4500+ 根日 K（可追溯到 2007 年），新概念板块（886056）约 600+ 根。\n提示: `board_code` 必填，需先通过板块列表接口或内存映射拿到；csrc 模块板块无 K 线，请求会返回 400。; 数值字段（open/high/low/close/volume）均为字符串。",
+    "short": "获取单个同花顺板块的历史日 K 线（开高低收 + 成交量），全部数值按**字符串**返回。返回 `PaginatedResponse`，`total_items` 为该板块全部交易日数。",
+    "required": [
+      "board_code"
+    ],
+    "params": [
+      "board_code",
+      "page",
+      "page_size"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 146,
+    "name": "ft_ths_board_list",
+    "category": "指数 / 行业 / 板块",
+    "description": "获取同花顺全部板块列表，含**概念 / 行业 / 地区 / 证监会（csrc）**四类模块。返回数组（非分页），当前在线约 493 个板块（概念 351 / 行业 90 / 地区 33 / csrc 19）。每项含板块代码（如 886056）、板块名称、所属模块。调用同时会刷新内存中的「板块代码 → (模块, 名称)」映射缓存，供同花顺 K 线接口反查模块使用。\n提示: 无入参，直接 GET 即可。; `csrc`（证监会行业分类）模块**无 K 线数据**，调用 K 线接口会被拒。; 板块代码在不同模块间不重复，可用作唯一键。",
+    "short": "获取同花顺全部板块列表，含**概念 / 行业 / 地区 / 证监会（csrc）**四类模块。返回数组（非分页），当前在线约 493 个板块（概念 351 / 行业 90 / 地区 33 / csrc 19）。",
+    "required": [],
+    "params": [],
+    "param_count": 0,
+    "is_ft": true
+  },
+  {
+    "idx": 147,
+    "name": "ft_type_reports",
+    "category": "新闻 / 公告 / 研报",
+    "description": "按研报类型 + 日期范围查询研报，直接查 ClickHouse（不经 Redis 缓存）。支持 5 种研报类型：`MacroReport`（宏观）/ `IndustryReport`（行业）/ `BrokerMorningReport`（券商晨报）/ `StrategyReport`（策略）/ `NewStockReport`（新股）。返回与「研报列表」相同的 `StockReportItem` 结构（`PaginatedResponse`）。日期范围校验不能超过 3 天。\n提示: `rept_type` 必填，取值仅限 5 类：`MacroReport` / `IndustryReport` / `BrokerMorningReport` / `StrategyReport` / `NewStockReport`。; `start_date` 必填；`end_date` 不填时默认等于 `start_date`（查单日）。; `start_date` / `end_date` 格式 `YYYYMMDD`，区间不能超过 3 天。; 出参结构同「研报列表」`StockReportItem`，`rating_change` 为中文。",
+    "short": "按研报类型 + 日期范围查询研报，直接查 ClickHouse（不经 Redis 缓存）。支持 5 种研报类型：`MacroReport`（宏观）/ `IndustryReport`（行业）/ `BrokerMorningReport`（券商晨报）/ `StrategyReport`（策略）/ `NewStockReport`（新股）。",
+    "required": [
+      "rept_type",
+      "start_date",
+      "page",
+      "page_size"
+    ],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "rept_type",
+      "start_date"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 148,
+    "name": "ft_us_balance",
+    "category": "美股",
+    "description": "查询美股上市公司资产负债表数据，底表 `usstk_balance`（宽表，含资产类、负债类、所有者权益类共 ~100 个科目列）。对外输出为**长表 EAV** 结构（每行一个财务科目，而非宽表）：`ind_name` 是科目名、`ind_value` 是科目值。数据按**财年 + 报告期**组织，跨股票按各自财年末可比。典型返回：单股单报告期约 80-100 个科目行（货币资金、应收账款、存货、固定资产、商誉、短期借款、长期债务、总资产、总负债、股本、留存收益等），数值字段为字符串、负值带 `-`。\n提示: `stock_code` 必填，纯代码不带交易所后缀（如 `NVDA`）。; 长表结构：`ind_name` 是科目名（底表英文字段名，如 tot_assets / tot_liab / tot_eq）、`ind_value` 是科目值，一个报告期展开为多行。; 分页基于报告期数，`items` 行数 ≈ 报告期数 × (80~100)，不能用 `total_items` 估算长表总行数。; 美股财年非自然年，`period` 匹配 `stmt_year`（财年字段），非日历年。; `report_type` 取值：`Q1` / `Q2` / `Q3` / `Q4` / `H1`（半年报）。",
+    "short": "查询美股上市公司资产负债表数据，底表 `usstk_balance`（宽表，含资产类、负债类、所有者权益类共 ~100 个科目列）。对外输出为**长表 EAV** 结构（每行一个财务科目，而非宽表）：`ind_name` 是科目名、`ind_value` 是科目值。",
+    "required": [
+      "stock_code"
+    ],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "period",
+      "report_type",
+      "start_date",
+      "stock_code"
+    ],
+    "param_count": 7,
+    "is_ft": true
+  },
+  {
+    "idx": 149,
+    "name": "ft_us_basic",
+    "category": "美股",
+    "description": "查询美股上市公司基础信息，底表 `usstk_securityinfo`。返回每只股票的纯代码、中英文名称、上市/退市日期。`classify`（ADR/GDR/EQ）底表无此字段，固定返回空字符串。两种模式：不传 `stock_code` 时分页返回全部美股；传 `stock_code` 时精确查单只股票。数据为**最新快照**，无时间维度。\n提示: `stock_code` 为纯代码不带后缀（如 `NVDA`）；不传则分页列出全部美股。; 底表日期存为 `i32`（YYYYMMDD，0 表示缺失），接口转成 `YYYY-MM-DD` 字符串，退市日期未退市时为空字符串。; `classify` 字段固定为空字符串（ADR/GDR/EQ 分类底表暂无）。",
+    "short": "查询美股上市公司基础信息，底表 `usstk_securityinfo`。返回每只股票的纯代码、中英文名称、上市/退市日期。",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "stock_code"
+    ],
+    "param_count": 3,
+    "is_ft": true
+  },
+  {
+    "idx": 150,
+    "name": "ft_us_cashflow",
+    "category": "美股",
+    "description": "查询美股上市公司现金流量表数据，返回**长表 EAV** 结构（每行一个财务科目，而非宽表）。数据按**财年 + 报告期**组织，跨股票按各自财年末可比。典型返回：单股单报告期约 12-16 个非零科目行（经营活动净额、折旧摊销、资本支出、筹资活动净额等），数值字段为字符串、负值带 `-`（投资/筹资流出常见负值）。\n提示: `stock_code` 必填，纯代码不带交易所后缀（如 `NVDA`）。; 长表结构：`ind_name` 是科目名、`ind_value` 是科目值，一个报告期展开为多行。; 分页基于报告期数，`items` 行数 ≈ 报告期数 × (10~16)，不能用 `total_items` 估算长表总行数。; 美股财年非自然年，`period` 匹配 `stmt_year`（财年字段），非日历年。",
+    "short": "查询美股上市公司现金流量表数据，返回**长表 EAV** 结构（每行一个财务科目，而非宽表）。数据按**财年 + 报告期**组织，跨股票按各自财年末可比。",
+    "required": [
+      "stock_code"
+    ],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "period",
+      "report_type",
+      "start_date",
+      "stock_code"
+    ],
+    "param_count": 7,
+    "is_ft": true
+  },
+  {
+    "idx": 151,
+    "name": "ft_us_economic",
+    "category": "宏观经济",
+    "description": "查询美国宏观经济指标时间序列。通过 `type` 指定指标类型，返回该指标的时间（年月或季度）、前值、现值、发布日期。统一接口覆盖 16 类指标：ISM 制造业/非制造业、非农就业、贸易帐、失业率、PPI 环比、CPI 环比/同比、核心 CPI 环比/同比、新屋开工、成屋销售、耐用品订单环比、咨商会消费者信心、GDP 同比初值、联邦基金利率上限。底层统一返回结构 `UsIsmManufacturing`（命名以 ISM 制造业为代表，但全 16 类共用）。响应为数组直出，上游无数据时返回空数组。v1 路由对不支持的 `type` 返回参数错误。\n提示: `type` 必填，取值见输入参数表；非法值返回参数错误。; `month` 为展示用时间标签：月度指标为「YYYY年M月」，季度指标（如 GDP 同比初值）为「YYYY年第N季度」。; `release_date` 为发布日期，ISO 格式 YYYY-MM-DD。",
+    "short": "查询美国宏观经济指标时间序列。通过 `type` 指定指标类型，返回该指标的时间（年月或季度）、前值、现值、发布日期。",
+    "required": [
+      "type"
+    ],
+    "params": [
+      "type"
+    ],
+    "param_count": 1,
+    "is_ft": true
+  },
+  {
+    "idx": 152,
+    "name": "ft_us_income",
+    "category": "美股",
+    "description": "查询美股上市公司利润表数据，底表 `usstk_income`（宽表，每行一个报告期 + ~90 个财务科目列）。对外输出为**长表 EAV** 结构（每行一个财务科目，而非宽表）：`ind_name` 是科目名、`ind_value` 是科目值。数据按**财年 + 报告期**组织，跨股票按各自财年末可比。典型返回：单股单报告期约 60-90 个科目行（营业收入、营业成本、毛利、研发费用、营业利润、净利润、归母净利润、EPS 等），数值字段为字符串、负值带 `-`。\n提示: `stock_code` 必填，纯代码不带交易所后缀（如 `NVDA`）。; 长表结构：`ind_name` 是科目名（底表英文字段名，如 revenue / net_income）、`ind_value` 是科目值，一个报告期展开为多行。; 分页基于报告期数，`items` 行数 ≈ 报告期数 × (60~90)，不能用 `total_items` 估算长表总行数。; 美股财年非自然年，`period` 匹配 `stmt_year`（财年字段），非日历年。; `report_type` 取值：`Q1` / `Q2` / `Q3` / `Q4` / `H1`（半年报）。",
+    "short": "查询美股上市公司利润表数据，底表 `usstk_income`（宽表，每行一个报告期 + ~90 个财务科目列）。对外输出为**长表 EAV** 结构（每行一个财务科目，而非宽表）：`ind_name` 是科目名、`ind_value` 是科目值。",
+    "required": [
+      "stock_code"
+    ],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "period",
+      "report_type",
+      "start_date",
+      "stock_code"
+    ],
+    "param_count": 7,
+    "is_ft": true
+  },
+  {
+    "idx": 153,
+    "name": "ft_wallstreetcn_financial_calendar",
+    "category": "日历 / 事件",
+    "description": "查询华尔街见闻（wallstreetcn）财经日历，按日期范围返回该区间内的经济事件。每条含事件日期、事件时间、地区、事件名称、重要性、实际值/预测值/前值及原文链接。数据来源：华尔街见闻。响应为分页信封 `PaginatedApiResponse`（code/message/data），`data` 为内存分页结果（pageNum/pageSize/total/pages/records）。底层对 `start_date`/`end_date` 做 3 天范围校验（`validate_date_str_range_3_days`）。\n提示: `start_date` / `end_date` 必填，两者间隔不得超过 3 天，否则返回 code=400 错误。; 数据来源：华尔街见闻（路径中保留 `wallstreetcn` 来源标识）。; 响应为 code/message/data 信封，data 含 records 数组与分页字段。",
+    "short": "查询华尔街见闻（wallstreetcn）财经日历，按日期范围返回该区间内的经济事件。每条含事件日期、事件时间、地区、事件名称、重要性、实际值/预测值/前值及原文链接。",
+    "required": [
+      "start_date",
+      "end_date"
+    ],
+    "params": [
+      "end_date",
+      "page",
+      "page_size",
+      "start_date"
+    ],
+    "param_count": 4,
+    "is_ft": true
+  },
+  {
+    "idx": 154,
+    "name": "ft_xueqiu_rank",
+    "category": "资金 / 情绪 / 短线",
+    "description": "查询雪球股票排行榜最新一期快照。来源标识为雪球（xueqiu），支持按榜单组（关注 / 讨论 / 交易）与周期（本周新增 / 最热门）组合查询；返回榜单展示名、核心指标名（关注度/讨论数/交易数）、总记录数与排行条目（排名、统一代码、简称、核心指标值、最新价、雪球原始代码）。ft-data-server 做了带失败退避的内存缓存。响应为 `ApiResponse` 信封（code/message/data）。\n提示: 三层命名遵循 CLAUDE.md 来源标识约定：v0 `/stock-rank/xueqiu`、client `xueqiu_stock_rank`、v1 `/xueqiu-rank`、对外类型 `XueqiuRank*`。; `trade_date` 不传默认取最新一期；格式 `YYYY-MM-DD`。; 响应为 `ApiResponse<XueqiuRankResponseData>` 信封结构。",
+    "short": "查询雪球股票排行榜最新一期快照。来源标识为雪球（xueqiu），支持按榜单组（关注 / 讨论 / 交易）与周期（本周新增 / 最热门）组合查询；",
+    "required": [],
+    "params": [
+      "page",
+      "page_size",
+      "period",
+      "rank_group",
+      "trade_date"
+    ],
+    "param_count": 5,
+    "is_ft": true
+  },
+  {
+    "idx": 155,
+    "name": "intraday_kline",
+    "category": "聚合行情 / 旧工具",
+    "description": "分时/分钟K线。type 默认 minute_kline(分钟级 OHLC,v0 /api/v0/stock-candlesticks 或 /api/v0/hk-stock-candlesticks,按 symbol 后缀路由,必填 symbol,interval_unit=minute,until_ts_millis 不传则取当前时间)；可选 intraday_price(分时价,v0 /api/v0/stock-intraday)、daec_price/daec_minute_ohlc(无 v0 路由,直连内网 daec data_service xz07:10010)、batch(POST /api/v0/stock-candlesticks/batch,必填 symbols+until_ts_millis)、futures(/api/v0/futures/kline)。minute_kline/intraday_price/daec_* 需 symbol；batch 需 symbols。minute_kline 支持按天查询 date=YYYYMMDD(取该日 09:30-15:00 CST 完整交易日),并对所有 minute_kline 结果按 ts_millis 去重上游间歇性重复行;date 优先级高于 since/until_ts_millis。",
+    "short": "分时/分钟K线。type 默认 minute_kline(分钟级 OHLC,v0 /api/v0/stock-candlesticks 或 /api/v0/hk-stock-candlesticks,按 symbol 后缀路由,必填 symbol,interval_unit=minute,until_ts_millis 不传则取当前时间)；",
+    "required": [],
+    "params": [
+      "adjust",
+      "adjust_kind",
+      "date",
+      "days",
+      "futures_interval",
+      "interval_unit",
+      "limit",
+      "range",
+      "since",
+      "since_ts_millis",
+      "symbol",
+      "symbols",
+      "ts_ms",
+      "type",
+      "until",
+      "until_ts_millis"
+    ],
+    "param_count": 16,
+    "is_ft": false
+  },
+  {
+    "idx": 156,
+    "name": "margin",
+    "category": "聚合行情 / 旧工具",
+    "description": "融资融券数据。type 默认 detail=融资融券明细（全市场分页）。可选 date(YYYYMMDD)、stock(按标的过滤,Wind 风格 600000.SH,也接受 600000.XSHG;格式非法上游返回400,合法但非两融标的返回空)、page、page_size。",
+    "short": "融资融券数据。type 默认 detail=融资融券明细（全市场分页）。",
+    "required": [],
+    "params": [
+      "date",
+      "page",
+      "page_size",
+      "stock",
+      "type"
+    ],
+    "param_count": 5,
+    "is_ft": false
+  },
+  {
+    "idx": 157,
+    "name": "report_announcement_list",
+    "category": "新闻 / 公告 / 研报",
+    "description": "公告列表(按日期查当天公告)。必填 date(YYYYMMDD,如 20260624)；可选 sec_code(证券代码,不传返回当天全部)、page(默认1)、page_size(默认50,上限200)。返回当天所有 status(pending/failed/summarized 都返回,不按 status 过滤)。数据源 MySQL report_announcement(与 ClickHouse /announcements 不同源)。每条含 announcement_id(供 report_announcement_summary 查摘要)、sec_code、sec_name、announcement_title、announcement_time、status 等,未命中字段为 null。",
+    "short": "公告列表(按日期查当天公告)。必填 date(YYYYMMDD,如 20260624)；",
+    "required": [
+      "date"
+    ],
+    "params": [
+      "date",
+      "page",
+      "page_size",
+      "sec_code"
+    ],
+    "param_count": 4,
+    "is_ft": false
+  },
+  {
+    "idx": 158,
+    "name": "report_announcement_summary",
+    "category": "新闻 / 公告 / 研报",
+    "description": "公告摘要(按 announcement_id 查单条摘要)。必填 announcement_id(取自 report_announcement_list 返回的 announcement_id)。命中返回 announcement_title + summary(附 sec_code/sec_name/status/announcement_time)；未命中返回空 items + note(上游 code=404 不报错,前端按 items 空判断)。",
+    "short": "公告摘要(按 announcement_id 查单条摘要)。必填 announcement_id(取自 report_announcement_list 返回的 announcement_id)。",
+    "required": [
+      "announcement_id"
+    ],
+    "params": [
+      "announcement_id"
+    ],
+    "param_count": 1,
+    "is_ft": false
+  },
+  {
+    "idx": 159,
+    "name": "semantic_search_news",
+    "category": "新闻 / 公告 / 研报",
+    "description": "新闻语义检索。按自然语言 query 做向量相似度搜索，返回相关新闻条目(含 title/content/article_url/publish_time/source_site/score；score 越高越相关)。query 必填(如\"宁德时代\")；limit 可选(默认10,上限20)。无 type 路由。",
+    "short": "新闻语义检索。按自然语言 query 做向量相似度搜索，返回相关新闻条目(含 title/content/article_url/publish_time/source_site/score；",
+    "required": [
+      "query"
+    ],
+    "params": [
+      "limit",
+      "query"
+    ],
+    "param_count": 2,
+    "is_ft": false
+  }
+]
